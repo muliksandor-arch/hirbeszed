@@ -1,0 +1,1207 @@
+HIRBESZED ELOFIZETESI SZABALYZAT
+Prototipus es termeklogikai dokumentum
+
+Verzio: 1.13
+Datum: 2026-07-03
+Projekt: Hirbeszed
+
+FONTOS MEGJEGYZES
+
+Ez a dokumentum nem vegleges jogi ASZF, hanem a Hirbeszed alkalmazas
+elofizetesi es jogosultsagi mukodesenek termeklogikai szabalyzata.
+
+Celja, hogy a prototipus, a kesobbi backend, az app es az aruhazi
+elofizeteskezeles ugyanazt a logikat kovesse.
+
+
+1. HASZNALATI MODOK ES ELOFIZETESI CSOMAGOK
+
+1.1. Ingyenes csomag
+
+Fontos:
+- ez nem elofizetes
+- ez az alkalmazas ingyenes, alap hozzaferesi szintje
+- nincs aruhazi elofizetesi folyamat hozza
+- onboardingban alapertelmezetten ez legyen coral szinnel kijelolve
+- az elso 14 napban elerheto hozza az AI Felolvaso elofizetes
+  probaidoszaka
+- a csomagvalaszto feluleten a probaido az Ingyenes csomag kartyajan
+  jelenik meg, nem az AI Felolvaso elofizetes kartyajan
+- ha a probaido mar nem erheto el, az Ingyenes csomag kartyajan
+  ennek megfelelo lejart / nem elerheto szoveg jelenik meg
+
+Ar:
+- ingyenes
+
+Tartalom:
+- Hirfolyam
+- RSS-forrasokbol osszeallitott hirek
+- temak es erdeklodesi korok
+- kereses
+- kedveles
+- megosztas
+- olvasott / olvasatlan allapot
+- reszletes hirnezet
+- eredeti forraslink megnyitasa reszletes hirbol
+
+Nem tartalmazza:
+- AI-hangos felolvasast
+- automatikus AI Felolvaso modot
+- hangutasitasos felolvaso mukodest
+- teljes csevegeses AI Asszisztenst
+
+Indulo oldal:
+- Hirfolyam
+
+
+1.2. AI Felolvaso elofizetes
+
+Ar:
+- 1490 Ft / ho
+
+Tartalom:
+- minden, amit az Ingyenes csomag tartalmaz
+- AI-hangos hirfelolvasas
+- Felolvaso oldal hasznalata
+- automatikus hirleptetes
+- hangutasitasok
+- rovid / reszletes hir felolvasasa
+- mikrofonlogika a Felolvaso oldalon
+
+Probaido:
+- regisztracio utan egyszeri 14 napos AI Felolvaso proba jarhat
+- a probaido alatt az app ugy viselkedik, mint az AI Felolvaso elofizetes
+- a probaido utan, ha nincs elofizetes, az app visszaall az ingyenes
+  Hirfolyam mukodesre
+
+Indulo oldal aktiv csomaggal vagy aktiv probaval:
+- Felolvaso
+
+
+1.3. AI Asszisztens elofizetes
+
+Ar:
+- 3490 Ft / ho
+
+Tartalom:
+- minden, amit az Ingyenes csomag tartalmaz
+- minden, amit az AI Felolvaso elofizetes tartalmaz
+- teljes csevegeses AI hirasszisztens
+- kerdezes a betoltott hirekrol
+- osszefoglalok
+- magyarazatok
+- temak kozotti eligazitas
+- Beszed, Gepeles es Nema asszisztens modok
+
+Indulo oldal aktiv csomaggal:
+- Asszisztens
+
+
+2. JOGOSULTSAGI MATRIX
+
+Hirfolyam:
+- minden felhasznalonak elerheto
+- ingyenes csomagban is elerheto
+- lejart probaido utan is elerheto
+- sikertelen fizetes utan is elerheto
+
+Felolvaso:
+- aktiv AI Felolvaso elofizetessel elerheto
+- aktiv 14 napos AI Felolvaso probaval elerheto
+- aktiv AI Asszisztens elofizetessel is elerheto, mert az Asszisztens
+  tartalmazza a Felolvasot
+- Ingyenes csomaggal vagy lejart proba utan nem nyilik meg teljesen,
+  hanem Felolvaso promo modban mutatja be a funkciot
+- Felolvaso promo modban az AI Felolvaso es az AI Asszisztens elofizetesi
+  promohir valtakozva, vegtelenitve futhat
+
+Asszisztens:
+- aktiv AI Asszisztens elofizetessel teljesen elerheto
+- aktiv AI Felolvaso elofizetessel csak heti 5 kerdeses probakent
+  erheto el, ha a heti proba meg nincs felhasznalva
+- Ingyenes csomaggal, lejart probaido vagy fizetesi hiba eseten
+  csak Asszisztens promo modban erheto el
+- Asszisztens promo modban csak az elofizetesi csomagokrol, arakrol,
+  probakrol es funkciokrol beszelhet
+
+
+3. APPINDITASI SZABALYOK
+
+Friss appinditas vagy ujratoltes eseten az app az aktualis csomag alapjan
+nyilik meg.
+
+Ingyenes csomag:
+- indulo oldal: Hirfolyam
+
+AI Felolvaso elofizetes aktiv:
+- indulo oldal: Felolvaso
+
+14 napos AI Felolvaso proba:
+- indulo oldal: Felolvaso
+
+AI Asszisztens elofizetes aktiv:
+- indulo oldal: Asszisztens
+
+Lejart AI Felolvaso proba:
+- indulo oldal: Hirfolyam
+
+Sikertelen fizetes:
+- indulo oldal: Hirfolyam
+
+Hasznalat kozben:
+- a menuben kivalasztott oldal a mervado
+- a csomag szerinti inditas csak friss appinditasra / ujratoltesre
+  vonatkozik
+- ha a felhasznalo hasznalat kozben masik menupontba lep, azt az app
+  nem irja vissza automatikusan a csomag szerinti indulo oldalra
+
+
+4. 14 NAPOS AI FELOLVASO PROBAIDO
+
+4.1. Alapszabaly
+
+Egy regisztralt Hirbeszed-fiok egyetlen egyszer kaphat 14 napos AI
+Felolvaso probat.
+
+A probaido ujratelepites, cache torles, masik keszulek, kijelentkezes vagy
+ujboli belepes utan sem indulhat ujra.
+
+4.2. Ki dont a proba jogosultsagarol?
+
+A vegleges appban a proba jogosultsagarol nem a kliensapp dont.
+
+A jogosultsagot szerveroldalon kell kezelni:
+- backend
+- felhasznaloi fiok
+- Apple App Store / Google Play elofizetes adatai
+- vasarlas-visszaallitas adatai
+
+A kliensapp csak megjeleniti a backendtol kapott allapotot.
+
+4.3. Szerveroldalon tarolando probaido mezok
+
+Javasolt mezok:
+
+- userId
+- readerTrialEligible
+- readerTrialUsed
+- readerTrialStartedAt
+- readerTrialEndsAt
+- readerTrialUsedAt
+- readerTrialSource
+- subscriptionPlan
+- subscriptionStatus
+- platform
+- storeCustomerId
+- storeOriginalTransactionId vagy purchaseToken
+- accountMergeHistory
+
+Pelda:
+
+readerTrialEligible:
+- igaz, ha a felhasznalo meg soha nem hasznalta az AI Felolvaso probat
+- hamis, ha egyszer mar elindult a proba
+
+readerTrialUsed:
+- igaz, ha a proba barmikor elindult
+- akkor is igaz marad, ha a proba lejart
+
+readerTrialStartedAt:
+- a proba kezdetenek idopontja
+
+readerTrialEndsAt:
+- a proba vege
+
+4.4. Mi tortenik regisztraciokor?
+
+Ha a felhasznalo meg jogosult a probara:
+- felajanlhato a 14 napos AI Felolvaso proba
+- inditas utan a backend rogzit minden probaido mezot
+- az app Felolvaso moddal indul
+
+Ha a felhasznalo mar hasznalta a probat:
+- nem indithat uj probat
+- az app Hirfolyamot ad ingyenesen
+- AI Felolvaso vagy AI Asszisztens elofizetest ajanlhat
+
+4.5. Tobbszoros probaido megakadalyozasa
+
+A vegleges rendszerben a kovetkezok nem indithatnak uj probat:
+
+- app ujratelepitese
+- bongeszo cache / localStorage torlese
+- masik keszulek hasznalata
+- kijelentkezes es ujboli belepes
+- ugyanazzal az emaillel uj regisztracio
+- ugyanazzal a telefonszammal uj regisztracio
+- Apple / Google / Facebook fiok ujracsatolasa
+- vasarlas-visszaallitas
+- fiokok osszevonasa
+
+Ha ket fiok osszevonasra kerul, a probaido-felhasznalas is osszevonodik.
+Ha barmelyik osszevont fiok mar hasznalta a probat, az uj kozos fiok sem
+indithat uj probat.
+
+4.6. Aruhazi proba es backend proba kapcsolata
+
+Ha az Apple vagy Google kezeli a probaidot:
+- az aruhazi trial jogosultsag az elso szintu hiteles forras
+- a backend taroljon sajat masolatot is a felhasznaloi fiokhoz
+- vasarlas-visszaallitasnal a backend frissitse a fiok allapotat
+
+Ha a backend kezeli a probaidot:
+- az app csak a backend dontese alapjan indithat probat
+- kliensoldali allapot nem lehet hiteles forras
+
+
+5. ELOFIZETESI ALLAPOTOK
+
+Javasolt allapotok:
+
+inactive:
+- nincs aktiv csomag
+- nincs aktiv proba
+- Hirfolyam elerheto
+
+trial:
+- aktiv AI Felolvaso proba
+- Felolvaso elerheto
+- proba vege utan expired vagy free/inactive allapot kovetkezik
+
+active:
+- aktiv fizetos elofizetes vagy aktiv Ingyenes csomag
+- plan alapjan dol el, mi erheto el
+
+expired:
+- a proba lejart
+- Hirfolyam tovabbra is elerheto
+- AI funkciok zaroltak
+
+payment_failed:
+- fizetesi problema
+- Hirfolyam tovabbra is elerheto
+- fizetos AI funkciok zaroltak, amig a fizetes nem rendezodik
+
+Megjegyzes a lemondasrol:
+- a prototipus jelenlegi allapotmodellje nem hasznal kulon canceled statuszt
+- lefele valtas vagy lemondas eseten a scheduledPlan jeloli a kovetkezo csomagot
+- az aktiv fizetos idoszak vegeig a jelenlegi elofizetes marad ervenyben
+- a fordulonapon a scheduledPlan szerinti csomag lep eletbe
+
+
+6. CSOMAGVALTAS ES LEMONDAS
+
+Ingyenes csomagrol AI Felolvaso elofizetesre:
+- elofizetes vagy egyszeri jogosult proba indithato
+- sikeres aktivalas utan a csomagoldal nyitva marad es az uj allapotot mutatja
+- az app csak kovetkezo teljes inditaskor vagy kulon menunavigacioval valt az elofizetes szerinti alap funkciokra
+
+Ingyenes csomagrol AI Asszisztens elofizetesre:
+- sikeres elofizetes utan a csomagoldal nyitva marad es az uj allapotot mutatja
+- az Asszisztens automatikus inditasa csak appinditasi alaplogika, nem csomagvaltas utani azonnali audioinditas
+
+AI Felolvasorol AI Asszisztensre:
+- upgrade
+- a valtas sikeres vasarlaskor / jovahagyaskor azonnal eletbe lep
+- nem kell megvarni az AI Felolvaso elofizetesi idoszak veget
+- az uj AI Asszisztens elofizetesi idoszak a valtas idopontjatol indul
+- innentol ez lesz az uj elofizetesi fordulonap
+- az AI Felolvaso funkciok megmaradnak
+- az Asszisztens teljesen megnyilik
+- indulo oldal kovetkezo appinditasnal Asszisztens
+
+AI Asszisztensrol AI Felolvasora:
+- downgrade
+- az Asszisztens teljes csevegeses funkcioja a kovetkezo jogosultsagi
+  idoszak vegetol zarolhato
+- a Felolvaso megmarad
+
+AI elofizetesrol Ingyenes csomagra:
+- a valos appban ez nem uj elofizetes, hanem az aruhazi elofizetes
+  lemondasi / kezelesi folyamata
+- a fizetos AI funkciok a mar kifizetett idoszak vegeig meg elhetnek
+- az idoszak vege utan a fizetos AI funkciok megszunnek
+- Hirfolyam, kedvelesek, olvasottsag, forrasok es temak megmaradnak
+- a prototipusban a jovahagyo gomb ezt azonnal szimulalja
+
+
+7. HIRFOLYAM PROMOHIREK ES PROMO MODOK
+
+7.1. Alapelv
+
+A promok nem egyszeru reklamdobozok, hanem belso Hirbeszed promohirek.
+Ezek hirkent viselkedo tartalmak, amelyeket a Hirfolyam, a Felolvaso
+promo mod es az Asszisztens promo mod is hasznalhat.
+
+Harom belso promohir van:
+
+1. AI Felolvaso elofizetes promohir
+2. AI Asszisztens elofizetes promohir
+3. AI Asszisztens 5 kerdeses proba promohir
+
+Mindharom promohir tartalmazzon:
+- cimet
+- kepet
+- forrast es idobelyeget
+- rovid leirast
+- reszletesebb szoveget
+- forrasjelolest: Hirbeszed ajanlo
+- sajat kiprobalas gombot
+
+7.2. Megjelenes a Hirfolyamban
+
+A promohir majdnem teljesen ugy nezzen ki, mint egy normal hirkartya.
+
+Eltteresek a normal hirtol:
+- standard keret helyett coral szinu keretet kap
+- mindig legyen rajta kiprobalas gomb
+- a kiprobalas gomb mindig a megfelelo promo modba vagy jogosult felhasznalonal
+  az 5 kerdeses proba inditasara visz
+
+Gombok:
+- AI Felolvaso promohir gombja: Kiprobalom a Felolvasot
+- AI Asszisztens elofizetesi promohir gombja: Kiprobalom az Asszisztenst
+- AI Asszisztens 5 kerdeses proba promohir gombja: Kiprobalom 5 kerdes erejeig
+
+A promohir ne legyen egyszeru kulon reklamfelulet. A cel, hogy a felhasznalo
+ugyanabban a hirszeru kozegben talalkozzon vele, mint a tobbi tartalommal.
+
+7.3. Hirfolyam promoelosztas
+
+Ingyenes csomaggal, lejart probaval vagy sikertelen fizetes utan:
+- a Hirfolyamban megjelenhet mindket elofizetesi promohir
+- AI Felolvaso promohir
+- AI Asszisztens elofizetesi promohir
+- a megjelenes kb. 20 hirenkent tortenhet
+- ha tobb promohely van, a ket elofizetesi promohir valtakozhat
+- az AI Asszisztens 5 kerdeses proba promohir itt nem jelenhet meg,
+  mert az csak aktiv AI Felolvaso elofizetoknek jar
+
+AI Felolvaso elofizetonel:
+- AI Felolvaso promohir mar ne jelenjen meg
+- megjelenhet az AI Asszisztens elofizetesi promohir
+- hetente egyszer, ha meg elerheto, megjelenhet az AI Asszisztens
+  5 kerdeses proba promohir
+- mindket Asszisztenshez kapcsolodo promohir a normal Hirfolyam reszekent
+  kezelendo
+- ha a Felolvaso a Hirfolyam hireit olvassa, akkor ezeket a promohireket is
+  felolvashatja, ugyanugy, mint egy normal hirt
+
+AI Asszisztens elofizetonel:
+- ne jelenjen meg elofizetesi promohir
+- ne jelenjen meg 5 kerdeses proba promohir sem
+- a felhasznalo mar a legmagasabb csomagban van
+
+Megjegyzes:
+- ha a hirfolyamban csak 30 hir van es a promo 20 hirenkent jelenik meg,
+  akkor egyszerre csak egy promohely latszik
+- tobb hir vagy kisebb promoInterval eseten a valtakozas jobban tesztelheto
+
+7.3.1. Hirfolyam promo eloresorolas a prototipusban
+
+Cel:
+- a prototipusban a promohirek konnyen megtalalhatok es tesztelhetok
+  legyenek
+- a felhasznalo mar az elso hirfolyam-megnyitaskor talalkozzon a csomagjanak
+  megfelelo promohirekkel
+- ez csak elso eloresorolasi szabaly, utana a normal, nem tolakodo
+  promomegjelenitesi feltetelrendszer lep eletbe
+
+Alapelv:
+- a hirfolyam elejen, ha a Prototipus / Hirfolyam promo eloresorolas funkcio
+  be van kapcsolva, az adott
+  jogosultsag szerint elerheto promohirek elore sorolhatok
+- a promohirek az eloresorolas ellenere tovabbra is hirszeru kartyak
+- az eloresorolas nem irhatja felul a jogosultsagi szabalyokat
+
+Ingyenes csomaggal, lejart probaval vagy sikertelen fizetes utan:
+- mindket elofizetesi promohir jelenjen meg a hirfolyam elejen
+- 2. hely: AI Felolvaso promohir
+- 4. hely: AI Asszisztens elofizetesi promohir
+- ezutan a normal hirsorrend folytatodik
+- a kesobbi promok a 7.3.2. fejezet szerinti ritmusban jelenhetnek meg
+
+AI Felolvaso elofizetonel:
+- AI Asszisztenshez kapcsolodo promok kerulhetnek elore
+- 2. hely: AI Asszisztens elofizetesi promohir
+- 4. hely: AI Asszisztens 5 kerdeses proba promohir, ha az adott heten
+  meg elerheto es nem lett elutasitva
+- AI Felolvaso promohir ne jelenjen meg, mert a felhasznalo mar elofizetett ra
+- ezutan a normal hirsorrend folytatodik
+- a kesobbi Asszisztens elofizetesi promok a 7.3.2. fejezet szerinti
+  ritmusban jelenhetnek meg
+- az 5 kerdeses proba promohir nem resze a 20/30-40 hirenkenti ciklusnak,
+  hanem heti ajanlatkent mukodik
+
+AI Asszisztens elofizetonel:
+- ne legyen promo eloresorolas
+- ne jelenjen meg elofizetesi promohir
+- ne jelenjen meg 5 kerdeses proba promohir sem
+
+Prototipus menupont:
+- a prototipusban a Beallitasok / Prototipus / Fejlesztesi beallitasok
+  oldalon legyen egy kapcsolo:
+  - Hirfolyam promo eloresorolas
+- bekapcsolva:
+  - a fenti 2. es 4. helyes eloresorolasi szabaly ervenyesul
+- kikapcsolva:
+  - a hirfolyam elejen ne legyen kotelezo promohir-eloresorolas
+  - a normal, napi limites promomegjelenitesi szabaly tovabbra is
+    tesztelheto maradhat
+- a kapcsolo prototipusban fejlesztoi/tesztelesi segedeszkoz
+- vegleges appban ez lehet tavoli konfiguracio vagy belso admin beallitas,
+  nem feltetlenul felhasznaloi menupont
+
+7.3.2. Nem tolakodo promomegjelenitesi feltetelrendszer
+
+Alapelv:
+- a promohir hirszeru tartalom, nem agressziv reklam
+- a cel az, hogy a felhasznalo idonkent talalkozzon az AI funkciokkal,
+  de ne erezze ugy, hogy az app allandoan eladni akar neki valamit
+- a promomegjelenites hirszamhoz, napi limithez es felhasznaloi reakciohoz
+  is igazodjon
+
+Ingyenes csomaggal, lejart probaval vagy sikertelen fizetes utan:
+- alap ritmus: kb. 20 normal hirenkent jelenhet meg egy promohir
+- rugalmas ablak: 15-25 normal hir kozott is megjelenhet, hogy ne legyen
+  mechanikus
+- napi limit: legfeljebb napi 3 promomegjelenes osszesen
+- csomagonkenti limit: legfeljebb napi 2 megjelenes ugyanarra a csomagra
+- a ket elofizetesi promohir valtakozzon, ha mindketto megjelenhet
+
+AI Felolvaso elofizetonel:
+- az AI Asszisztens elofizetesi promohir ritkabban jelenjen meg
+- ritmus: kb. 30-40 normal hirenkent
+- alapertelmezett ritmus: 35 normal hirenkent
+- napi limit: legfeljebb napi 1-2 megjelenes
+- alapertelmezett napi limit: napi 1 megjelenes
+- az AI Asszisztens 5 kerdeses proba promohir ettol kulon kezelt,
+  heti ajanlat
+- 5 kerdeses proba promohir heti limit: legfeljebb heti 1 kiemelt
+  megjelenes
+- ha a felhasznalo csak atgorgeti es nem kattint ra, ugyanazon a heten
+  legfeljebb meg egyszer visszajohet kesobb, peldaul 30-40 hir utan
+- ha a felhasznalo megnyitja, elfogadja vagy elutasitja, az adott heten
+  ne jelenjen meg ujra
+
+AI Asszisztens elofizetonel:
+- ne jelenjen meg elofizetesi promohir
+- ne jelenjen meg 5 kerdeses proba promohir sem
+
+Felhasznaloi reakcio szerinti fekek:
+- ha a felhasznalo megnyitja vagy kiprobalja a promohirt, ugyanaz a promohir
+  nehany napig ne jelenjen meg ujra agresszivan
+- javasolt hutesi ido kiprobalas utan: 3 nap
+- ha a felhasznalo atgorgeti vagy nem kattint ra, ugyanaz a promohir aznap
+  mar csak nagyon indokolt esetben jelenjen meg ujra
+- ha kesobb lesz kulon elutasitas vagy bezaras gomb, akkor az adott promohir
+  aznap ne jelenjen meg ujra
+
+Technikai megjegyzes:
+- a vegleges appban a megjelenesi szamokat backend vagy tavoli konfiguracio
+  kezelje
+- a prototipusban ezek konstanskent is tarolhatok
+- a jelenlegi prototipusban a kesobbi promomegjelenites listan beluli
+  vedokorlattal mukodik: Alap/lejart/fizetesi hiba allapotban legfeljebb
+  ket kesobbi promokartya, aktiv AI Felolvaso elofizetonel legfeljebb egy
+  kesobbi Asszisztens promokartya jelenik meg egy hosszu listaban
+- a napi limit felhasznaloi fiokhoz kotodjon, ne csak keszulekhez
+- a promomegjelenites ne irja felul a jogosultsagi szabalyokat
+- ha valaki elofizet, az adott csomaghoz tartozo promo azonnal tunjon el
+
+7.4. AI Felolvaso promohir kiprobalasa
+
+Ha a felhasznalo az AI Felolvaso promohir kiprobalas gombjara kattint,
+akkor a Felolvaso oldal Felolvaso promo modban nyilik meg.
+
+Felolvaso promo mod szabalyai:
+- nem nyilik meg a teljes AI Felolvaso funkcio
+- nem a normal Hirfolyam hireit olvassa
+- kizarolag az elofizetesi celu belso promohireket hasznalja
+- a promo lista ket eleme:
+  - AI Felolvaso promohir
+  - AI Asszisztens elofizetesi promohir
+- az AI Asszisztens 5 kerdeses proba promohir nem resze a Felolvaso
+  promo modnak, mert az csak aktiv AI Felolvaso elofizetonek jar
+- a ket promohir felvaltva, vegtelenitve fut
+- elozo gomb eseten a ket promohir kozott lep vissza
+- kovetkezo gomb eseten a ket promohir kozott lep elore
+- aktiv hirlepteto eseten is csak a ket promohir valtakozhat
+- roviditett modban az aktualis promohir rovid szovege megy
+- reszletes modban az aktualis promohir reszletes szovege megy
+- a hangutasitasok nem vezethetnek at valodi hirekre
+- a cel a Felolvaso elmeny bemutatasa, nem a teljes funkcio megnyitasa
+
+Felolvaso promo mod fejlec:
+- a fejlec jobb oldalan legyen marketing CTA gomb
+- a gomb szoveget az ELOFIZETESI_GOMB_MATRIX.md tabla hatarozza meg
+- a gomb az elofizetesi / csomagvalaszto oldalra vezet
+- a gomb nem technikai ikon, hanem cselekvesre osztonzo szoveges ajanlat
+
+7.5. AI Asszisztens elofizetesi promohir kiprobalasa
+
+Ha a felhasznalo az AI Asszisztens elofizetesi promohir kiprobalas gombjara
+kattint, akkor az Asszisztens oldal Asszisztens promo modban nyilik meg.
+
+Asszisztens promo mod szabalyai:
+- nem nyilik meg a teljes AI Asszisztens funkcio
+- az Asszisztens csak elofizetesi temakban valaszolhat
+- beszelhet a csomagokrol, arakrol, probaidokrol, funkciokrol es
+  csomagvaltasrol
+- nem valaszolhat napi hirekre
+- nem valaszolhat altalanos temakra
+- nem kereshet vagy magyarazhat valodi hirfolyam-hireket
+- ha a felhasznalo masrol kerdez, udvariasan visszatereli az elofizetesi
+  temara
+
+Javasolt elso uzenet:
+"Ehhez nincs aktiv AI Asszisztens elofizetesed. Szeretned tudni, mit ad ez
+a csomag es hogyan lehet kiprobalni?"
+
+Minden asszisztens valasz vegen legyen egy gomb:
+- Elofizetesek megtekintese
+
+Asszisztens promo mod fejlec:
+- a fejlec jobb oldalan legyen marketing CTA gomb
+- a gomb szoveget az ELOFIZETESI_GOMB_MATRIX.md tabla hatarozza meg
+- a gomb az elofizetesi / csomagvalaszto oldalra vezet
+- a gomb nem technikai ikon, hanem cselekvesre osztonzo szoveges ajanlat
+
+7.6. AI Asszisztens 5 kerdeses proba promohir kiprobalasa
+
+Ha az aktiv AI Felolvaso elofizeto az AI Asszisztens 5 kerdeses proba
+promohir kiprobalas gombjara kattint, akkor az Asszisztens oldal nyilik meg
+korlatozott, 5 kerdeses proba modban.
+
+Szabalyok:
+- csak aktiv AI Felolvaso elofizetonek erheto el
+- hetente egyszer ajanlhato fel
+- 5 felhasznaloi kerdes erejeig nyitja meg az Asszisztenst
+- a proba elfogadasa utan az adott heten a proba promohir tunjon el
+- elutasitas utan az adott heten ne jelenjen meg ujra
+- ha a felhasznalo csak atgorgeti, ugyanazon a heten legfeljebb meg egyszer
+  visszajohet kesobb
+- a proba nem ad teljes AI Asszisztens elofizetest
+- a proba lejarta utan az Asszisztens teljes hasznalatahoz AI Asszisztens
+  elofizetes szukseges
+
+Megjelenesi cel:
+- a Felolvaso elofizeto erezze, hogy a csomagja melle jar egy kiprobalhato
+  extra lehetoseg
+- a promohir figyelemfelkelto legyen, de ne legyen ismetlodo reklam
+- ez a promohir ne keveredjen az AI Asszisztens elofizetesi promohirrel
+
+7.7. Promo mod es valodi elofizetes viszonya
+
+A promo mod nem azonos a 14 napos AI Felolvaso probaval.
+A promo mod nem aktival elofizetest.
+A promo mod nem fogyaszt heti 5 kerdeses Asszisztens probat.
+Az AI Asszisztens 5 kerdeses proba promohir viszont a heti proba
+elinditasara szolgalhat, ha a felhasznalo jogosult ra.
+
+Promo mod celja:
+- a funkcio elmenyszeru bemutatasa
+- az elofizetesi dontes segitese
+- a felhasznalo elvezetese a csomagvalaszto oldalra
+
+Ha a felhasznalo elofizet:
+- a promo mod megszunik
+- a megfelelo teljes funkcio nyilik meg:
+  - AI Felolvaso: normal Felolvaso
+  - AI Asszisztens: normal Asszisztens
+
+
+8. AI ASSZISZTENS HETI 5 KERDESES PROBA
+
+8.1. Kinek jar?
+
+Az AI Felolvaso aktiv elofizetoi hetente egyszer 5 kerdes erejeig
+kiprobalhatjak az AI Asszisztenst.
+
+Nem jar:
+- Ingyenes csomagot hasznalo felhasznalonak
+- lejart probaju felhasznalonak
+- sikertelen fizetesu felhasznalonak
+- AI Asszisztens elofizetonek, mert neki teljesen elerheto az Asszisztens
+
+8.2. Mikor ajanlja fel az app?
+
+AI Felolvaso elofizetonel:
+- a proba elsodleges felajanlasi formaja az AI Asszisztens 5 kerdeses
+  proba promohir
+- ez a promohir hetente egyszer jelenhet meg kiemelten a Hirfolyamban
+- a promohir nem a 20/30-40 hirenkenti promoritmus resze
+- ha az adott heten a proba mar elindult, elfogyott vagy el lett utasitva,
+  a promohir ne jelenjen meg ujra
+- ha a felhasznalo csak atgorgeti, ugyanazon a heten legfeljebb meg egyszer
+  visszajohet kesobb
+- a promohir gombja az Asszisztens oldalra visz es elinditja vagy
+  megerositteti az 5 kerdeses probat
+
+Felolvaso kozbeni felajanlas:
+- ha a Felolvaso eppen az AI Asszisztens 5 kerdeses proba promohirt
+  olvassa fel, akkor a hir vegen megkerdezheti, hogy a felhasznalo
+  kiprobalja-e
+- ilyen esetben az app megall es valaszra varhat
+- automatikus hirleptetes bekapcsolva sem lephet tovabb, amig a
+  felhasznaloi valasz nincs kezelve
+- ez csak a proba promohirhez kapcsolodo helyzetben tortenjen, ne
+  automatikusan minden 20. hir utan
+
+8.3. Valaszkezeles
+
+Elfogadja:
+- Asszisztens proba aktiv lesz
+- 5 kerdes all rendelkezesre
+- app Asszisztens oldalra lephet
+
+Elutasitja:
+- erre a hetre nem kell ujra eroszakosan felajanlani
+- Felolvaso folytatodhat
+
+Nincs valasz:
+- az app legfeljebb meg ketszer rakerdezhet
+- osszesen 3 probalkozas utan a felajanlast erre a korre el kell engedni
+- Felolvaso folytatodhat
+
+8.4. Heti proba backend mezok
+
+Javasolt mezok:
+
+- assistantTrialWeek
+- assistantTrialActive
+- assistantTrialRemaining
+- assistantTrialPromptAttempts
+- assistantTrialLastOfferedAt
+- assistantTrialAcceptedAt
+- assistantTrialDeclinedAt
+- assistantTrialPromoDismissedWeek
+- assistantTrialPromoClickedWeek
+- assistantTrialPromoShownAt
+- assistantTrialPromoViewCount
+- assistantTrialPromoDismissedAt
+- assistantTrialPromoClickedAt
+
+Megjegyzes:
+- az assistantTrialPromoDismissedWeek es assistantTrialPromoClickedWeek jeloli,
+  hogy az adott heten a proba promohirt elutasitottak vagy megnyitottak-e
+- az assistantTrialPromoViewCount segit betartani, hogy atgorgetes utan is
+  legfeljebb meg egyszer jelenjen meg ugyanazon a heten
+- elfogadas, elutasitas vagy a proba elfogyasa utan az adott heti proba
+  promohir ne jelenjen meg ujra
+
+
+9. FELOLVASO ES ASSZISZTENS KAPCSOLATA
+
+AI Felolvaso:
+- felolvassa a hireket
+- hangutasitasokat kezel
+- nem teljes csevegeses AI
+
+AI Asszisztens:
+- csevegeses AI funkcio
+- a hirekrol lehet kerdezni
+- a valaszok lehetnek szovegesek es felolvasottak
+- tartalmazza a Felolvaso elerest is
+
+Fontos:
+- a Felolvaso es Asszisztens ugyanazt a hirfolyam adatbazist hasznalja
+- ha a hirfolyam frissul, a Felolvaso es az Asszisztens is az aktualis
+  hirekre epuljon
+
+
+10. ADATMEGORZES ES FI0KHOZ KOTES
+
+Fiokhoz kotott adatok:
+- elofizetesi csomag
+- probaido felhasznalasa
+- probaido kezdete es vege
+- heti Asszisztens proba allapota
+- kedvelt hirek
+- olvasottsagi allapot
+- forrasok es temak
+- beallitasok
+
+Keszulekhez kotott / helyi adatok:
+- ideiglenes prototipus allapot
+- cache
+- UI elonezeti meret
+- fejlesztesi tesztallapot
+
+Vegleges appban:
+- az elofizetes, probaido es jogosultsag nem lehet csak keszulekhez kotott
+- a kliensoldali adat torlese nem adhat uj probat
+
+
+10.1. EGYIDEJU ESZKOZHASZNALAT KORLATOZASA
+
+Alapelv:
+- egy Hirbeszed fiok egyszerre csak egy aktiv eszkozon hasznalhatja az appot
+- ez az Ingyenes csomagra, az AI Felolvaso elofizetesre, az AI Asszisztens
+  elofizetesre, a probaidokra es minden appfunkciora vonatkozik
+- tobb eszkozre lehet telepiteni es be lehet jelentkezni, de aktiv hasznalat
+  egyszerre csak egy eszkozon engedett
+- a cel az AI-tokenek, a hangszolgaltatasok, az elofizetesi jogosultsag es a
+  fiok biztonsaganak vedelme
+
+Mukodes:
+- a vegleges app inditaskor es rendszeres idokozonkent backendtol kapja meg,
+  hogy ez az eszkoz-e az aktiv eszkoz
+- ha masik eszkoz aktiv, az app teljes kepernyos blokkolt nezetet jelenit meg
+- a blokkolt nezet szovege jelezze, hogy a Hirbeszed jelenleg masik eszkozon
+  aktiv
+- a fo muvelet: "Hasznalat atvetele ezen az eszkozon"
+- az atvetelhez a felhasznalo kifejezett jovahagyasa kell
+- jovahagyas utan a backend ezt az eszkozt teszi aktivva, es a korabbi aktiv
+  eszkozt levalasztja
+- a korabbi eszkozon meg kell jelenni annak, hogy "A hasznalat atkerult egy
+  masik eszkozre"
+- ha a felhasznalo visszamegy a korabbi eszkozre, ugyanilyen atveteli
+  folyamat indul
+
+Backend mezok / fogalmak:
+- userId
+- deviceId
+- deviceName
+- activeDeviceId
+- activeDeviceName
+- activeDeviceLastSeenAt
+- activeSessionId
+- activeSessionIssuedAt
+- activeSessionExpiresAt
+- sessionHeartbeatAt
+- sessionTakeoverRequestedAt
+- sessionTakeoverApprovedAt
+
+Javasolt szabaly:
+- az app rovid eletu aktiv munkamenetet kap a backendtol
+- az aktiv eszkoz idonkent heartbeat jelzest kuld
+- ha nincs heartbeat, a backend turelmi ido utan felszabadithatja az aktiv
+  eszkozt
+- ha masik eszkoz atveszi a hasznalatot, a regi eszkoz kovetkezo heartbeat
+  vagy jogosultsagellenorzes utan levalasztott allapotba kerul
+- ha nincs internet, a fizetos es AI-funkciok ne indithassanak uj hosszabb
+  munkamenetet ellenorzes nelkul
+
+Prototipus:
+- a Prototipus / Fejlesztesi beallitasok oldalon legyen
+  "Egyideju eszkozhasznalat szimulacio"
+- tesztallapotok:
+  - Normal allapot
+  - Masik eszkoz aktiv
+  - Ez az eszkoz levalasztva
+- a szimulacio celja, hogy a blokkolt uzenet, az atveteli kerdes es a
+  visszaveteli folyamat vizualisan tesztelheto legyen backend nelkul
+
+
+11. PROTOTIPUS ES VEGLEGES APP KOZTI KULONBSEG
+
+Jelenlegi prototipus:
+- localStorage alapu fejlesztesi allapotot hasznal
+- a probaido fejlesztesi celbol ujraindithato lehet
+- az elofizetesek nem valodi fizetesi rendszeren mennek at
+- az Asszisztens nem valodi AI API-t hiv, hanem prototipus valaszmotorral
+  dolgozik
+
+Vegleges app:
+- backend dont a jogosultsagrol
+- Apple / Google elofizeteskezeles kapcsolodik
+- probaido egyszer indithato
+- vasarlas-visszaallitas szerveroldali ellenorzest indit
+- az app csak a szervertol kapott jogosultsagi allapotot jeleniti meg
+
+
+12. VASARLAS-VISSZAALLITAS
+
+A vasarlas-visszaallitas celja:
+- masik keszuleken vett elofizetes visszakapcsolasa
+- aruhazi elofizetes szinkronizalasa a Hirbeszed-fiokkal
+
+Nem lehet celja:
+- uj probaido inditasa
+- lejart proba nullazasa
+- korabbi probaido torlese
+
+Vasarlas-visszaallitasnal a backend:
+- ellenorzi az Apple / Google tranzakciot
+- frissiti a subscriptionPlan es subscriptionStatus mezoket
+- nem torli a readerTrialUsed mezot
+
+
+13. FIZETESI HIBA
+
+Ha a fizetes sikertelen:
+- a Hirfolyam tovabbra is elerheto
+- AI Felolvaso es AI Asszisztens zarolhato
+- a felhasznalo fizetesrendezesi ajanlot kap
+- az app indulaskor Hirfolyamra lephet
+
+Ha a fizetes kesobb rendezodik:
+- a backend visszaallitja az aktiv csomagot
+- az app kovetkezo inditaskor a csomag szerinti oldalra lep:
+  - AI Felolvaso: Felolvaso
+  - AI Asszisztens: Asszisztens
+
+
+14. LEMONDAS
+
+Ha a felhasznalo lemondja az elofizetest:
+- az elofizetes a kifizetett idoszak vegeig meg aktiv maradhat
+- az idoszak vege utan az app Ingyenes csomagra valt
+- kedvelesek, beallitasok, forrasok, temak es olvasottsag megmaradnak
+- probaido nem indul ujra
+
+
+15. APPON BELULI SZOVEGEZESI IRANY
+
+Ingyenes csomag:
+- "Ingyenes hirfolyam"
+- "AI Felolvaso proba 14 napig kiprobalhato"
+
+AI Felolvaso elofizetes:
+- "AI-hangos felolvasas"
+- "Automatikus hirleptetes"
+- "Hangutasitasok"
+
+AI Asszisztens elofizetes:
+- "Teljes csevegeses AI hirasszisztens"
+- "Kerdesek, osszefoglalok es magyarazatok a hirekrol"
+
+Probaido:
+- "14 napos AI Felolvaso proba"
+- ne legyen olyan megfogalmazas, amely tobb probaidot iger
+
+Lejart proba:
+- "A hirfolyam tovabbra is ingyenes"
+- "Az AI funkciok elofizetessel folytathatok"
+
+Promohirek:
+- "AI Felolvaso elofizetes"
+- "AI Asszisztens elofizetes"
+- "AI Asszisztens 5 kerdeses proba"
+- "Hirbeszed ajanlo"
+- "Kiprobalom a Felolvasot"
+- "Kiprobalom az Asszisztenst"
+- "Kiprobalom 5 kerdes erejeig"
+
+Promo modok:
+- "Csomagok es elofizetes"
+- "Aktivald a Felolvaso funkciot"
+- "Aktivald az Asszisztens funkciot"
+- "Ehhez nincs aktiv AI Asszisztens elofizetesed. Szeretned tudni, mit ad ez a csomag es hogyan lehet kiprobalni?"
+- a Felolvaso promo modban a szoveg ne igerjen teljes hozzaferest
+- az Asszisztens promo modban a valaszok csak az elofizetesi temakra terjenek ki
+
+
+16. NYITOTT KERDESEK A VEGLEGES APPHOZ
+
+Ezeket a kesobbi backend / fizetesi tervezesnel kell veglegesiteni:
+
+- Apple es Google kezeli-e teljesen a 14 napos probat, vagy a backend?
+- Lesz-e webes elofizetes, vagy csak app store / play store?
+- Pontosan hogyan tortenik a fiokosszevonas email, telefon, Apple, Google,
+  Facebook bejelentkezes kozott?
+- Lehet-e csaladi / tobbkeszulekes csomag?
+- Kell-e kulon diak / kedvezmenyes csomag?
+- Mi legyen a pontos turelmi ido sikertelen fizetes eseten?
+- A heti 5 kerdeses Asszisztens proba mikor nullazodjon: naptari het elejen,
+  vagy az elso felajanlastol szamitott 7 nap utan?
+
+
+17. ROVID OSSZEFOGLALO
+
+A Hirbeszed uzleti modellje:
+
+- Ingyenes csomag: ingyenes hirfolyam
+- AI Felolvaso: 1490 Ft / ho; a 14 napos egyszeri proba az Ingyenes
+  csomaghoz kapcsolt ajanlatkent jelenik meg
+- AI Asszisztens: 3490 Ft / ho, teljes csevegeses AI funkcioval
+
+A probaido csak egyszer jarhat egy felhasznalonak.
+A jogosultsagot vegleges appban mindig backend / aruhazi elofizeteskezeles
+donti el.
+A kliensoldali torles vagy ujratelepites nem adhat uj probat.
+
+Promohirek:
+- harom belso, hirszeru promohir van:
+  - AI Felolvaso promohir
+  - AI Asszisztens elofizetesi promohir
+  - AI Asszisztens 5 kerdeses proba promohir
+- a promohirek a Hirfolyamban normal hirkartyakent jelennek meg
+- elteres: coral keret es mindig lathato kiprobalas gomb
+- a promohirek nem jelolhetok veglegesen olvasottkent eltuntetendo reklamkent,
+  mert termekbemutato tartalmak
+- prototipusban, ha a Prototipus / Hirfolyam promo eloresorolas kapcsolo
+  aktiv, a jogosultsag szerinti promohirek a hirfolyam elejere kerulnek
+- ingyenes/lejart allapotban:
+  - 2. hely: AI Felolvaso promohir
+  - 4. hely: AI Asszisztens elofizetesi promohir
+- AI Felolvaso elofizetonel:
+  - 2. hely: AI Asszisztens elofizetesi promohir
+  - 4. hely: AI Asszisztens 5 kerdeses proba promohir, ha az adott heten
+    meg elerheto
+- AI Asszisztens elofizetonel nincs elofizetesi promo eloresorolas
+- a megjelenes alapritmusa ingyenes/lejart allapotban kb. 20 normal hir
+  utan tortenjen
+- ingyenes/lejart allapotban legfeljebb napi 3 promomegjelenes legyen
+  osszesen
+- AI Felolvaso elofizetonel az AI Asszisztens elofizetesi promo ritkabb legyen:
+  kb. 30-40 hirenkent, alapbol napi 1 alkalommal
+- AI Felolvaso elofizetonel az AI Asszisztens 5 kerdeses proba promohir
+  kulon heti ajanlat, nem a 30-40 hirenkenti ciklus resze
+- kiprobalas utan ugyanaz a promohir nehany napig ne jelenjen meg ujra
+  agresszivan
+
+Promo modok:
+- AI Felolvaso promo mod:
+  - csak a ket elofizetesi promohirt olvassa
+  - a ket promohir felvaltva, vegtelenitve fut
+  - elozo, kovetkezo es automatikus hirlepteto mellett is csak ezek kozott valt
+  - a fejlec jobb oldali CTA gombja az ELOFIZETESI_GOMB_MATRIX.md szerinti
+    szoveggel az elofizetesi oldalra vezet
+- AI Asszisztens promo mod:
+  - csak az elofizetesekrol es csomagokrol beszelhet
+  - nem valaszolhat altalanos hirekre vagy mas temakra
+  - minden valasz vegen elofizetesi oldalra vezeto gombot ad
+  - a fejlec jobb oldali CTA gombja az ELOFIZETESI_GOMB_MATRIX.md szerinti
+    szoveggel az elofizetesi oldalra vezet
+
+Fejlec CTA matrix:
+- a Felolvaso es Asszisztens oldalak jobb felso marketing CTA gombjanak
+  feliratat az ELOFIZETESI_GOMB_MATRIX.md dokumentum rogzitse
+- a matrix sorai elofizetesi allapot szerint dontenek
+- fo szabaly: Alap/lejart allapotban Felolvaso oldalon a Felolvaso funkcio,
+  Asszisztens oldalon az Asszisztens funkcio aktivalasa a kovetkezo ajanlat
+- AI Felolvaso elofizetes vagy proba alatt a kovetkezo ajanlat az
+  Asszisztens funkcio aktivalasa
+- AI Asszisztens aktiv elofizetesnel nincs tovabbi marketing CTA gomb
+- sikertelen fizetesnel a CTA felirata: Elofizetesi hiba
+
+
+18. EGYSÉGES CSOMAGOK ES ELOFIZETES KOZPONT
+
+2026-07-01-tol a prototipusban egyetlen kozponti Csomagok es elofizetes oldal kezeli
+az osszes csomagvalasztasi, csomagvaltasi, probaidos es hibajavitasi
+folyamatot.
+
+Ide kell vezetnie:
+- a Beallitasok / Csomagok es elofizetes menupontnak
+- az elso inditas utani csomagvalasztasnak
+- a Felolvaso es Asszisztens jobb felso CTA gombjainak
+- a promo modok elofizetesi CTA gombjainak
+- a lejart proba utani aktivalasnak
+- a sikertelen fizetes javitasanak
+- a korabbi vasarlas visszaallitasanak
+
+A regi kulon "csomagvalasztas", "megerosites", "proba lejart" es
+teljes kepernyos subscription gate jellegu utak nem lehetnek onallo
+elofizetesi dontesi pontok. Ha ilyen regi gomb vagy link megmarad,
+akkor annak is a kozponti Csomagok es elofizetes oldalra kell vinnie.
+
+18.1. Allapotmegjelenites
+
+A Csomagok es elofizetes oldalon nincs kulon felso allapotblokk. Az
+aktualis csomag, a kovetkezo csomag, a kijeloles es a probaido allapota
+kozvetlenul a csomagkartyakon jelenjen meg.
+
+Megjelenitendo allapotok:
+- Ingyenes csomag
+- Ingyenes csomag AI Felolvaso probaidovel
+- Ingyenes csomag lejart / nem elerheto AI Felolvaso probaidovel
+- AI Felolvaso aktiv elofizetes
+- AI Asszisztens aktiv elofizetes
+- elofizetesi hiba / sikertelen fizetes
+- AI Asszisztens heti 5 kerdeses proba
+
+18.2. Csomagkartyak
+
+A Csomagok es elofizetes oldalon minden csomagkartyaban latszodjon:
+- melyik csomag aktiv
+- melyik csomag van kijelolve valtasra vagy kovetkezo idoszakra
+- ha a Felolvaso proba mar lejart, akkor ne indulhasson uj proba
+- ha fizetesi hiba van, akkor legyen kulon "Fizetesi hiba javitasa" akcio
+
+Az aktiv csomag, a kijelolt csomag es a kovetkezo csomag nem ugyanaz:
+- aktiv: amit a felhasznalo jelenleg hasznal
+- kijelolt: amit valasztott, de meg nem hagyott jova
+- kovetkezo: amit az aruhazban vagy prototipusban mar beallitott, de a
+  jelenlegi jogosultsagi idoszak vegeig meg nem lepett eletbe
+
+Megjelenitesi szabalyok:
+- az aktiv csomag teljes kartyaja coral feluletu
+- az aktiv csomag jobb felso allapotjelzoje: AKTIV
+- az aktiv csomag bal oldali kore ures, nem tartalmaz pontot
+- ha az aktiv csomagra kerul a kijeloles, akkor feher kontrasztkeretet es
+  feher korben coral pipat kap
+- a nem aktiv csomag jobb felso allapotjelzoje: NEM AKTIV
+- a kovetkezo csomag jobb felso allapotjelzoje: KOVETKEZO
+- a kijeloles onmagaban nem jelenik meg jobb felso allapotjelzokent,
+  csak kerettel es pipaval
+
+Feliratok:
+- aktiv Ingyenes csomag elso allapotsora:
+  "Jelenleg ezt hasznalod."
+- aktiv Ingyenes csomag masodik allapotsora, ha az AI Felolvaso proba
+  meg elerheto:
+  "Meg X nap az AI Felolvaso probaidobol."
+- aktiv Ingyenes csomag masodik allapotsora, ha az AI Felolvaso proba
+  mar nem erheto el:
+  "Az AI Felolvaso probaido mar nem elerheto."
+- nem aktiv Ingyenes csomagnal csak a probaidos sor jelenjen meg, a
+  "Jelenleg ezt hasznalod." sor nelkul
+- aktiv AI Asszisztens elofizetes:
+  "Jelenleg ezt hasznalod."
+- aktiv AI Felolvaso elofizetes:
+  "Jelenleg ezt hasznalod."
+- az AI Felolvaso elofizetes kartyajan nem jelenik meg probaidos
+  szamlalas vagy lejart probaidos jelzes
+- csomagvaltas idoszak vegevel:
+  az aktiv fizetos kartyaban "Az elofizetes fordulonapjaig ezt hasznalod.
+  Utana [kovetkezo csomag] indul.", a kovetkezo kartyaban pedig
+  "A jelenlegi idoszak utan ez indul."
+
+18.3. Jovahagyasi logika
+
+A modosito / elfogado gomb csak akkor jelenjen meg, ha:
+- a kijelolt csomag elter az aktualis aktiv vagy mar beallitott kovetkezo
+  csomagtol
+- a felhasznalo lejart probabol aktivalna AI csomagot
+- elofizetesi hibat kell javitani
+- elso inditaskor meg nem tortent meg a csomagvalasztas
+
+A prototipusban a jovahagyo gomb egységes felirata:
+- "Modositas jovahagyasa"
+
+Ez alol csak az elso inditasi/onboarding ingyenes tovabblepes lehet kivetel,
+ahol a felirat tovabbra is:
+- "Tovabb az ingyenes hirfolyamra"
+
+A prototipusban a jovahagyo gomb alapertelmezett mukodese:
+- ingyenes csomagrol fizetos csomagra valtva azonnal aktivalja a celcsomagot
+  vagy elinditja a jogosult probaidot
+- felfele torteno csomagvaltasnal, peldaul AI Felolvasorol
+  AI Asszisztensre, a celcsomag azonnal aktiv lesz
+- felfele torteno valtasnal az uj elofizetesi idoszak a valtas idopontjatol
+  indul, es innentol ez lesz az uj fordulonap
+- lefele torteno csomagvaltasnal, peldaul AI Asszisztensrol AI Felolvasora
+  vagy fizetos csomagrol Ingyenes csomagra, "kovetkezo csomagot" allit be,
+  mikozben az aktualis csomag a jogosultsagi idoszak vegeig aktiv marad
+- az aktiv csomagra visszakattintva torolheti a beallitott kovetkezo csomagot
+- a modositas jovahagyasa utan az app ne lepjen ki a Csomagok es
+  elofizetes oldalbol; a lap maradjon nyitva, es az uj elofizetesi /
+  csomagallapotot rajzolja ujra
+- csomagvaltas vagy proba aktivalasa utan ne induljon el automatikusan
+  sem a Felolvaso, sem az Asszisztens hangfolyamata; az elofizeteshez
+  tartozo alapfunkcio csak appinditaskor vagy tenyleges menunavigaciokor
+  aktivizalodjon
+
+18.3.1. Prototipus felulbiralas
+
+A Beallitasok / Prototipus oldalon szerepeljen egy fejlesztoi kapcsolo:
+"Elofizetesvaltas felulbiralasa es azonnali csomagvaltas aktivalasa".
+
+Ha a kapcsolo kikapcsolt:
+- a Csomagok es elofizetes oldal az eles mukodest szimulalja
+- felfele torteno csomagvaltas azonnal eletbe lep
+- felfele torteno valtasnal az uj elofizetesi idoszak a valtas
+  idopontjatol indul
+- csak lefele torteno csomagvaltasnal kerul a celcsomag KOVETKEZO
+  allapotba
+- lefele valtasnal az aktiv csomag az elofizetes fordulonapjaig aktiv marad
+
+Ha a kapcsolo bekapcsolt:
+- a "Modositas jovahagyasa" gomb azonnal aktivra allitja a kijelolt
+  csomagot
+- nem allit be KOVETKEZO csomagot
+- a kapcsolo csak helyi prototipus-tesztelesre valo, a vegleges appban
+  nem felhasznaloi beallitas
+
+Alapertelmezett prototipus-allapot:
+- friss prototipus-allapotban a kapcsolo bekapcsolt
+- Prototipusadatok torlese / teljes reset utan is bekapcsolt allapotba all
+- ha egy meglevo helyi tarolt allapotban a felhasznalo kezzel kikapcsolta,
+  akkor azt a prototipus tiszteletben tartja a kovetkezo resetig vagy
+  kezi visszakapcsolasig
+
+18.3.2. Prototipus fejlesztesi beallitasok
+
+A Beallitasok fomenuben a "Promociok" menupont ne szerepeljen kulon
+felhasznaloi beallitaskent. A hirdetesi / promohir teszteleshez tartozo
+"Hirfolyam promo eloresorolas" kapcsolo a Beallitasok / Prototipus oldalon
+legyen elerheto.
+
+Az "AI Felolvaso probaido az Ingyenes csomagban" kapcsolo szinten a
+Beallitasok / Prototipus oldalon legyen elerheto:
+- bekapcsolva az Ingyenes csomag kartyaja a probaidos valtozatot mutatja
+- kikapcsolva az Ingyenes csomag kartyaja a lejart / nem elerheto
+  probaidos valtozatot mutatja
+- reset utan alapertelmezetten bekapcsolt allapotba all
+- az AI Felolvaso elofizetes kartyaja ettol fuggetlenul nem jelenit meg
+  probaidos szamlalast
+
+A "Hatralévo AI Felolvaso probanapok" mezoben a prototipusban 1 es 14
+kozotti szam adhato meg:
+- ez szimulalja, hogy az Ingyenes csomaghoz kapcsolt AI Felolvaso
+  probaidobol mennyi nap van hatra
+- reset utan alapertelmezetten 14 nap legyen
+- a mezoben megadott szam jelenjen meg az Ingyenes csomag kartyajan
+- a probaido statusza ne a rovid leiras mezoben jelenjen meg, hanem
+  kulon allapotsorkent es / vagy a funkciolistaban
+- ha az Ingyenes csomag aktiv, az allapotresz elso sora:
+  "Jelenleg ezt hasznalod."
+- aktiv Ingyenes csomagnal a masodik allapotsor:
+  "Meg X nap az AI Felolvaso probaidobol."
+- ha az Ingyenes csomag nem aktiv, az allapotreszben csak a probaidos
+  sor jelenjen meg, "Jelenleg ezt hasznalod." nelkul
+- a vegleges appban ezt nem kezi mezobol kell szamolni, hanem a backend /
+  aruhazi jogosultsag trialStartDate / trialEndDate adataibol
+
+A Prototipus menu alcime:
+- "Fejlesztesi beallitasok"
+
+Ezen az oldalon a helyi prototipus mukodeset erinto fejlesztoi kapcsolok
+szerepelnek:
+- elofizetesvaltas felulbiralasa es azonnali csomagvaltas aktivalasa
+- hirfolyam promo eloresorolas
+- prototipusadatok torlese
+
+Az "elofizetesvaltas felulbiralasa es azonnali csomagvaltas aktivalasa"
+kapcsolo alapertelmezetten bekapcsolt, hogy a prototipus reset utan is
+gyorsan tesztelheto legyen azonnali csomagvaltassal.
+
+A vegleges appban ugyanez a gomb inditja majd az Apple App Store vagy
+Google Play elofizetesi / csomagvaltasi / fizetesi folyamatat.
+
+18.4. Belépési kontextus
+
+Ha a felhasznalo CTA gombbol erkezik a Csomagok es elofizetes oldalra, akkor a CTA
+altal ajanlott csomag legyen automatikusan kijelolve:
+- Felolvaso ajanlat -> AI Felolvaso elofizetes
+- Asszisztens ajanlat -> AI Asszisztens elofizetes
+- Elofizetesi hiba -> az erintett hibas csomag
+
+Ha a felhasznalo menubol erkezik, akkor mindig az aktualis aktiv csomag
+legyen kijelolve:
+- Ingyenes csomag -> Ingyenes csomag
+- AI Felolvaso proba vagy aktiv AI Felolvaso elofizetes -> AI Felolvaso
+  elofizetes
+- AI Asszisztens elofizetes -> AI Asszisztens elofizetes
+- ha mar van beallitott KOVETKEZO csomag, akkor az legyen kijelolve,
+  mert ilyenkor a felhasznalo a korabban megadott kovetkezo allapotot latja
+  es tudja modositani vagy torolni
+
+18.5. Vasarlas visszaallitasa
+
+A "Vasarlas visszaallitasa" nem fo csomagvaltas. Ez kisegito muvelet:
+akkor kell, ha a felhasznalo mar vasarolt, de az app nem latja az aktiv
+jogosultsagat. A vegleges appban ez az aruhazi vasarlasok es a backend
+jogosultsag szinkronjat inditja.
+
+A prototipusban ez szimulalt visszaallitas, es nem valodi aruhazi muvelet.
+
+18.6. Fizetesi hiba
+
+Sikertelen fizetesnel az app tovabbra is engedje az ingyenes Hirfolyamot,
+de az AI funkciokhoz a Csomagok es elofizetes oldalon legyen egy egyertelmu
+"Fizetesi hiba javitasa" gomb. A vegleges appban ez az aruhazi fizetesi
+beallitasokhoz vagy elofizeteskezeléshez vezet.
