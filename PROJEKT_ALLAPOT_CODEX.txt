@@ -21,6 +21,11 @@ Verzioemeles es publikalasi teszt:
 - A service worker cache es a script/css query verziok uj jelolese:
   2.004-publish-test-v244.
 - A cel a publikalas.cmd uj GitHub publikalasi folyamat eles probaja.
+- A publikalas.cmd eles futasa sikeres volt.
+- GitHub commit: 16f8a8ceb92d3a80fa2751f1fb4ddef0cce7d3d2.
+- GitHub Actions: https://github.com/muliksandor-arch/hirbeszed/actions/runs/28652482876.
+- Elo GitHub Pages ellenorzes: app-version 2.004, 12/12 asset
+  2.004-publish-test-v244, konzolhiba nelkul.
 
 
 LEGUTOBBI ALLAPOT - 2026-07-03, 2.003 GITHUB PUBLIKALO SCRIPT ES SZABALYZAT
