@@ -1,6 +1,6 @@
 # Hírbeszéd - kattintható prototípus
 
-Aktuális prototípusverzió: **2.003**.
+Aktuális prototípusverzió: **2.004**.
 
 Ez a projekt gyökerében található mobilos PWA-prototípus. A jelenlegi rögzített irány: az ingyenes **Hírfolyam**, az AI-hangos **Felolvasó** és a csevegéses **Asszisztens** csomagfüggően nyílik meg.
 
@@ -43,6 +43,9 @@ Ha a böngésző régi változatot mutat, használj új `cachebust` értéket, v
 - `sw.js`: PWA cache és service worker.
 - `ELOFIZETESI_SZABALYZAT.txt`: előfizetési, próbaidős és promóciós szabályzat.
 - `ELOFIZETESI_GOMB_MATRIX.md`: Felolvasó és Asszisztens jobb felső CTA gombjainak előfizetési állapot szerinti döntési táblája.
+- `publikalas.cmd`: kanonikus Windows indító a GitHub publikáláshoz.
+- `publikalas.ps1`: a tényleges GitHub publikáló script.
+- `GITHUB_PUBLIKALASI_SZABALYOK.txt`: GitHub Pages publikáció és hibakezelés rögzített szabályai.
 
 ## Rögzített működés
 
@@ -83,6 +86,31 @@ A prototípus app-szintű felületi sablonja a `styles.css` elején lévő `--hb
 - A sablon az onboarding, Felolvasó, Hírfolyam, Asszisztens, Beállítások, sheet/panel és előfizetési felületekre is rá van húzva.
 
 ## GitHub Pages
+
+A GitHub publikáció kanonikus módja:
+
+```powershell
+.\publikalas.cmd
+```
+
+Száraz próba commit/push nélkül:
+
+```powershell
+.\publikalas.cmd -DryRun
+```
+
+Ha csak új, tiszta Pages futást kell indítani változatlan fájlokkal:
+
+```powershell
+.\publikalas.cmd -RetryDeployment
+```
+
+Sikertelen Pages deploy után nem szabad a GitHub felületen a `Re-run failed jobs`
+gombot használni. A részletes szabályzat:
+
+```text
+GITHUB_PUBLIKALASI_SZABALYOK.txt
+```
 
 A kattintható prototípus belépési pontja a gyökérben lévő `index.html`. Feltöltéskor ezek a fő fájlok kellenek:
 

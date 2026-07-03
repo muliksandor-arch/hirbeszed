@@ -12,6 +12,36 @@ kontextus nem érhető el teljesen.
 Olvasd el a PROJEKT_ALLAPOT_CODEX.txt fájlt, innen folytatjuk a Hírbeszéd projektet.
 
 
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 GITHUB PUBLIKALASI PROBA
+
+Verzioemeles es publikalasi teszt:
+- A prototipus verzioja 2.004-re emelve.
+- index.html app-version, manifest.webmanifest, PROTOTYPE.md,
+  docs/prototipus-mukodes.md es docs/termek-specifikacio.md frissitve.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-publish-test-v244.
+- A cel a publikalas.cmd uj GitHub publikalasi folyamat eles probaja.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.003 GITHUB PUBLIKALO SCRIPT ES SZABALYZAT
+
+Publikalasi automatizalas:
+- Letrejott a gyokerben a publikalas.ps1 script.
+- Letrejott a publikalas.cmd indito, mert Windows alatt a PowerShell
+  execution policy tilthatja a ps1 kozvetlen futtatasat.
+- Letrejott a GITHUB_PUBLIKALASI_SZABALYOK.txt szabalyzat.
+- A GitHub publikacio kanonikus modja innentol a publikalas.cmd futtatasa.
+- A script ujraepiti/frissiti a .publish\hirbeszed-full-repo munkamappat,
+  beallitja a szerzot, commitol, pushol, megvarja a GitHub Actions futast,
+  majd ellenorzi az elo GitHub Pages oldalon az app-version es asset marker
+  ertekeit.
+- Sikertelen Pages deploy utan nem szabad a GitHub feluleten a
+  "Re-run failed jobs" gombot hasznalni; valtozatlan fajlok melletti uj
+  tiszta futashoz a publikalas.cmd -RetryDeployment parancs hasznalando.
+- A GitHub Pages workflow _site mappaba masolja a publikus statikus csomagot,
+  es most mar a GITHUB_PUBLIKALASI_SZABALYOK.txt fajlt is beemeli.
+
+
 LEGUTOBBI ALLAPOT - 2026-07-03, 2.003 GITHUB PAGES PUBLIKALAS
 
 Publikalasi rend:

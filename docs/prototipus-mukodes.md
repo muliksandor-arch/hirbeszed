@@ -1,6 +1,6 @@
 # Hírbeszéd prototípus - rögzített működés
 
-Aktuális prototípusverzió: **2.003**.
+Aktuális prototípusverzió: **2.004**.
 
 Ez a dokumentum a jelenlegi, elfogadott prototípus-működést rögzíti. A cél, hogy a további fejlesztések ne egymásra rakott javítások legyenek, hanem ehhez a stabil működési alaphoz igazodjanak.
 
@@ -328,7 +328,34 @@ Ezek még tudatos prototípus-korlátok:
 - Android Auto és CarPlay csak előnézeti irány, nem natív integráció;
 - az Asszisztens még nem valódi AI háttérrel dolgozik.
 
-## 14. Következő fejlesztési fókuszok
+## 14. GitHub publikálás
+
+A GitHub publikáció rögzített módja a projekt gyökerében lévő:
+
+```powershell
+.\publikalas.cmd
+```
+
+A script újraépíti vagy frissíti a `.publish\hirbeszed-full-repo`
+munkamappát, beállítja a Git szerzőt, commitol, pushol, megvárja a GitHub
+Actions futást, majd ellenőrzi az élő GitHub Pages oldalon az app-verziót és
+az asset verziójelölést.
+
+Sikertelen GitHub Pages deploy után nem szabad a GitHub felületen a
+`Re-run failed jobs` gombot használni. Változatlan fájlok melletti új, tiszta
+Pages futáshoz:
+
+```powershell
+.\publikalas.cmd -RetryDeployment
+```
+
+A részletes publikálási szabályzat:
+
+```text
+GITHUB_PUBLIKALASI_SZABALYOK.txt
+```
+
+## 15. Következő fejlesztési fókuszok
 
 A prototípus jelenlegi állapota után a legfontosabb irányok:
 

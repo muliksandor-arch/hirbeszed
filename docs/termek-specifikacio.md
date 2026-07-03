@@ -1,6 +1,6 @@
 # Hírbeszéd – termék- és működési specifikáció
 
-**Verzió:** 2.003  
+**Verzió:** 2.004  
 **Állapot:** tervezési alap, fejlesztés előtti egyeztetésre  
 **Elsődleges nyelv:** magyar  
 **Célplatformok:** iPhone, Android, Apple CarPlay, Android Auto

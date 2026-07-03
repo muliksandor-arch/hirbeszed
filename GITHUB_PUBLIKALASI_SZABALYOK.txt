@@ -1,0 +1,119 @@
+HIRBESZED GITHUB PUBLIKALASI SZABALYOK
+Verzio: 1.0
+Datum: 2026-07-03
+
+Cel
+---
+Ez a dokumentum rogzitett szabalykent irja le, hogyan kell a Hirbeszed
+prototipust GitHubra es GitHub Pagesre publikalni ugy, hogy ne ismetlodjon
+meg a korabbi Pages artifact es deploy hiba.
+
+Kanonius publikalo parancs
+--------------------------
+A projekt gyokeremappajabol Windows alatt ezt kell hasznalni:
+
+  .\publikalas.cmd
+
+Ez a publikalas.ps1 scriptet inditja ugy, hogy a Windows PowerShell helyi
+scriptfuttatasi tiltasa ne akassza meg a folyamatot.
+
+Ha csak ellenorizni akarjuk, mit csinalna a script, de nem akarunk commitot
+vagy push-t:
+
+  .\publikalas.cmd -DryRun
+
+Ha a fajlok nem valtoztak, de egy uj tiszta GitHub Pages futast akarunk
+inditani:
+
+  .\publikalas.cmd -RetryDeployment
+
+Mit csinal a script?
+--------------------
+1. Kiolvassa az aktualis app-verziot az index.html fajlbol.
+2. Kiolvassa az aktualis asset verziot az index.html fajlbol.
+3. Ujraepiti vagy frissiti a .publish\hirbeszed-full-repo munkamappat.
+4. A .publish mappaba csak az aktualis projektfajlokat masolja.
+5. Kihagyja a nem publikalando ideiglenes mappakat:
+   - .publish
+   - .preview
+   - .agents
+   - .git
+   - tmp-screenshots
+6. Beallitja a Git szerzot:
+   - nev: muliksandor-arch
+   - email: muliksandor@keepbiz.com
+7. Commitot keszit.
+8. Feltolja a main agra.
+9. Megvarja a GitHub Actions / GitHub Pages futast.
+10. Ellenorzi az elo GitHub Pages oldalon:
+    - app-version egyezik-e
+    - asset marker egyezik-e
+
+Fontos tiltas
+-------------
+Sikertelen GitHub Pages deploy utan nem szabad a GitHub feluleten a
+"Re-run failed jobs" gombot hasznalni.
+
+Ennek oka:
+- ugyanabban a workflow-runban uj artifact keletkezhet,
+- a deploy-pages lepes tobb "github-pages" artifactot talalhat,
+- ekkor a deploy hibat adhat akkor is, ha a projektfajlok jok.
+
+Helyes hibakezeles
+------------------
+Ha a Pages deploy elakad vagy hibazik:
+
+1. Ne a GitHub feluleten futtasd ujra ugyanazt a jobot.
+2. Hasznald ezt:
+
+   .\publikalas.cmd -RetryDeployment
+
+3. Ez uj commitot keszit, ezert teljesen uj GitHub Actions workflow-run indul.
+4. Az uj run nem orokli a korabbi hibas artifact allapotot.
+
+Repo es Pages kozotti kulonbseg
+-------------------------------
+A GitHub repo teljes projektmentes.
+Tartalmazhat dokumentaciot, szabalyzatot, kepeket, workflow-t es fejlesztesi
+fajlokat.
+
+A GitHub Pages publikus oldal viszont nem a repo gyokeret publikalja
+kozvetlenul, hanem a workflow altal letrehozott tiszta _site mappat.
+
+Ez a workflow-ban igy van rogzitve:
+
+  Prepare static site
+  Upload static prototype -> path: _site
+
+Ez azert fontos, mert igy:
+- a repo teljes biztonsagi mentes marad,
+- a publikus weboldal tiszta statikus appcsomagbol epul,
+- kisebb az eselye annak, hogy fejlesztesi vagy ideiglenes fajl kerul az
+  elo oldalra.
+
+Sikeres publikalas feltetelei
+-----------------------------
+Egy GitHub publikacio csak akkor tekintheto sikeresnek, ha:
+
+1. A push sikeres volt.
+2. A GitHub Actions futas sikeres volt.
+3. Az elo oldal megnyilik:
+
+   https://muliksandor-arch.github.io/hirbeszed/
+
+4. Az elo oldal app-version erteke az aktualis verzio.
+5. Az elo oldal asset verziok az aktualis asset markert hasznaljak.
+6. Nincs nyilvanvalo betoltesi vagy konzolhiba.
+
+Codex feladatmegosztas
+----------------------
+Ha a felhasznalo azt mondja: "publikald GitHubra", akkor Codex ezt a
+szabalyzatot es a publikalas.cmd inditot hasznalja.
+
+Ha a script sikeresen lefut, Codex megnyitja a GitHub Pages linket a
+beepitett bongeszoben egy friss cachebust URL-lel, es ott is ellenorzi a
+verziot.
+
+Ha a script hibat jelez, Codex nem nyomja meg kezzel a GitHub "Re-run failed
+jobs" gombjat, hanem a hiba oka szerint javit, vagy -RetryDeployment futast
+indit.

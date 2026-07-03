@@ -37,7 +37,7 @@ jobs:
           cp -R docs _site/docs
           cp .nojekyll index.html styles.css app.js sw.js manifest.webmanifest news.json topics.json assistant-prompts.json _site/
           cp prototype-*.js prototype-*.css _site/
-          cp PROTOTYPE.md PROJEKT_ALLAPOT_CODEX.txt ELOFIZETESI_SZABALYZAT.txt ELOFIZETESI_GOMB_MATRIX.md _site/
+          cp PROTOTYPE.md PROJEKT_ALLAPOT_CODEX.txt ELOFIZETESI_SZABALYZAT.txt ELOFIZETESI_GOMB_MATRIX.md GITHUB_PUBLIKALASI_SZABALYOK.txt publikalas.ps1 publikalas.cmd _site/
 
       - name: Upload static prototype
         uses: actions/upload-pages-artifact@v5
