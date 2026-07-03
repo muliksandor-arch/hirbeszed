@@ -12,6 +12,20 @@ kontextus nem érhető el teljesen.
 Olvasd el a PROJEKT_ALLAPOT_CODEX.txt fájlt, innen folytatjuk a Hírbeszéd projektet.
 
 
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.003 GITHUB PAGES PUBLIKALAS
+
+Publikalasi rend:
+- A GitHub repo teljes projektmentes marad, a prototipus mappaban levo
+  aktualis fajlokkal es dokumentumokkal.
+- A GitHub Pages workflow a publikus oldalhoz kulon _site mappat keszit,
+  es ezt tolti fel Pages artifactkent.
+- Ez azert van, hogy a repo tartalmazhassa a dokumentaciot es fejlesztesi
+  fajlokat, de a publikus GitHub Pages deploy tiszta statikus webcsomagbol
+  tortenjen.
+- A .publish mappa tovabbra is csak helyi publikalasi munkamappa, a NAS
+  mentesben megtarthato, de nem az alkalmazas futasi forrasa.
+
+
 LEGUTOBBI ALLAPOT - 2026-07-03, 2.003 TISZTITO KIADAS ELOKESZITVE
 
 Elvegzett rendberakas:
