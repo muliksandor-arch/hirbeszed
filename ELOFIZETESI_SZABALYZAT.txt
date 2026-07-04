@@ -233,7 +233,6 @@ A vegleges rendszerben a kovetkezok nem indithatnak uj probat:
 - masik keszulek hasznalata
 - kijelentkezes es ujboli belepes
 - ugyanazzal az emaillel uj regisztracio
-- ugyanazzal a telefonszammal uj regisztracio
 - Apple / Google / Facebook fiok ujracsatolasa
 - vasarlas-visszaallitas
 - fiokok osszevonasa
@@ -287,6 +286,11 @@ Megjegyzes a lemondasrol:
 - lefele valtas vagy lemondas eseten a scheduledPlan jeloli a kovetkezo csomagot
 - az aktiv fizetos idoszak vegeig a jelenlegi elofizetes marad ervenyben
 - a fordulonapon a scheduledPlan szerinti csomag lep eletbe
+- fioktorles eseten az App Store / Google Play elofizetest kulon kell kezelni:
+  a fiok torlese onmagaban nem jelenti biztosan az aruhazi elofizetes
+  lemondasat vagy a szamlazas megszuneset
+- aktiv fizetos vagy proba elofizetesnel a felhasznalot fioktorles elott
+  kulon figyelmeztetni kell az aruhazi lemondasra
 
 
 6. CSOMAGVALTAS ES LEMONDAS
@@ -899,7 +903,7 @@ Ezeket a kesobbi backend / fizetesi tervezesnel kell veglegesiteni:
 
 - Apple es Google kezeli-e teljesen a 14 napos probat, vagy a backend?
 - Lesz-e webes elofizetes, vagy csak app store / play store?
-- Pontosan hogyan tortenik a fiokosszevonas email, telefon, Apple, Google,
+- Pontosan hogyan tortenik a fiokosszevonas email, Apple, Google es
   Facebook bejelentkezes kozott?
 - Lehet-e csaladi / tobbkeszulekes csomag?
 - Kell-e kulon diak / kedvezmenyes csomag?

@@ -58,7 +58,7 @@
         padding:14px;margin:0 0 13px;color:var(--muted,#A8B7B6);line-height:1.45;font-size:.9rem;
       }
       .onboarding-source-intro strong{display:block;color:var(--text,#F4F8F7);font-size:1rem;margin-bottom:4px}
-      .onboarding-source-actions{position:sticky;bottom:0;display:grid;gap:9px;margin-top:13px;padding-top:12px;background:linear-gradient(180deg,transparent,var(--surface,#10262C) 22%)}
+      .onboarding-source-actions{position:sticky;bottom:0;display:grid;gap:9px;margin-top:13px;padding-top:0!important;padding-bottom:0!important;background:transparent}
     `;
     document.head.appendChild(style);
   }
@@ -99,6 +99,21 @@
     if(el){el.textContent=message;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800);}
   }
 
+  function showPrivacyRequiredError(){
+    try{
+      if(typeof window.showAppMessage==='function'){
+        window.showAppMessage({
+          type:'error',
+          title:'Szabályzat elfogadása szükséges',
+          message:'A folytatáshoz előbb fogadd el az adatvédelmi tájékoztatót és a Hírbeszéd használati feltételeit.',
+          primaryText:'Rendben'
+        });
+        return;
+      }
+    }catch(_){}
+    notify('Az adatvédelmi tájékoztatót el kell fogadni');
+  }
+
   function packageHomeRoute(subscription){
     try{
       if(typeof subscriptionHomeRoute==='function')return subscriptionHomeRoute(subscription);
@@ -128,7 +143,7 @@
   function privacyAccepted(){
     const box=document.getElementById('privacyAccepted');
     if(box&&!box.checked){
-      notify('Az adatvédelmi tájékoztatót el kell fogadni');
+      showPrivacyRequiredError();
       box.closest('.privacy-check')?.classList.add('pulse');
       setTimeout(()=>box.closest('.privacy-check')?.classList.remove('pulse'),600);
       return false;
@@ -136,21 +151,46 @@
     return true;
   }
 
+  function isValidEmail(value){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(value||'').trim());
+  }
+
+  function setFieldError(input,message){
+    if(!input)return;
+    const errorId=input.getAttribute('aria-describedby');
+    const error=errorId?document.getElementById(errorId):null;
+    input.classList.add('field-invalid');
+    input.setAttribute('aria-invalid','true');
+    if(error){
+      error.textContent=message;
+      error.hidden=false;
+    }
+  }
+
+  function showOnboardingError(title,message){
+    try{
+      if(typeof window.showAppMessage==='function'){
+        window.showAppMessage({type:'error',title,message,primaryText:'Rendben'});
+        return;
+      }
+    }catch(_){}
+    notify(message);
+  }
+
   function setAuth(provider){
     const live=liveState();
     const current=live||storedState();
     const regName=document.getElementById('authRegName')?.value?.trim();
     const regEmail=document.getElementById('authRegEmail')?.value?.trim();
-    const regPhone=document.getElementById('authRegPhone')?.value?.trim();
     const loginId=document.getElementById('authLoginId')?.value?.trim();
     const auth={
       ...(current.auth||{}),
       loggedIn:true,
       name:regName||current.auth?.name||'Hírbeszéd felhasználó',
-      email:regEmail||(loginId&&loginId.includes('@')?loginId:current.auth?.email)||'',
-      phone:regPhone||(loginId&&!loginId.includes('@')?loginId:current.auth?.phone)||'',
+      email:regEmail||loginId||current.auth?.email||'',
+      phone:'',
       provider,
-      twoFactor:provider==='Email / telefon'
+      twoFactor:provider==='Email'
     };
     const onboarding={...(current.onboarding||{}),required:true,introSeen:true,authDone:true,privacyAccepted:true};
     persist({auth,onboarding});
@@ -159,19 +199,17 @@
   function twoFactorSheet(){
     ensureOnboardingStyle();
     if(typeof openSheet!=='function')return;
-    openSheet('Kétlépcsős azonosítás','Regisztráció megerősítése',`
-      <section class="auth-screen">
+    openSheet('E-mail cím megerősítése','Regisztráció megerősítése',`
+      <section class="auth-screen code-confirm-screen">
         <div class="auth-hero">
-          <span class="auth-badge">✦</span>
-          <div class="auth-kicker">BIZTONSÁGI KÓD</div>
-          <h1>Írd be a 6 jegyű kódot.</h1>
-          <p>A prototípusban bármilyen kód elfogadott. A végleges appban SMS-ben vagy emailben érkezne.</p>
+          <h1>E-mail cím megerősítése</h1>
+          <p>Írd be az e-mailben kapott 6 jegyű kódot.</p>
         </div>
         <div class="auth-form">
           <label for="authCode">Ellenőrző kód</label>
-          <input id="authCode" class="auth-code" inputmode="numeric" maxlength="6" placeholder="123456">
+          <input id="authCode" class="auth-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder="------">
         </div>
-        <button class="primary-button coral-button" data-auth-action="complete-2fa">Megerősítés</button>
+        <button class="primary-button coral-button code-confirm-button" data-auth-action="complete-2fa" hidden disabled>Megerősítés</button>
       </section>
     `);
   }
@@ -206,18 +244,17 @@
     ensureOnboardingStyle();
     setOnboardingLayout(true);
     const live=liveState()||storedState();
-    const count=sourceCount(live.sources);
     if(typeof openSheet!=='function')return;
-    openSheet('RSS-források beállítása','Mielőtt elindul a felolvasás',`
+    openSheet('RSS-források beállítása','Válaszd ki az RSS szolgáltatókat.',`
       <section class="onboarding-sources-screen">
         <div class="onboarding-source-intro">
           <strong>Válaszd ki, honnan olvassuk fel a híreket.</strong>
           Ezekből a forrásokból épül fel a hírfolyam és a Felolvasó első felolvasása. Legalább egy RSS-forrás maradjon bekapcsolva.
         </div>
-        <button class="primary-button" data-onboarding-add-source>＋ Új RSS-forrás</button>
         <div class="settings-group" style="margin-top:13px">${sourceRowsHtml()}</div>
+        <button class="primary-button" data-onboarding-add-source>＋ RSS-forrás hozzáadása</button>
         <div class="onboarding-source-actions">
-          <button class="primary-button coral-button" data-onboarding-sources-done>${count} forrás mentése és felolvasás indítása</button>
+          <button class="primary-button coral-button" data-onboarding-sources-done>Források mentése és tovább</button>
         </div>
       </section>
     `);
@@ -504,12 +541,13 @@
       event.preventDefault();
       event.stopImmediatePropagation();
       if(document.querySelector('.onboarding-source-add-screen'))showOnboardingSources();
-      else notify('Előbb válaszd ki az RSS-forrásokat');
+      else showPlans();
       return;
     }
 
     const authAction=event.target.closest('[data-auth-action]');
     if(authAction){
+      if(window.__hirbeszedAuthLoaded)return;
       const action=authAction.dataset.authAction;
       if(action==='social-apple'||action==='social-facebook'||action==='social-google'){
         event.preventDefault();
@@ -523,22 +561,34 @@
         event.preventDefault();
         event.stopImmediatePropagation();
         if(!privacyAccepted())return;
-        setAuth('Email / telefon');
+        setAuth('Email');
         showPlans();
         return;
       }
       if(action==='start-register'){
         event.preventDefault();
         event.stopImmediatePropagation();
+        const emailInput=document.getElementById('authRegEmail');
+        const emailValue=emailInput?.value?.trim()||'';
+        if(!isValidEmail(emailValue)){
+          setFieldError(emailInput,'Adj meg egy érvényes e-mail címet.');
+          showOnboardingError('Hibás e-mail cím','A regisztrációhoz érvényes e-mail címet kell megadni. Ellenőrizd a címet, majd próbáld újra.');
+          return;
+        }
         if(!privacyAccepted())return;
-        setAuth('Email / telefon');
+        setAuth('Email');
         twoFactorSheet();
         return;
       }
       if(action==='complete-2fa'){
         event.preventDefault();
         event.stopImmediatePropagation();
-        setAuth('Email / telefon');
+        const code=document.getElementById('authCode')?.value?.trim()||'';
+        if(code.length!==6){
+          notify('A 6 jegyű kódot kell megadni');
+          return;
+        }
+        setAuth('Email');
         showPlans();
       }
     }

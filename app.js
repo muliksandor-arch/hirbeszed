@@ -136,16 +136,35 @@ const defaultSubscription = {
   assistantTrialPromoClickedWeek:'',
   promoInterval:20
 };
+const defaultSettingsPrefs = {
+  personalized:true,
+  digestEnabled:true,
+  digestTime:'07:30',
+  quietEnabled:true,
+  quietPeriod:'22:00-07:00',
+  voiceName:'Magyar rendszerhang',
+  speechRate:'1.0',
+  imagesMobile:true,
+  profileName:'Anna',
+  profileEmail:'anna@pelda.hu',
+  linkedAccounts:{Apple:true,Google:true,Facebook:true},
+  twoFactor:true,
+  twoFactorMethod:'E-mail'
+};
+function createDefaultSettingsPrefs(){
+  return {...defaultSettingsPrefs,linkedAccounts:{...defaultSettingsPrefs.linkedAccounts}};
+}
 function createInitialPrototypeState(){
   return {
   route:'feed', sort:'latest', category:'fresh', theme:'system', mic:true, autoNext:true,
   playing:false, paused:false, detailedRead:false, carIndex:0, assistantMode:'voice', read:[], saved:[], history:[], assistantChat:[], assistantPromoChat:[],
-  showReadInFeed:true, promoFeedPriority:true, prototypeImmediateSubscriptionChange:true, prototypeReaderTrialAvailable:true, prototypeReaderTrialDaysLeft:READER_TRIAL_DEFAULT_DAYS, readerPromoMode:false, assistantPromoMode:false,
+  showReadInFeed:true, promoFeedPriority:true, prototypeImmediateSubscriptionChange:true, prototypeReaderTrialAvailable:true, prototypeReaderTrialDaysLeft:READER_TRIAL_DEFAULT_DAYS, prototypeAutoFillData:true, readerPromoMode:false, assistantPromoMode:false,
   deviceSessionState:'active', deviceSessionOtherDevice:'iPhone 15 · 2 perce',
   sources:{HVG:true,Portfolio:true,Qubit:true,'Nemzeti Sport':true,Telex:true,'24.hu':true},
   enabledTopics:topics.map(topic=>topic.id), notifications:true, location:false, mobileData:true,
   subscription:{...defaultSubscription},
-  auth:{loggedIn:false,name:'',email:'',phone:'',provider:'',twoFactor:false},
+  settingsPrefs:createDefaultSettingsPrefs(),
+  auth:{loggedIn:false,name:'',email:'',phone:'',provider:'',linkedProviders:{Email:false,Google:false,Facebook:false,Apple:false},twoFactor:true,authGate:false},
   onboarding:{required:true,introSeen:false,authDone:false,subscriptionDone:false,rssDone:false,privacyAccepted:false,completed:false}
   };
 }
@@ -156,14 +175,44 @@ function readStoredPrototypeState(){
 }
 
 function resetPrototypeToFirstLaunch(delay=500){
-  localStorage.setItem('hirbeszed-state',JSON.stringify(createInitialPrototypeState()));
+  const preservedAutoFill=state.prototypeAutoFillData!==false;
+  const nextState={...createInitialPrototypeState(),prototypeAutoFillData:preservedAutoFill};
+  localStorage.setItem('hirbeszed-state',JSON.stringify(nextState));
   try{sessionStorage.removeItem('hirbeszed-default-launch');}catch(_){}
   toast('Prototipusadatok torolve');
   setTimeout(()=>location.reload(),delay);
 }
 
+function resetAccountScopedStateForLogout(){
+  const preservedPrototypeSettings={
+    prototypeAutoFillData:state.prototypeAutoFillData!==false,
+    prototypeImmediateSubscriptionChange:state.prototypeImmediateSubscriptionChange!==false,
+    prototypeReaderTrialAvailable:state.prototypeReaderTrialAvailable!==false,
+    prototypeReaderTrialDaysLeft:clampReaderTrialDays(state.prototypeReaderTrialDaysLeft),
+    promoFeedPriority:state.promoFeedPriority!==false
+  };
+  const nextState={
+    ...createInitialPrototypeState(),
+    ...preservedPrototypeSettings,
+    auth:{loggedIn:false,name:'',email:'',phone:'',provider:'',linkedProviders:{Email:false,Google:false,Facebook:false,Apple:false},twoFactor:true,authGate:true},
+    onboarding:{required:false,introSeen:false,authDone:false,subscriptionDone:false,rssDone:false,privacyAccepted:false,completed:false}
+  };
+  Object.keys(state).forEach(key=>delete state[key]);
+  Object.assign(state,nextState);
+  state.read=new Set(state.read||[]);
+  state.saved=new Set(state.saved||[]);
+  state.history=state.history||[];
+  state.assistantChat=state.assistantChat||[];
+  state.assistantPromoChat=state.assistantPromoChat||[];
+  try{sessionStorage.removeItem('hirbeszed-default-launch');}catch(_){}
+  saveState();
+  return state;
+}
+
 window.hirbeszedCreateInitialState=createInitialPrototypeState;
+window.hirbeszedCreateDefaultSettingsPrefs=createDefaultSettingsPrefs;
 window.hirbeszedResetToFirstLaunch=resetPrototypeToFirstLaunch;
+window.hirbeszedResetAccountScopedStateForLogout=resetAccountScopedStateForLogout;
 
 const defaults = createInitialPrototypeState();
 
@@ -220,6 +269,7 @@ state.promoFeedPriority = state.promoFeedPriority !== false;
 state.prototypeImmediateSubscriptionChange = state.prototypeImmediateSubscriptionChange !== false;
 state.prototypeReaderTrialAvailable = state.prototypeReaderTrialAvailable !== false;
 state.prototypeReaderTrialDaysLeft = clampReaderTrialDays(state.prototypeReaderTrialDaysLeft);
+state.prototypeAutoFillData = state.prototypeAutoFillData !== false;
 state.readerPromoMode = !!state.readerPromoMode;
 state.assistantPromoMode = !!state.assistantPromoMode;
 state.deviceSessionState = ['active','other_active','detached'].includes(state.deviceSessionState) ? state.deviceSessionState : 'active';
@@ -277,7 +327,7 @@ function applySubscriptionLaunchRoute(){
 applySubscriptionLaunchRoute();
 if((isTrialExpired()||state.subscription.status==='inactive'||!hasReaderAccess())&&state.route==='car'&&!state.readerPromoMode)state.route='feed';
 if(!hasAssistantAccess()&&state.route==='assistant'&&!state.assistantPromoMode)state.route='feed';
-let currentUtterance = null; let speechRunId = 0; let currentSpeechText = ''; let currentSpeechOffset = 0; let currentSpeechDetails = false; let assistantSpeaking = false; let currentRecognition = null; let recognitionContext = null; let toastTimer = null; let activeSheetRenderer = null; let carAutoAdvanceTimer = null; let carDeferredSheetTimer = null; let carMicWindowTimer = null; let carMicWindowActive = false; let assistantTrialPromptTimer = null;
+let currentUtterance = null; let speechRunId = 0; let currentSpeechText = ''; let currentSpeechOffset = 0; let currentSpeechDetails = false; let assistantSpeaking = false; let currentRecognition = null; let recognitionContext = null; let toastTimer = null; let headerToastState = {target:null,restore:''}; let activeSheetRenderer = null; let carAutoAdvanceTimer = null; let carDeferredSheetTimer = null; let carMicWindowTimer = null; let carMicWindowActive = false; let assistantTrialPromptTimer = null;
 let assistantPromptPool = []; let activeAssistantPrompt = null; let assistantVoiceResult = null;
 const $ = selector => document.querySelector(selector);
 const view = $('#view'); const sheet = $('#sheet'); const sheetBody = $('#sheetBody'); const phoneShell = $('#phone');
@@ -376,19 +426,128 @@ function applyTheme(){
   $('#brandMark').src=`assets/brand/hirbeszed-mark-${theme}.svg`;
   document.querySelector('meta[name="theme-color"]').content=theme==='dark'?'#0D191E':'#F6F9F8';
 }
+function clearHeaderToast(restore=true){
+  clearTimeout(toastTimer);
+  toastTimer=null;
+  const target=headerToastState.target;
+  if(target){
+    if(restore)target.textContent=headerToastState.restore||'';
+    target.classList.remove('header-toast-active');
+    delete target.dataset.toastType;
+  }
+  headerToastState={target:null,restore:''};
+  $('#toast')?.classList.remove('show');
+}
+function toastTarget(){
+  if(sheet?.classList.contains('open')&&!sheet.classList.contains('sheet-no-header')){
+    return $('#sheetSubtitle')||$('#sheetTitle');
+  }
+  return $('#pageTitle');
+}
+function toastTypeForMessage(message,options={}){
+  if(options.type)return options.type;
+  return /(nem|nincs|hib|sikertelen|érvénytelen|érvényes|elfogyott|engedély)/i.test(message)?'warning':'success';
+}
+function toastIcon(type){
+  if(type==='warning')return '!';
+  if(type==='info')return 'i';
+  return '✓';
+}
 function toast(message,options={}){
   const el=$('#toast');
   if(state.route==='car'&&!options.allowInCar){
-    clearTimeout(toastTimer);
-    if(el) el.classList.remove('show');
+    clearHeaderToast(true);
     return;
   }
-  if(!el)return;
-  el.textContent=message;
-  el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>el.classList.remove('show'),1900);
+  if(el){
+    el.textContent=message;
+    el.classList.add('show');
+  }
+  if(isAppMessageOpen())return;
+  const target=toastTarget();
+  if(!target)return;
+  const type=toastTypeForMessage(message,options);
+  const restore=headerToastState.target===target?headerToastState.restore:target.textContent;
+  clearHeaderToast(false);
+  headerToastState={target,restore};
+  target.textContent=`${toastIcon(type)} ${message}`;
+  target.dataset.toastType=type;
+  target.classList.add('header-toast-active');
+  toastTimer=setTimeout(()=>clearHeaderToast(true),2300);
 }
+function appMessageConfig(type){
+  if(type==='success')return {kicker:'Sikeres művelet',icon:'✓'};
+  if(type==='info')return {kicker:'Információ',icon:'i'};
+  if(type==='warning')return {kicker:'Figyelmeztetés',icon:'!'};
+  return {kicker:'Hiba',icon:'!'};
+}
+function appMessageBackgroundElements(){
+  return [$('.topbar'),view,$('.bottom-nav'),sheet,$('#toast')].filter(Boolean);
+}
+function setAppMessageSuspended(active){
+  document.documentElement.classList.toggle('app-message-active',!!active);
+  phoneShell?.classList.toggle('app-message-active',!!active);
+  appMessageBackgroundElements().forEach(element=>{
+    if(active)element.setAttribute('inert','');
+    else element.removeAttribute('inert');
+  });
+}
+function isAppMessageOpen(){
+  return $('#appMessageOverlay')?.classList.contains('show');
+}
+function isPrototypePreviewControl(target){
+  const frame=$('.prototype-frame');
+  return target===frame||!!target?.closest?.('.prototype-viewport-toolbar,.prototype-resize-grip,.prototype-reset-frame');
+}
+function appMessageEventGuard(event){
+  if(!isAppMessageOpen())return;
+  const overlay=$('#appMessageOverlay');
+  if(overlay?.contains(event.target))return;
+  if(isPrototypePreviewControl(event.target))return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  if(event.type==='keydown'){
+    if(event.key==='Escape')closeAppMessage();
+    else $('#appMessagePrimary')?.focus();
+  }
+}
+function showAppMessage(options={}){
+  clearHeaderToast(true);
+  const overlay=$('#appMessageOverlay');
+  const card=$('#appMessageCard');
+  const primary=$('#appMessagePrimary');
+  const secondary=$('#appMessageSecondary');
+  if(!overlay||!card||!primary){toast(options.message||options.title||'Valami nem sikerült');return;}
+  const type=options.type||'error';
+  const config=appMessageConfig(type);
+  card.dataset.messageType=type;
+  $('#appMessageIcon').textContent=options.icon||config.icon;
+  $('#appMessageKicker').textContent=options.kicker||config.kicker;
+  $('#appMessageTitle').textContent=options.title||'Valami nem sikerült';
+  $('#appMessageText').textContent=options.message||'Próbáld újra.';
+  primary.textContent=options.primaryText||'Rendben';
+  if(secondary){
+    secondary.textContent=options.secondaryText||'';
+    secondary.hidden=!options.secondaryText;
+  }
+  setAppMessageSuspended(true);
+  overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden','false');
+  window.hirbeszedAppMessageAction={primary:options.onPrimary||null,secondary:options.onSecondary||null};
+  setTimeout(()=>primary.focus(),30);
+}
+function closeAppMessage(actionName){
+  const overlay=$('#appMessageOverlay');
+  if(!overlay)return;
+  overlay.classList.remove('show');
+  overlay.setAttribute('aria-hidden','true');
+  setAppMessageSuspended(false);
+  const action=window.hirbeszedAppMessageAction?.[actionName];
+  window.hirbeszedAppMessageAction={primary:null,secondary:null};
+  if(typeof action==='function')action();
+}
+window.showAppMessage=showAppMessage;
+window.closeAppMessage=closeAppMessage;
 function deviceSessionStatusLabel(status=state.deviceSessionState){
   if(status==='other_active')return 'Másik eszköz aktív';
   if(status==='detached')return 'Ez az eszköz leválasztva';
@@ -476,8 +635,56 @@ function prototypeReaderTrialDaysInput(){
   return `<label class="settings-row settings-number-row" for="prototypeReaderTrialDaysLeft"><span class="row-icon">#</span><span class="row-copy"><strong>Hátralévő AI Felolvasó próbanapok</strong><small>1 és 14 nap között szimulálható. Most: ${value} nap.</small></span><input id="prototypeReaderTrialDaysLeft" class="settings-number-input" type="number" min="1" max="${READER_TRIAL_DEFAULT_DAYS}" step="1" inputmode="numeric" value="${value}" data-prototype-trial-days aria-label="Hátralévő AI Felolvasó próbanapok"></label>`;
 }
 function prototypeSettingsContent(){
-  return `<p class="settings-intro">Ezek a kapcsolók csak a helyi prototípus tesztelését segítik, a végleges appban az előfizetési állapotot, a jogosultságot és az aktív eszközt a backend adja.</p><h3 class="section-label">Előfizetéskezelés</h3><div class="settings-group"><button class="settings-row" data-toggle-setting="prototypeImmediateSubscriptionChange"><span class="row-icon">⇄</span><span class="row-copy"><strong>Előfizetésváltás felülbírálása és azonnali csomagváltás aktiválása</strong><small>${state.prototypeImmediateSubscriptionChange?'Bekapcsolva: jóváhagyáskor azonnal aktív lesz a kiválasztott csomag':'Kikapcsolva: csak a lefelé váltás fordulónapos, a felfelé váltás azonnali'}</small></span><span class="toggle ${state.prototypeImmediateSubscriptionChange?'on':''}"></span></button><button class="settings-row" data-toggle-setting="prototypeReaderTrialAvailable"><span class="row-icon">14</span><span class="row-copy"><strong>AI Felolvasó próbaidő az Ingyenes csomagban</strong><small>${state.prototypeReaderTrialAvailable?'Bekapcsolva: az Ingyenes csomag próbaidős változata látszik':'Kikapcsolva: a lejárt próbaidős változat látszik'}</small></span><span class="toggle ${state.prototypeReaderTrialAvailable?'on':''}"></span></button>${prototypeReaderTrialDaysInput()}</div><h3 class="section-label">Promóciók</h3><div class="settings-group"><button class="settings-row" data-toggle-setting="promoFeedPriority"><span class="row-icon">✦</span><span class="row-copy"><strong>Hírfolyam promo előresorolás</strong><small>${state.promoFeedPriority?'Bekapcsolva':'Kikapcsolva'}</small></span><span class="toggle ${state.promoFeedPriority?'on':''}"></span></button></div><h3 class="section-label">Eszközhasználat</h3><div class="settings-group"><button class="settings-row" data-setting="device-session"><span class="row-icon">▣</span><span class="row-copy"><strong>Egyidejű eszközhasználat szimuláció</strong><small>${escapeHtml(deviceSessionStatusLabel())}</small></span><span class="row-end">›</span></button></div><div class="settings-group"><button class="settings-row" data-setting="reset-app"><span class="row-icon">↺</span><span class="row-copy"><strong>Prototípusadatok törlése</strong><small>Első indítás, onboarding és alapállapot újratesztelése</small></span><span class="row-end">›</span></button></div>`;
+  return `<p class="settings-intro">Ezek a kapcsolók csak a helyi prototípus tesztelését segítik, a végleges appban az előfizetési állapotot, a jogosultságot és az aktív eszközt a backend adja.</p><h3 class="section-label">Tesztelés</h3><div class="settings-group"><button class="settings-row" data-toggle-setting="prototypeAutoFillData"><span class="row-icon">T</span><span class="row-copy"><strong>Automatikus adatfeltöltés</strong><small>${state.prototypeAutoFillData?'Bekapcsolva: a prototípus kitölti a tesztmezőket':'Kikapcsolva: minden adat kézzel adható meg'}</small></span><span class="toggle ${state.prototypeAutoFillData?'on':''}"></span></button></div><h3 class="section-label">Előfizetéskezelés</h3><div class="settings-group"><button class="settings-row" data-toggle-setting="prototypeImmediateSubscriptionChange"><span class="row-icon">⇄</span><span class="row-copy"><strong>Előfizetésváltás felülbírálása és azonnali csomagváltás aktiválása</strong><small>${state.prototypeImmediateSubscriptionChange?'Bekapcsolva: jóváhagyáskor azonnal aktív lesz a kiválasztott csomag':'Kikapcsolva: csak a lefelé váltás fordulónapos, a felfelé váltás azonnali'}</small></span><span class="toggle ${state.prototypeImmediateSubscriptionChange?'on':''}"></span></button><button class="settings-row" data-toggle-setting="prototypeReaderTrialAvailable"><span class="row-icon">14</span><span class="row-copy"><strong>AI Felolvasó próbaidő az Ingyenes csomagban</strong><small>${state.prototypeReaderTrialAvailable?'Bekapcsolva: az Ingyenes csomag próbaidős változata látszik':'Kikapcsolva: a lejárt próbaidős változat látszik'}</small></span><span class="toggle ${state.prototypeReaderTrialAvailable?'on':''}"></span></button>${prototypeReaderTrialDaysInput()}</div><h3 class="section-label">Promóciók</h3><div class="settings-group"><button class="settings-row" data-toggle-setting="promoFeedPriority"><span class="row-icon">✦</span><span class="row-copy"><strong>Hírfolyam promo előresorolás</strong><small>${state.promoFeedPriority?'Bekapcsolva':'Kikapcsolva'}</small></span><span class="toggle ${state.promoFeedPriority?'on':''}"></span></button></div><h3 class="section-label">Eszközhasználat</h3><div class="settings-group"><button class="settings-row" data-setting="device-session"><span class="row-icon">▣</span><span class="row-copy"><strong>Egyidejű eszközhasználat szimuláció</strong><small>${escapeHtml(deviceSessionStatusLabel())}</small></span><span class="row-end">›</span></button></div><div class="settings-group"><button class="settings-row" data-setting="reset-app"><span class="row-icon">↺</span><span class="row-copy"><strong>Prototípusadatok törlése</strong><small>Első indítás, onboarding és alapállapot újratesztelése</small></span><span class="row-end">›</span></button></div>`;
 }
+const PROTOTYPE_AUTO_FILL_VALUES={
+  authRegName:'Prototipus Teszt 1',
+  authRegEmail:'teszt.prototipus@example.com',
+  authRegPass:'Hirbeszed1!',
+  authLoginId:'teszt.prototipus@example.com',
+  authLoginPass:'Hirbeszed1!',
+  authResetId:'teszt.prototipus@example.com',
+  authCode:'123456',
+  onboardingRssUrl:'https://teszt.hirbeszed.hu/rss.xml',
+  rssSettingsUrl:'https://teszt.hirbeszed.hu/rss.xml'
+};
+function prototypeAutoFillEnabled(){
+  return state.prototypeAutoFillData!==false;
+}
+function setPrototypeAutoFillValue(input,value){
+  if(!input||String(input.value||'').trim())return;
+  input.value=value;
+  input.dispatchEvent(new Event('input',{bubbles:true}));
+  input.dispatchEvent(new Event('change',{bubbles:true}));
+}
+function prototypeAutoFillVisibleFields(){
+  if(!prototypeAutoFillEnabled())return;
+  Object.entries(PROTOTYPE_AUTO_FILL_VALUES).forEach(([id,value])=>{
+    const input=document.getElementById(id);
+    if(!input||!input.isConnected)return;
+    setPrototypeAutoFillValue(input,value);
+  });
+  const profileForm=document.getElementById('profileSettingsForm');
+  if(profileForm?.isConnected){
+    setPrototypeAutoFillValue(profileForm.elements.profileName,'Prototipus Teszt 1');
+    setPrototypeAutoFillValue(profileForm.elements.profileEmail,'teszt.prototipus@example.com');
+  }
+}
+let prototypeAutoFillTimer=null;
+function schedulePrototypeAutoFill(){
+  if(prototypeAutoFillTimer)clearTimeout(prototypeAutoFillTimer);
+  requestAnimationFrame(prototypeAutoFillVisibleFields);
+  prototypeAutoFillTimer=setTimeout(prototypeAutoFillVisibleFields,60);
+}
+function initPrototypeAutoFill(){
+  const body=document.getElementById('sheetBody');
+  if(!body)return;
+  const observer=new MutationObserver(schedulePrototypeAutoFill);
+  observer.observe(body,{childList:true,subtree:true});
+  window.hirbeszedPrototypeAutoFillVisibleFields=prototypeAutoFillVisibleFields;
+  schedulePrototypeAutoFill();
+}
+initPrototypeAutoFill();
 function transitionCarControl(button, pressed, callback){
   if(!button){callback();return;}
   if(button.dataset.transitioning==='true')return;
@@ -571,7 +778,14 @@ function updateCarDom(){
   Object.entries(model.buttons).forEach(([kind,config])=>updateCarButton(kind,config));
   const panel=document.querySelector('.voice-command-panel'); if(panel&&panel.outerHTML!==model.voicePanel)panel.outerHTML=model.voicePanel;
 }
-function setHeader(title,actions=''){ $('#pageTitle').textContent=title; $('#headerActions').innerHTML=actions; }
+function setHeader(title,actions=''){
+  const titleEl=$('#pageTitle');
+  if(titleEl){
+    if(headerToastState.target===titleEl)headerToastState.restore=title;
+    else titleEl.textContent=title;
+  }
+  $('#headerActions').innerHTML=actions;
+}
 function articleById(id){ return articles.find(article=>article.id===id)||promoArticleById(id); }
 function recordRead(id){
   if(isPromoArticle(id))return;
@@ -1714,19 +1928,39 @@ function settingRow(item){return `<button class="settings-row" data-setting="${i
 function render(){
   stopSpeech(false);
   if(state.route!=='car'){stopVoiceListening();state.detailedRead=false;}
+  view.classList.remove('recovery-route-view');
   document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.toggle('active',b.dataset.route===state.route));
   view.classList.toggle('feed-route-view',state.route==='feed');
   view.classList.toggle('car-route-view',state.route==='car');
   view.classList.toggle('assistant-route-view',state.route==='assistant');
   ({feed:renderFeed,car:renderCar,assistant:renderAssistant,settings:renderSettings}[state.route]||renderCar)();
+  ensureAppVisibleRoute();
   if(window.HB_SYNC_RESPONSIVE_PREVIEW_MODE)window.HB_SYNC_RESPONSIVE_PREVIEW_MODE();
   view.scrollTop=0; saveState(); renderSubscriptionGate(); renderDeviceSessionGate(); scheduleAssistantKeyboardUpdate();
+}
+function renderAppRecoveryScreen(){
+  setHeader('Helyre\u00e1ll\u00edt\u00e1s');
+  view.classList.remove('feed-route-view','car-route-view','assistant-route-view');
+  view.classList.add('recovery-route-view');
+  view.innerHTML=`<div class="empty app-recovery"><div class="empty-icon">!</div><h2>&Uuml;res k&eacute;perny&#337; helyre&aacute;ll&iacute;t&aacute;sa</h2><p>Az app nem tal&aacute;lt megjelen&iacute;thet&#337; tartalmat ezen a n&eacute;zeten. Nyisd meg a Be&aacute;ll&iacute;t&aacute;sokat, &eacute;s v&aacute;lassz biztons&aacute;gos utvonalat.</p><button class="primary-button" type="button" data-recovery-settings>Be&aacute;ll&iacute;t&aacute;sok megnyit&aacute;sa</button></div>`;
+}
+function ensureAppVisibleRoute(){
+  const authGate=!!(state.auth?.authGate&&!state.auth?.loggedIn);
+  if(!view||state.onboarding?.required||authGate)return;
+  if(phoneShell?.classList.contains('onboarding-active')||phoneShell?.classList.contains('startup-locked')){
+    phoneShell.classList.remove('onboarding-active','startup-locked');
+    document.documentElement.classList.remove('onboarding-active','startup-locked');
+  }
+  if(sheet?.classList.contains('open'))return;
+  const text=(view.textContent||'').trim();
+  const hasStructure=!!view.querySelector('article,button,input,textarea,select,.settings-group,.news-card,.car-view,.assistant-view,.empty,.subscription-screen,.segmented,.chips');
+  if(!text&&!hasStructure)renderAppRecoveryScreen();
 }
 function renderSubscriptionGate(){
 }
 
-function openSheet(title,subtitle,html,renderer=null){ $('#sheetTitle').textContent=title; $('#sheetSubtitle').textContent=subtitle||''; sheetBody.innerHTML=html; activeSheetRenderer=renderer; sheet.classList.remove('sheet-no-header','detail-sheet'); delete sheet.dataset.sheetKind; sheet.classList.add('open'); sheet.setAttribute('aria-hidden','false'); }
-function closeSheet(){ clearAssistantTrialPromptTimer(); sheet.classList.remove('open','sheet-no-header','detail-sheet'); sheet.setAttribute('aria-hidden','true'); delete sheet.dataset.sheetKind; activeSheetRenderer=null; if(state.route==='feed')renderFeed(); if(state.route==='settings')renderSettings(); }
+function openSheet(title,subtitle,html,renderer=null){ clearHeaderToast(true); $('#sheetTitle').textContent=title; $('#sheetSubtitle').textContent=subtitle||''; sheetBody.innerHTML=html; activeSheetRenderer=renderer; sheet.classList.remove('sheet-no-header','detail-sheet'); delete sheet.dataset.sheetKind; sheet.classList.add('open'); sheet.setAttribute('aria-hidden','false'); }
+function closeSheet(){ clearHeaderToast(true); clearAssistantTrialPromptTimer(); sheet.classList.remove('open','sheet-no-header','detail-sheet'); sheet.setAttribute('aria-hidden','true'); delete sheet.dataset.sheetKind; activeSheetRenderer=null; if(state.route==='feed')renderFeed(); if(state.route==='settings')renderSettings(); }
 function renderArticleDetail(id,markRead=false){
   const a=articleById(id);
   if(!a)return;
@@ -2156,7 +2390,7 @@ function topicSettingsSheet(){
 }
 function settingsSheet(type){
   if(type==='subscription') return subscriptionSheet();
-  if(type==='appearance') return openSheet('Megjelenés','Téma és hozzáférhetőség',`<div class="theme-grid"><button class="theme-card ${state.theme==='light'?'active':''}" data-theme="light">Világos</button><button class="theme-card dark-preview ${state.theme==='dark'?'active':''}" data-theme="dark">Sötét</button><button class="theme-card system-preview ${state.theme==='system'?'active':''}" data-theme="system">Rendszer</button></div><div class="settings-group" style="margin-top:15px">${settingRow(['A','Betűméret','Rendszer szerint','font'])}${settingRow(['◌','Kontraszt növelése','Kikapcsolva','contrast'])}</div>`);
+  if(type==='appearance') return openSheet('Megjelenés','Téma',`<div class="theme-grid"><button class="theme-card ${state.theme==='light'?'active':''}" data-theme="light">Világos</button><button class="theme-card dark-preview ${state.theme==='dark'?'active':''}" data-theme="dark">Sötét</button><button class="theme-card system-preview ${state.theme==='system'?'active':''}" data-theme="system">Rendszer</button></div>`);
   if(type==='sources') return openSheet('RSS-források','Közvetlenül a készüléken',`<button class="primary-button" data-add-source>＋ Új RSS-forrás</button><div class="settings-group" style="margin-top:13px">${Object.entries(state.sources).map(([name,on])=>`<button class="settings-row" data-source="${name}"><span class="row-icon">${name[0]}</span><span class="row-copy"><strong>${name}</strong><small>${on?'Bekapcsolva':'Kikapcsolva'}</small></span><span class="toggle ${on?'on':''}"></span></button>`).join('')}</div>`);
   if(type==='topics') return topicSettingsSheet();
   if(type==='promotions') return settingsSheet('prototype');
@@ -2164,7 +2398,7 @@ function settingsSheet(type){
   if(type==='voice') return openSheet('Hang és felolvasó','Felolvasás és viselkedés',`<div class="settings-group">${settingRow(['A','Felolvasóhang','Magyar rendszerhang','voice-name'])}${settingRow(['↔','Beszédsebesség','1,0×','rate'])}<button class="settings-row" data-toggle-setting="autoNext"><span class="row-icon">⇥</span><span class="row-copy"><strong>Automatikus következő</strong><small>${state.autoNext?'Bekapcsolva':'Kikapcsolva'}</small></span><span class="toggle ${state.autoNext?'on':''}"></span></button></div>`);
   if(type==='data') return openSheet('Mobiladat és tárhely','Hálózati beállítások',`<div class="settings-group"><button class="settings-row" data-toggle-setting="mobileData"><span class="row-icon">⇅</span><span class="row-copy"><strong>RSS-frissítés mobilneten</strong><small>${state.mobileData?'Engedélyezve':'Csak Wi-Fi'}</small></span><span class="toggle ${state.mobileData?'on':''}"></span></button>${settingRow(['▧','Képek mobilneten','Engedélyezve','images'])}${settingRow(['⌫','Gyorsítótár törlése','A kedvelések megmaradnak','cache'])}</div>`);
   if(type==='location') return openSheet('Helyi hírek','Hozzávetőleges hely',`<div class="empty" style="padding-top:28px"><div class="empty-icon">⌖</div><h2>Helyi hírek a közeledből</h2><p>A prototípus nem kér valódi helyadatot.</p></div><button class="primary-button" data-toggle-setting="location">${state.location?'Helyi hírek kikapcsolása':'Budapest kiválasztása'}</button>`);
-  if(type==='account') return openSheet('Fiók és biztonság','Prototípus',`<div class="settings-group">${settingRow(['♙','Profil','Anna · anna@pelda.hu','profile'])}${settingRow(['A','Kapcsolt fiókok','Apple, Google, Facebook','accounts'])}${settingRow(['✦','Kétlépcsős védelem','Nincs bekapcsolva','2fa'])}</div>`);
+  if(type==='account') return openSheet('Fiók és biztonság','Prototípus',`<div class="settings-group">${settingRow(['♙','Profil','Anna · anna@pelda.hu','profile'])}${settingRow(['A','Kapcsolt fiókok','Apple, Google, Facebook','accounts'])}${settingRow(['✦','Kétlépcsős védelem','Bekapcsolva','2fa'])}</div>`);
   if(type==='prototype') return openSheet('Prototípus','Fejlesztési beállítások',prototypeSettingsContent());
   if(type==='device-session') return deviceSessionSimulationSheet();
   openSheet('Beállítás','Prototípus',`<div class="empty"><div class="empty-icon">⚙</div><h2>Ez a rész a prototípusban bemutató jellegű</h2></div>`);
@@ -2191,6 +2425,15 @@ document.addEventListener('click',event=>{
     }
     closeSheet();
     setDeviceSessionState(status,status==='detached'?'Ez az eszköz leválasztva szimulációban':'Másik eszköz aktív szimulációban');
+    return;
+  }
+  const recoverySettings=event.target.closest('[data-recovery-settings]');
+  if(recoverySettings){
+    event.preventDefault();
+    event.stopPropagation();
+    if(sheet.classList.contains('open'))closeSheet();
+    state.route='settings';
+    render();
     return;
   }
   const route=event.target.closest('[data-route]'); if(route){changeRoute(route.dataset.route);return;}
@@ -2238,7 +2481,7 @@ document.addEventListener('click',event=>{
   const lib=event.target.closest('[data-library]'); if(lib){librarySheet(lib.dataset.library);return;}
   const theme=event.target.closest('button[data-theme]'); if(theme){state.theme=theme.dataset.theme;applyTheme();saveState();settingsSheet('appearance');return;}
   const original=event.target.closest('[data-original]'); if(original){const article=articleById(original.dataset.original); if(article?.url)window.open(article.url,'_blank','noopener'); else toast('Ehhez a hírhez nincs eredeti link'); return;}
-  const toggleSetting=event.target.closest('[data-toggle-setting]'); if(toggleSetting){const key=toggleSetting.dataset.toggleSetting;state[key]=!state[key];saveState();settingsSheet(key==='autoNext'?'voice':key==='mobileData'?'data':key==='location'?'location':['promoFeedPriority','prototypeImmediateSubscriptionChange','prototypeReaderTrialAvailable'].includes(key)?'prototype':'notifications');return;}
+  const toggleSetting=event.target.closest('[data-toggle-setting]'); if(toggleSetting){const key=toggleSetting.dataset.toggleSetting;state[key]=!state[key];saveState();settingsSheet(key==='autoNext'?'voice':key==='mobileData'?'data':key==='location'?'location':['promoFeedPriority','prototypeImmediateSubscriptionChange','prototypeReaderTrialAvailable','prototypeAutoFillData'].includes(key)?'prototype':'notifications');if(key==='prototypeAutoFillData')schedulePrototypeAutoFill();return;}
   if(event.target.closest('[data-add-source]')){addSourceSheet();return;}
   if(event.target.closest('[data-source-back]')){settingsSheet('sources');return;}
   if(event.target.closest('[data-demo-reset]')){resetPrototypeToFirstLaunch(500);}
@@ -2273,8 +2516,18 @@ document.addEventListener('submit',event=>{
 });
 function appendChat(question){handleAssistantQuestion(question);}
 
+['click','pointerdown','pointerup','mousedown','mouseup','touchstart','touchend','input','change','submit','keydown'].forEach(type=>{
+  document.addEventListener(type,appMessageEventGuard,true);
+});
+$('#appMessageOverlay')?.addEventListener('click',event=>{if(event.target?.id==='appMessageOverlay')closeAppMessage();});
+$('#appMessagePrimary')?.addEventListener('click',()=>closeAppMessage('primary'));
+$('#appMessageSecondary')?.addEventListener('click',()=>closeAppMessage('secondary'));
 $('#sheetBack').addEventListener('click',event=>{event.preventDefault();event.stopPropagation();closeSheet();});
-document.addEventListener('keydown',event=>{if(event.key==='Escape'&&sheet.classList.contains('open'))closeSheet();});
+document.addEventListener('keydown',event=>{
+  if(event.key!=='Escape')return;
+  if($('#appMessageOverlay')?.classList.contains('show')){event.preventDefault();closeAppMessage();return;}
+  if(sheet.classList.contains('open'))closeSheet();
+});
 matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if(state.theme==='system')applyTheme();});
 async function startApp(){
   applyTheme();
@@ -2286,4 +2539,6 @@ async function startApp(){
   activateRouteAudio(state.route);
 }
 startApp();
+window.hirbeszedEnsureAppVisibleRoute=ensureAppVisibleRoute;
+setInterval(ensureAppVisibleRoute,900);
 if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(()=>{});

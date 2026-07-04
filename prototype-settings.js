@@ -4,11 +4,12 @@
   ];
   const defaults={
     personalized:true,digestEnabled:true,digestTime:'07:30',quietEnabled:true,quietPeriod:'22:00–07:00',
-    fontSize:'system',highContrast:false,voiceName:'Magyar rendszerhang',speechRate:'1.0',
+    voiceName:'Magyar rendszerhang',speechRate:'1.0',
     imagesMobile:true,profileName:'Anna',profileEmail:'anna@pelda.hu',
-    linkedAccounts:{Apple:true,Google:true,Facebook:true},twoFactor:false,twoFactorMethod:'Telefonszám'
+    linkedAccounts:{Apple:true,Google:true,Facebook:true},twoFactor:true,twoFactorMethod:'E-mail'
   };
   state.settingsPrefs={...defaults,...(state.settingsPrefs||{}),linkedAccounts:{...defaults.linkedAccounts,...(state.settingsPrefs?.linkedAccounts||{})}};
+  if(state.settingsPrefs.twoFactorMethod!=='E-mail')state.settingsPrefs.twoFactorMethod='E-mail';
 
   let currentPanel=null;
   let panelStack=[];
@@ -21,8 +22,8 @@
     return `<button class="settings-row" data-pref-toggle="${key}"><span class="row-icon">${icon}</span><span class="row-copy"><strong>${title}</strong><small>${copy}</small></span><span class="toggle ${value?'on':''}"></span></button>`;
   }
   function applyPreferences(){
-    document.documentElement.dataset.fontSize=state.settingsPrefs.fontSize;
-    document.documentElement.dataset.highContrast=state.settingsPrefs.highContrast?'true':'false';
+    document.documentElement.removeAttribute('data-font-size');
+    document.documentElement.removeAttribute('data-high-contrast');
   }
   function showPanel(id,renderer,push=true){
     if(push&&currentPanel)panelStack.push(currentPanel);
@@ -58,8 +59,7 @@
     openSheet('Értesítések','Riasztások és összefoglalók',`<div class="settings-group"><button class="settings-row" data-toggle-setting="notifications"><span class="row-icon">!</span><span class="row-copy"><strong>Rendkívüli hírek</strong><small>${state.notifications?'Bekapcsolva':'Kikapcsolva'}</small></span><span class="toggle ${state.notifications?'on':''}"></span></button>${settingRow(['☀','Napi összefoglaló',state.settingsPrefs.digestEnabled?`Minden nap ${state.settingsPrefs.digestTime}`:'Kikapcsolva','digest'])}${settingRow(['☾','Csendes időszak',state.settingsPrefs.quietEnabled?state.settingsPrefs.quietPeriod:'Kikapcsolva','quiet'])}</div>`);
   }
   function renderAppearance(){
-    const fontLabels={small:'Kisebb',system:'Rendszer szerint',large:'Nagy',xlarge:'Extra nagy'};
-    openSheet('Megjelenés','Téma és hozzáférhetőség',`<div class="theme-grid"><button class="theme-card ${state.theme==='light'?'active':''}" data-theme="light">Világos</button><button class="theme-card dark-preview ${state.theme==='dark'?'active':''}" data-theme="dark">Sötét</button><button class="theme-card system-preview ${state.theme==='system'?'active':''}" data-theme="system">Rendszer</button></div><div class="settings-group" style="margin-top:15px">${settingRow(['A','Betűméret',fontLabels[state.settingsPrefs.fontSize],'font'])}${settingRow(['◌','Kontraszt növelése',state.settingsPrefs.highContrast?'Bekapcsolva':'Kikapcsolva','contrast'])}</div>`);
+    openSheet('Megjelenés','Téma',`<div class="theme-grid"><button class="theme-card ${state.theme==='light'?'active':''}" data-theme="light">Világos</button><button class="theme-card dark-preview ${state.theme==='dark'?'active':''}" data-theme="dark">Sötét</button><button class="theme-card system-preview ${state.theme==='system'?'active':''}" data-theme="system">Rendszer</button></div>`);
   }
   function renderVoice(){
     openSheet('Hang és felolvasó','Felolvasás és viselkedés',`<div class="settings-group">${settingRow(['A','Felolvasóhang',state.settingsPrefs.voiceName,'voice-name'])}${settingRow(['↔','Beszédsebesség',`${state.settingsPrefs.speechRate.replace('.',',')}×`,'rate'])}<button class="settings-row" data-toggle-setting="autoNext"><span class="row-icon">⇥</span><span class="row-copy"><strong>Automatikus következő</strong><small>${state.autoNext?'Bekapcsolva':'Kikapcsolva'}</small></span><span class="toggle ${state.autoNext?'on':''}"></span></button></div>`);
@@ -96,15 +96,13 @@
     if(type==='reset-profile')return openSheet('Érdeklődési profil törlése','A kedvelt hírek megmaradnak',`<div class="confirm-panel"><span class="confirm-icon">↺</span><h2>Újrakezdjük a személyre szabást?</h2><p>Az olvasási és hallgatási előzményekből kialakított érdeklődési sorrend törlődik. A kedvelt híreid és RSS-forrásaid megmaradnak.</p></div><button class="primary-button danger-button" data-settings-action="confirm-reset-profile">Érdeklődési profil törlése</button>`);
     if(type==='digest')return openSheet('Napi összefoglaló','Értesítési időpont',`<div class="settings-group">${toggleRow('☀','Napi összefoglaló',state.settingsPrefs.digestEnabled?'Bekapcsolva':'Kikapcsolva','digestEnabled')}</div><h3 class="section-label">Küldés időpontja</h3>${optionButtons('digestTime',[{value:'07:00',label:'07:00'},{value:'07:30',label:'07:30'},{value:'08:00',label:'08:00'}])}`);
     if(type==='quiet')return openSheet('Csendes időszak','Értesítések szüneteltetése',`<div class="settings-group">${toggleRow('☾','Csendes időszak',state.settingsPrefs.quietEnabled?'Bekapcsolva':'Kikapcsolva','quietEnabled')}</div><h3 class="section-label">Időtartam</h3>${optionButtons('quietPeriod',[{value:'21:00–07:00',label:'21:00–07:00'},{value:'22:00–07:00',label:'22:00–07:00'},{value:'23:00–06:00',label:'23:00–06:00'}])}`);
-    if(type==='font')return openSheet('Betűméret','Olvashatóság',`${sectionIntro('A kiválasztás az alkalmazás címeire és szövegeire is érvényes.')} ${optionButtons('fontSize',[{value:'small',label:'Kisebb'},{value:'system',label:'Rendszer szerint'},{value:'large',label:'Nagy'},{value:'xlarge',label:'Extra nagy'}])}`);
-    if(type==='contrast')return openSheet('Kontraszt növelése','Kiemeltebb szegélyek és szövegek',`<div class="settings-group">${toggleRow('◌','Nagyobb kontraszt',state.settingsPrefs.highContrast?'Bekapcsolva':'Kikapcsolva','highContrast')}</div><div class="accessibility-preview"><strong>Hírelőzetes minta</strong><p>A beállítás erősebb elválasztóvonalakat és hangsúlyosabb másodlagos szövegeket használ.</p></div>`);
     if(type==='voice-name')return openSheet('Felolvasóhang','Magyar hang kiválasztása',optionButtons('voiceName',[{value:'Magyar rendszerhang',label:'Magyar rendszerhang',copy:'A készülék alapértelmezett hangja'},{value:'Eszter',label:'Eszter',copy:'Női mintahang'},{value:'Tamás',label:'Tamás',copy:'Férfi mintahang'}]));
     if(type==='rate')return openSheet('Beszédsebesség','Felolvasás tempója',optionButtons('speechRate',[{value:'0.8',label:'0,8×',copy:'Lassabb'},{value:'1.0',label:'1,0×',copy:'Normál'},{value:'1.2',label:'1,2×',copy:'Gyorsabb'},{value:'1.5',label:'1,5×',copy:'Nagyon gyors'}]));
     if(type==='images')return openSheet('Képek mobilneten','Adatforgalom szabályozása',`<div class="settings-group">${toggleRow('▧','Hírképek letöltése',state.settingsPrefs.imagesMobile?'Mobilneten is':'Csak Wi-Fi-n','imagesMobile')}</div>${sectionIntro('Kikapcsolva mobilhálózaton csak a címek és a szöveges hírelőzetesek töltődnek le.')}`);
     if(type==='cache')return openSheet('Gyorsítótár törlése','Ideiglenes fájlok',`<div class="confirm-panel"><span class="confirm-icon">⌫</span><h2>Tárhely felszabadítása</h2><p>Az ideiglenesen letöltött képek és fájlok törlődnek. A kedvelt hírek, beállítások és előzmények megmaradnak.</p></div><button class="primary-button" data-settings-action="clear-cache">Gyorsítótár törlése</button>`);
     if(type==='profile')return openSheet('Profil','Személyes adatok',`<form id="profileSettingsForm" class="settings-form"><label>Név<input name="profileName" value="${state.settingsPrefs.profileName}" required></label><label>E-mail<input name="profileEmail" type="email" value="${state.settingsPrefs.profileEmail}" required></label><button class="primary-button" type="submit">Módosítások mentése</button></form>`);
     if(type==='accounts')return openSheet('Kapcsolt fiókok','Bejelentkezési lehetőségek',`<div class="settings-group">${Object.entries(state.settingsPrefs.linkedAccounts).map(([name,on])=>`<button class="settings-row" data-linked-account="${name}"><span class="row-icon">${name[0]}</span><span class="row-copy"><strong>${name}</strong><small>${on?'Kapcsolva':'Nincs kapcsolva'}</small></span><span class="toggle ${on?'on':''}"></span></button>`).join('')}</div>`);
-    if(type==='2fa')return openSheet('Kétlépcsős védelem','Fiókbiztonság',`<div class="settings-group">${toggleRow('✦','Kétlépcsős azonosítás',state.settingsPrefs.twoFactor?'Bekapcsolva':'Kikapcsolva','twoFactor')}</div><h3 class="section-label">Ellenőrzés módja</h3>${optionButtons('twoFactorMethod',[{value:'Telefonszám',label:'SMS a telefonszámra'},{value:'E-mail',label:'Kód e-mailben'}])}`);
+    if(type==='2fa')return openSheet('Kétlépcsős védelem','Fiókbiztonság',`<div class="settings-group">${toggleRow('✦','Kétlépcsős azonosítás',state.settingsPrefs.twoFactor?'Bekapcsolva':'Kikapcsolva','twoFactor')}</div><h3 class="section-label">Ellenőrzés módja</h3>${optionButtons('twoFactorMethod',[{value:'E-mail',label:'Kód e-mailben'}])}`);
     if(type==='device-session')return deviceSessionSimulationSheet();
     if(type==='reset-app')return openSheet('Prototípusadatok törlése','Visszaállítás alaphelyzetbe',`<div class="confirm-panel"><span class="confirm-icon">!</span><h2>Minden helyi adat törlődik</h2><p>Ez csak a prototípusban tárolt beállításokat, olvasási előzményeket és kedveléseket érinti.</p></div><button class="primary-button danger-button" data-settings-action="confirm-reset-app">Minden prototípusadat törlése</button>`);
   }
@@ -117,7 +115,7 @@
       event.preventDefault();event.stopImmediatePropagation();goBack();return;
     }
     const child=event.target.closest('#sheetBody [data-setting]');
-    if(child&&['personal','reset-profile','digest','quiet','font','contrast','voice-name','rate','images','cache','profile','accounts','2fa','device-session','reset-app'].includes(child.dataset.setting)){
+    if(child&&['personal','reset-profile','digest','quiet','voice-name','rate','images','cache','profile','accounts','2fa','device-session','reset-app'].includes(child.dataset.setting)){
       event.preventDefault();event.stopImmediatePropagation();
       const type=child.dataset.setting;
       showPanel(type,()=>renderChild(type));
@@ -146,7 +144,7 @@
       const key=rootToggle.dataset.toggleSetting;
       state[key]=!state[key];
       saveState();
-      showRoot(key==='autoNext'?'voice':key==='mobileData'?'data':key==='location'?'location':['promoFeedPriority','prototypeImmediateSubscriptionChange','prototypeReaderTrialAvailable'].includes(key)?'prototype':'notifications');
+      showRoot(key==='autoNext'?'voice':key==='mobileData'?'data':key==='location'?'location':['promoFeedPriority','prototypeImmediateSubscriptionChange','prototypeReaderTrialAvailable','prototypeAutoFillData'].includes(key)?'prototype':'notifications');
       return;
     }
     const prefToggle=event.target.closest('[data-pref-toggle]');

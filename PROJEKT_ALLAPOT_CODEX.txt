@@ -1,15 +1,1043 @@
-PROJEKTÁLLAPOT CODEX FOLYTATÁSHOZ
-Projekt: Hírbeszéd
-Verzió: 1
-Dátum: 2026-06-23
+PROJEKTĂLLAPOT CODEX FOLYTATĂSHOZ
+Projekt: HĂ­rbeszĂ©d
+VerziĂł: 1
+DĂˇtum: 2026-06-23
 
-Ez a fájl azért készült, hogy a Hírbeszéd projekt új Codex-beszélgetésből,
-vagy másik gépen is folytatható legyen akkor is, ha az eredeti beszélgetési
-kontextus nem érhető el teljesen.
+Ez a fĂˇjl azĂ©rt kĂ©szĂĽlt, hogy a HĂ­rbeszĂ©d projekt Ăşj Codex-beszĂ©lgetĂ©sbĹ‘l,
+vagy mĂˇsik gĂ©pen is folytathatĂł legyen akkor is, ha az eredeti beszĂ©lgetĂ©si
+kontextus nem Ă©rhetĹ‘ el teljesen.
 
-Új Codex-beszélgetés indításakor ezt kell mondani:
+Ăšj Codex-beszĂ©lgetĂ©s indĂ­tĂˇsakor ezt kell mondani:
 
-Olvasd el a PROJEKT_ALLAPOT_CODEX.txt fájlt, innen folytatjuk a Hírbeszéd projektet.
+Olvasd el a PROJEKT_ALLAPOT_CODEX.txt fĂˇjlt, innen folytatjuk a HĂ­rbeszĂ©d projektet.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.1 NAGY VERZIOEMELES ES GITHUB PUBLIKALAS ELOTT
+
+Elvegzett lokalis modositas:
+- A prototipus nagy verzioemelest kapott: az app-version 2.004-rol 2.1-re
+  valtozott.
+- Az aktualis asset/cache marker: 2.1-release-v317.
+- Az index.html, sw.js, manifest.webmanifest es prototype-auth.js verziojelolesei
+  az uj 2.1-es kiadasi allapothoz igazodnak.
+- A dokumentacioban az aktualis prototipusverzio 2.1-re frissult:
+  PROTOTYPE.md, docs/prototipus-mukodes.md, docs/termek-specifikacio.md,
+  BACKEND_FEJLESZTESI_DOKUMENTACIO.md.
+- Ez a bejegyzes a helyi ellenorzes es GitHub Pages publikacio elotti
+  allapotot rogzitette. A publikalas eredmenyet a kovetkezo bejegyzesben kell
+  frissiteni.
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 KETLEPCSOS VEDELEM PAJZS IKON
+
+Elvegzett lokalis modositas:
+- UX-only valtozas: a Fiok es biztonsag panel `Ketlepcsos vedelem` soraban a
+  korabbi `2F` jeloles helyett vonalas SVG pajzs ikon jelenik meg.
+- Ugyanez a pajzs ikon latszik a `Ketlepcsos vedelem` aloldal
+  `Ketlepcsos azonositas` kapcsolojanal is.
+- Funkcionalis, backend- vagy termekszabaly-valtozas nem tortent.
+- Ellenorzes: local app 8000, cachebust twofa-shield-v314; a
+  prototype-auth.js a 2.004-twofa-shield-v314 markert tolti, mindket
+  ketlepcsos vedelmi sor SVG pajzsot tartalmaz, `2F` szoveg nem latszik,
+  konzolhiba nincs.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-twofa-shield-v314.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 FIOKTORLES ES ARUHAZI ELOFIZETES LEMONDAS
+
+Elvegzett lokalis modositas:
+- A Beallitasok / Fiok es biztonsag panelen a `Fiok torlese` magyarazata
+  jelzi, hogy App Store- vagy Google Play-elofizetes eseten azt torles elott
+  kulon le kell mondani az aruhazban.
+- A vegleges `Fiok torlese?` modalis ablak is tartalmazza az aruhazi
+  elofizetes kulon lemondasi figyelmezteteset.
+- Aktiv fizetos vagy proba elofizetesnel a torles elott egy kulon
+  `Elofizetes lemondasa` modalis figyelmeztetes jelenik meg. Ennek elsodleges
+  gombja `Lemondast ellenoriztem`, es csak ezutan nyilik meg a vegleges
+  fioktorlesi megerosites.
+- A szabaly rögzitve lett a prototipus mukodesi leirasaban, a termek-
+  specifikacioban, az elofizetesi szabalyzatban es a backend fejlesztesi
+  dokumentacioban.
+- Backend oldalon uj szabaly: AUTH-025. A fiok torlese onmagaban nem
+  tekintheto az App Store / Google Play szamlazas automatikus megszuntetesenek;
+  aktiv aruhazi jogosultsagnal entitlement-ellenorzes es aruhazi lemondasra
+  vezetes kell.
+- Ellenorzes: local app 8000, cachebust account-delete-subscription-v313;
+  a prototype-auth.js a 2.004-account-delete-subscription-v313 markert tolti,
+  a Fiok es biztonsag panelen megjelenik az App Store / Google Play
+  figyelmeztetes, a vegleges torlesi modal megnyilik, `Megsem` utan a
+  fiokoldalon marad, konzolhiba nincs. A tenyleges torlest nem erositettuk meg.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-account-delete-subscription-v313.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 FIOK MUVELETEK SZOVEGEI ES BRANDELT IKONOK
+
+Elvégzett lokális módosítás:
+- A Beállítások / Fiók és biztonság panelen a Google, Facebook és Apple
+  belépési mód kártyák betűs ikon helyett brandelt SVG ikont használnak.
+- Az E-mailes belépés kártya `@` ikonja változatlanul megmaradt.
+- A `Kijelentkezés` gomb teljes szélességű lett.
+- A `Kijelentkezés` gomb elé felhasználói magyarázat került: ez csak ezen az
+  eszközön léptet ki, a fiók, előfizetés és felhőben mentett beállítások
+  megmaradnak.
+- A `Fiók törlése` gomb elé külön figyelmeztetés került: a felhőben tárolt
+  fiókadatok, beállítások, RSS-források, érdeklődési adatok és kapcsolt
+  belépési módok törlődnek, és a művelet nem állítható vissza.
+- A `Fiók törlése?` modális ablakból kikerült a fejlesztői/prototípusos
+  szöveg. Helyette felhasználónak szóló véglegességi figyelmeztetés jelenik
+  meg.
+- Ellenőrzés: local app 8000, cachebust account-actions-v312; Fiók és
+  biztonság panelen a Google/Facebook/Apple kártyák SVG ikont mutatnak, az
+  e-mail kártya `@` ikont tart, a Kijelentkezés és Fiók törlése gomb 381 px
+  teljes blokkszélességű, a törlési modal nem tartalmaz prototípus szót,
+  `Mégsem` után a fiókoldalon marad, konzolhiba nincs.
+- A prototípus verziója maradt 2.004.
+- A service worker cache és a script/css query verziók új jelölése:
+  2.004-account-actions-v312.
+- Ez helyi prototípus-módosítás, GitHubra még nincs publikálva.
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 FIOKADAT MAGYARAZAT ES FIOK TORLESE
+
+Elvégzett lokális módosítás:
+- A Beállítások / Fiók és biztonság panelen a felső összefoglaló kártya
+  `Fiók adatai` címet kapott.
+- A kártya jelzi, hogy ez a felhasználó Hírbeszéd-profilja, és a kapcsolt
+  belépési módok mind ehhez a fiókhoz tartoznak.
+- A belépési módok szakasz címe `Kapcsolt belépési módok` lett, alatta rövid
+  magyarázat tisztázza, hogy több belépési mód lehet kapcsolva egyszerre, és
+  a `Most ezzel vagy belépve` jelzés csak az aktuális munkamenetet mutatja.
+- A régi technikai szöveg, amely az utolsó működő belépési mód szabályát
+  magyarázta, kikerült a felületről.
+- A kártyákon a `Kapcsolva` jelzés semleges maradt; a jelenlegi belépési mód
+  külön, kisebb magyarázó sorban jelenik meg.
+- A panel alján külön veszélyzóna készült `Fiók törlése` gombbal. Ez nem
+  kijelentkezés, hanem fióktörlési folyamat indítása.
+- A `Fiók törlése` gomb globális modális megerősítést nyit `Mégsem` és
+  `Fiók törlése` gombokkal. A prototípus helyi fiókadat-törléssel szimulálja
+  a műveletet, majd az üdvözlő/auth képernyőre visz.
+- Backend-dokumentációba bekerült, hogy a végleges appban a fióktörlés
+  szerveroldali, megerősített, naplózott és jogi/adatmegőrzési szabályokhoz
+  kötött folyamat legyen.
+- Ellenőrzés: local app 8000, cachebust account-delete-v310; Fiók és
+  biztonság panelen megjelent a Fiók adatai kártya, a Kapcsolt belépési módok
+  magyarázat, a régi technikai sor eltűnt, a Fiók törlése modál megnyílik,
+  Mégsem után a panelen marad, megerősítés után az üdvözlő/auth képernyő
+  jelenik meg, az appmenü rejtett, konzolhiba nincs.
+- A prototípus verziója maradt 2.004.
+- A service worker cache és a script/css query verziók új jelölése:
+  2.004-account-delete-v310.
+- Ez helyi prototípus-módosítás, GitHubra még nincs publikálva.
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 FIOK ES BIZTONSAG BELEPESI MODOK OLDAL
+
+Elvégzett lokális módosítás:
+- A Beállítások / Fiók és biztonság panel egyoldalas fiókbiztonsági felület lett.
+- A régi külön Profiladatok és Kapcsolt fiókok almenüpont, valamint a régi
+  Kapcsolt fiókok aloldal kikerült az aktív prototípus-folyamatból.
+- A panel tetején fiókösszefoglaló látszik, alatta belépési mód kártyák:
+  Google, Facebook, Apple és E-mailes belépés.
+- Minden kártya jelzi, hogy kapcsolt-e, illetve melyik a jelenlegi belépési
+  mód. A nem kapcsolt közösségi szolgáltatók a közösségi gombkészlet
+  stílusával kapcsolhatók.
+- Az e-mailes belépés meglévő social fiókhoz az onboardingban már elkészült
+  e-mailes regisztrációs + 6 jegyű kódos megerősítő folyamatot használja
+  `add-email-login` módban. Ha social szolgáltatótól átvehető név/e-mail
+  van, a prototípus átveszi, hiányzó adatnál a felhasználó adja meg.
+- Az utolsó működő belépési mód nem választható le; ilyenkor a globális
+  modális rendszerüzenet blokkol.
+- A Kétlépcsős védelem sor megmaradt a Fiók és biztonság panelen, a
+  Kijelentkezés gomb és kijelentkezési adatreset-szabály nem változott.
+- Backend-dokumentációba bekerült, hogy a végleges backendnek támogatnia kell
+  a meglévő social profilon az e-mailes belépési mód biztonságos hozzáadását,
+  és tiltania kell az utolsó belépési azonosság leválasztását.
+- Ellenőrzés: local app 8000, cachebust account-login-methods-v309; Fiók és
+  biztonság panelen 4 belépési mód kártya látszik, nincs Profiladatok /
+  Kapcsolt fiókok almenü, Google kapcsolás működik, e-mail leválasztás után
+  Google marad jelenlegi belépés, e-mail visszakapcsolása kódos folyamattal
+  visszatér a panelre, konzolhiba nincs.
+- A prototípus verziója maradt 2.004.
+- A service worker cache és a script/css query verziók új jelölése:
+  2.004-account-login-methods-v309.
+- Ez helyi prototípus-módosítás, GitHubra még nincs publikálva.
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 KOZOSSEGI FIOKOK BIZTONSAGOS OSSZEKAPCSOLASA
+
+Elvégzett dokumentációs módosítás:
+- Rögzítve lett végleges app-szabályként, hogy egy Hírbeszéd-profilhoz több
+  hitelesítési azonosság kapcsolható: e-mail, Google, Facebook és Apple.
+- Ha egy felhasználó korábban például Facebookkal lépett be, majd később
+  Google-fiókkal próbál belépni ugyanazzal az ellenőrzött e-mail címmel,
+  a rendszer felismerheti az összekapcsolási lehetőséget.
+- A fiókokat nem szabad csendben, automatikusan összefésülni. Összekapcsolás
+  csak felhasználói jóváhagyással és biztonságos megerősítéssel történhet.
+- Apple Hide My Email / relay e-mail esetén automatikus e-mail-alapú
+  összekapcsolás nem engedélyezett.
+- Ez backend-kötelező termék- és fiókbiztonsági szabály, nem runtime
+  prototípus-módosítás.
+- Frissült: BACKEND_FEJLESZTESI_DOKUMENTACIO.md, PROTOTYPE.md,
+  docs/prototipus-mukodes.md, docs/termek-specifikacio.md.
+- A prototípus verziója maradt 2.004, asset/cache marker nem változott.
+- Ez helyi dokumentációs módosítás, GitHubra még nincs publikálva.
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 FIOK ES BIZTONSAG FELSO KARTYA TORLESE
+
+Elvégzett lokális módosítás:
+- A Beállítások / Fiók és biztonság bejelentkezett panel tetejéről kikerült
+  a nagy profil / bejelentkezve információs kártya.
+- A panel most közvetlenül a kezelhető sorlistával indul:
+  Profiladatok, Kapcsolt fiókok, Kétlépcsős védelem.
+- A Kijelentkezés gomb megmaradt a panel alján.
+- Ez UX/design-only prototípus-módosítás, backend-szabályt nem érint.
+- Ellenőrzés: local app 8000, cachebust account-card-removed-v304; menüből
+  megnyitva a Fiók és biztonság panelben nincs `.auth-profile-card`, az első
+  elem `.settings-group`, a három fióksor és a Kijelentkezés gomb látszik,
+  konzolhiba nincs.
+- A prototípus verziója maradt 2.004.
+- A service worker cache és a script/css query verziók új jelölése:
+  2.004-account-card-removed-v304.
+- Ez helyi prototípus-módosítás, GitHubra még nincs publikálva.
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 META IKONGOMB 32PX ERINTHETO SZELESSEG
+
+Elvégzett lokális módosítás:
+- A Hírfolyam normál hírkártyáin a meta sorban lévő Kedvelés, Megosztás és
+  Olvasott/Olvasatlan ikongombok érinthető/kattintható szélessége minden
+  nézetben 32 px lett.
+- A vizuális ikonméret nem nőtt, az ikonok továbbra is kicsik és középre
+  igazítottak maradtak.
+- A gombok és a meta sor magassága nem változott: továbbra is 14 px.
+- A teljes meta ikongombsor nagykártyás/rácsos nézetben 108 px széles,
+  kiskártyás és mobil fekvő nézetben 106 px széles.
+- Ez tudatos UX/design kompromisszum: a szélesség biztonságosabb érintést ad,
+  a 14 px magasság a kártyadizájn miatt megmarad.
+- Ellenőrzés: local app 8000, cachebust meta-action-width-v303; Alap, Kis
+  mobil, Nagy mobil, Mobil fekvő, Kis fekvő, Foldable, Tablet álló, Tablet
+  fekvő és Nagy tablet fekvő nézetben a gombok 32 x 14 px méretűek, a meta
+  sor 14 px, eltérés 0, konzolhiba nincs.
+- A prototípus verziója maradt 2.004.
+- A service worker cache és a script/css query verziók új jelölése:
+  2.004-meta-action-width-v303.
+- Ez helyi prototípus-módosítás, GitHubra még nincs publikálva.
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 META IKONGOMB TAVOLSAG
+
+Elvégzett lokális módosítás:
+- A Hírfolyam normál hírkártyáin a meta sorban lévő Kedvelés, Megosztás és
+  Olvasott/Olvasatlan ikongombok egymáshoz képest nagyobb vízszintes
+  távolságot kaptak a kattintási/tappolási biztonság miatt.
+- A gombok és a meta sor magassága nem változott: továbbra is 14 px.
+- Nagykártyás és rácsos nézetben az ikonok közti rés 6 px.
+- Kiskártyás és mobil fekvő nézetben az ikonok közti rés 5 px.
+- Ez UX/design-only prototípus-módosítás, backend-szabályt nem érint.
+- Ellenőrzés: local app 8000, cachebust meta-action-gap-v302; Alap, Kis
+  mobil, Mobil fekvő, Foldable, Tablet álló, Tablet fekvő és Nagy tablet
+  fekvő nézetben a meta sor 14 px, az ikongombsor 14 px, eltérés 0,
+  konzolhiba nincs.
+- A prototípus verziója maradt 2.004.
+- A service worker cache és a script/css query verziók új jelölése:
+  2.004-meta-action-gap-v302.
+- Ez helyi prototípus-módosítás, GitHubra még nincs publikálva.
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 HIRKARTYA EGYSéges ELSŐ KÁRTYA
+
+Elvégzett lokális módosítás:
+- A Hírfolyam hírkártyarácsában megszűnt az automatikus első hírkártya
+  külön `first-child` kiemelése.
+- A normál hírkártyák azonos képmagasságot, szövegrészt, címvágást és
+  meta sort kapnak; az első kártya nem lehet eltérő csak azért, mert első.
+- A promókártyák továbbra is külön tartalmi/stílus kategóriák maradhatnak.
+- Ez UX/design-only prototípus-módosítás, backend-szabályt nem érint.
+- Ellenőrzés: local app 8000, cachebust feed-uniform-cards-v301; Foldable
+  nézetben az első 8 normál kártya képmagassága 147 px, szövegblokkja 125 px,
+  eltérés 0. Alap, Kis mobil, Foldable, Tablet álló, Tablet fekvő és Nagy
+  tablet fekvő nézetben a normál kártyák egységesek, konzolhiba nincs.
+- A prototípus verziója maradt 2.004.
+- A service worker cache és a script/css query verziók új jelölése:
+  2.004-feed-uniform-cards-v301.
+- Ez helyi prototípus-módosítás, GitHubra még nincs publikálva.
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 HIRKARTYA META GYORSMUVELETEK
+
+Elvegzett lokalis modositas:
+- A hirfolyam hirkartyain a Kedveles, Megosztas es Olvasott/Olvasatlan
+  gyorsmuveletek tovabbra is a forras + ido meta soraban vannak.
+- A gyorsmuveleti gombok es ikonok kompakt, ikon-only meretet kaptak:
+  a meta sorban 14 px magasak, igy nem novelik meg a forras/ido sor
+  magassagat mobil, Foldable es tablet nezetben sem.
+- A reszletes hirnezet teljes szoveges gyorsmuvelet-gombjai nem valtoztak.
+- Ez UX/design-only prototipus-modositas, backend-szabalyt nem erint.
+- Ellenorzes: local app 8000, cachebust feed-actions-meta-v300; minden
+  asset az uj markerrel toltodott be, konzolhiba nincs. Meresi matrix:
+  Alap, Kis mobil, Foldable, Tablet allo, Tablet fekvo, Nagy tablet fekvo.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-feed-actions-meta-v300.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 MEGJELENES EGYSZERUSITES
+
+Elvegzett lokalis modositas:
+- A Beallitasok / Megjelenes menubol kikerult a Betumeret es a
+  Kontraszt novelese opcio.
+- A Megjelenes panel most csak a temavalasztast tartalmazza:
+  Vilagos, Sotet, Rendszer.
+- A prototipusbol kikerultek a programozott data-font-size es
+  data-high-contrast CSS-hatasok, es indulaskor a regi tesztadatbol
+  megmaradt attribumok is torlodnek.
+- A termekspecifikaciobol kikerult a dinamikus betumeret es magas
+  kontraszt kulon beallitasi pontja.
+- Ez UX/design egyszerusites, backend-szabalyt nem erint.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-appearance-simplified-v299.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 MEGJELENES VILAGOS TEMA GOMB
+
+Elvegzett lokalis modositas:
+- A Beallitasok / Megjelenes menuben a Vilagos tema gomb kulon
+  vilagos elonezeti stilust kapott.
+- Sotet temaban sem orokli tovabb a sotet feluletkartya hatteret, hanem
+  vilagos hatterrel, sotet szoveggel es finom vilagos szegellyel jelenik meg.
+- Ez UX/design-only modositas, backend- vagy termekszabalyt nem erint.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-appearance-light-theme-v298.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 LOGOUT FIOKADAT RESET
+
+Elvegzett lokalis modositas:
+- Kijelentkezes utan az app tovabbra is auth-zarba kerul, elrejti a menut, es
+  az udvozlo / belepesi kepernyot mutatja.
+- A kijelentkezes most fiokhoz kotott helyi adatresetet futtat:
+  torlodik a csomagallapot, RSS-forrasvalasztas, temavalasztas,
+  erdeklodesi profil, olvasasi/kedvelesi allapot, asszisztens-cset,
+  megjelenesi/hangpreferencia, kapcsolt fiokok es 2FA allapot.
+- A prototipus-tesztkornyezeti kapcsolok megmaradnak, peldaul az
+  Automatikus adatfeltoltes, az elofizetes/probaido szimulacios kapcsolok
+  es a hirfolyam promo eloresorolas kapcsoloja.
+- A cel, hogy masik fiok belepesekor ne keveredjen az elozo felhasznalo
+  frontendben maradt allapota a backendbol visszatoltott adatokkal.
+- A szerveroldali profil es jogosultsag nem torlodik; belepes utan a backend
+  a hiteles visszatoltesi forras.
+- Frissult dokumentaciok: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md, BACKEND_FEJLESZTESI_DOKUMENTACIO.md.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-logout-account-reset-v297.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 LOGOUT AUTH-ZAR ES EMAIL 2FA
+
+Elvegzett lokalis modositas:
+- Az emailes fiokoknal a ketlepcsos azonositas alapertelmezetten bekapcsolt lett.
+- Prototipus reset utan az auth.twoFactor alapallapota bekapcsolt.
+- Sikeres email + jelszo belepes utan a 2FA allapot dont:
+  bekapcsolva a Belepes megerositese kodoldal nyilik,
+  kikapcsolva kozvetlenul megtortenik a belepes.
+- A kozossegi belepeseknel nincs kulon Hirbeszed emailes 2FA kod.
+- A Ketlepcsos vedelem menubol kikerult a Helyreallito kodok sor.
+- A Ketlepcsos vedelem kapcsolo az emailes belepes 2FA dontesi allapotat vezerli,
+  nem kulon feluleti allapotot.
+- Kijelentkezes utan nincs kulon kijelentkezett Fiok es biztonsag kepernyo.
+  Az app auth-zarba kerul, elrejti a menut, es az udvozlo / belepesi kepernyot
+  mutatja.
+- Ezt a 2026-07-04-es szabaly felulirta: kijelentkezeskor a kliens torli
+  a helyi fiokhoz kotott allapotot, a backendben mentett profil viszont
+  megmarad.
+- Rogzitve lett, hogy belepeskor a backendbol kell visszaallitani a felhasznalo
+  teljes mentett allapotat, es masik eszkozon is ugyanazt az appallapotot kell
+  megkapnia.
+- A regi beallitas-panel 2FA alapertelmezese is bekapcsoltra lett igaziva.
+- Emailes belepesnel a korabbi kozossegi fiokbol maradt nevfelirat nem oroklodik at.
+- Frissult dokumentaciok: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md, BACKEND_FEJLESZTESI_DOKUMENTACIO.md.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-logout-account-reset-v297.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 JELSZO-VISSZAALLITAS HIBAKEZELES
+
+Elvegzett lokalis modositas:
+- A Jelszo visszaallitasa oldal a Belepes oldalhoz tartozo alfolyamatkent mukodik.
+- A bal felso visszagomb es a Vissza a belepeshez link is a Belepes oldalra ter vissza,
+  nem az udvozlo/regisztracios kezdokepernyore.
+- A reset oldal felso kartyaja informacios kartyara lett alakitva.
+- Kezelt reset hibak: hianyzo email, hibas email formatum, tul gyors ujrakeres,
+  nem hasznalhato fiok, halozati/szerverhiba.
+- Sikeres keresnel modalis uzenet jelenik meg Ellenorizd az e-mailjeidet cimmel,
+  altalanos szoveggel, amely nem arulja el, hogy az email cimhez tartozik-e fiok.
+- A Vissza a belepeshez gomb a siker modal utan a Belepes oldalra visz.
+- A jelszo-visszaallitas backend-kotelezo szabalyai dokumentalva lettek:
+  account enumeration tilalom, rate limit, fiokallapot-ellenorzes, egyszer hasznalhato
+  es idokorlatos reset token/link.
+- Frissult dokumentaciok: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md, BACKEND_FEJLESZTESI_DOKUMENTACIO.md.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-password-reset-v291.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 EMAIL BELEPES HIBAKEZELES
+
+Elvegzett lokalis modositas:
+- Az emailes Belepes oldal mezovalidaciot es modalis hibakezelest kapott.
+- Kezelt mezohibak: hianyzo email, hibas email formatum, hianyzo jelszo.
+- Kezelt hitelesitesi hibak: sikertelen belepes, tul sok probalkozas,
+  megerositetlen email, nem hasznalhato fiok, halozati/szerverhiba.
+- A hibas email/jelszo paros altalanos Sikertelen belepes hibakent jelenik meg,
+  hogy ne deruljon ki, letezik-e az email cim.
+- A probalkozasi limit prototipusban 3 hibas probalkozas utan rovid
+  ideiglenes zarolast szimulal.
+- Prototipus tesztadatok: teszt.prototipus@example.com / Hirbeszed1!,
+  nincs.megerositve@example.com, zarolt.fiok@example.com,
+  szerverhiba@example.com.
+- A prototipus tesztcimei nem vegleges frontend- vagy backend-szabalyok.
+- Frissult dokumentaciok: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md, BACKEND_FEJLESZTESI_DOKUMENTACIO.md.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-login-errors-v290.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 EMAIL-ONLY BELEPES OLDAL
+
+Elvegzett lokalis modositas:
+- A kulon Belepes oldal email-only felulet lett.
+- Az oldal alcime: Belepes e-mail cimmel.
+- A felso kartya a regisztracios oldal mintajat koveti: ikon es marketing
+  szoveg nelkul, E-mailes belepes cimmel es folyamatmagyarazo szoveggel.
+- Az oldalon csak az e-mail mezo, jelszo mezo, Belepes gomb es
+  Elfelejtett jelszo link marad.
+- Kikerult a Belepes oldalrol a kozossegi gombkeszlet, a vagy elvalaszto
+  es a Nincs fiokom, regisztralok gomb.
+- A kozossegi folytatas tovabbra is a kezdo onboarding kepernyon erheto el.
+- Frissult dokumentaciok: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md, BACKEND_FEJLESZTESI_DOKUMENTACIO.md.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-login-email-v289.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 EMAIL KOD HIBAKEZELES MODALOK
+
+Elvegzett lokalis modositas:
+- Az E-mail cim megerositese oldalon bekerult a kodoldali hibakezeles.
+- A prototipus teszt siker kodja: 123456.
+- A prototipus lejart kod szimulacioja: 000000.
+- Hibas kod, lejart kod, tul sok probalkozas, tul gyors ujrakuldes,
+  sikertelen kodkuldes es megszakadt regisztracios folyamat eseten
+  app-szintu modalis rendszeruzenet jelenik meg.
+- Mezohibanal a kodmezo is hibas allapotot kap, es a modal utan a fokusz
+  visszakerul a javitando mezore vagy a megfelelo helyreallitasi utra.
+- Az ujrakuldes es probalkozasi limitek prototipusban vannak szimulalva;
+  backendben kulon kotelezo szabalykent lettek dokumentalva.
+- A regi onboarding auth-handler nem foghatja el a kodmegerosites gombot,
+  ha az uj auth-modul aktiv, igy a kodellenorzes egy helyen tortenik.
+- Erintett kodfajlok: prototype-auth.js, prototype-onboarding.js,
+  index.html, sw.js.
+- Frissult dokumentaciok: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md, BACKEND_FEJLESZTESI_DOKUMENTACIO.md.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-email-code-errors-v288.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 DOKUMENTACIOS AUDIT ES SKILL SZABALY
+
+Elvegzett lokalis dokumentacios modositas:
+- At lett nezve a beszelgetesben elvegzett fejlesztesek dokumentacios
+  lefedettsege.
+- Frissult a docs/prototipus-mukodes.md: bekerultek az aktualis onboarding
+  kepernyoszabalyok, a kozossegi gombkeszlet, az email-only regisztracio,
+  a kodmegerosites viselkedese, az RSS onboarding gombszabalyai es a
+  kotelezo fejlesztes utani dokumentacios audit.
+- Frissult a PROTOTYPE.md rovid osszefoglalo az onboarding, kozossegi
+  gombkeszlet, email-only regisztracio es dokumentacios audit szabalyokkal.
+- Frissult a docs/termek-specifikacio.md: a regi telefon/SMS regisztracios
+  irany helyett emailes regisztracio es kozossegi fiokos folytatas szerepel.
+- Frissult a BACKEND_FEJLESZTESI_DOKUMENTACIO.md: tisztazva lett, hogy
+  telefonszamos/SMS-es regisztracio nincs az aktualis MVP-iranyban, es
+  bekerult a dokumentacios audit valtozasi naploja.
+- Frissult az ELOFIZETESI_SZABALYZAT.txt: a probaido es fiokosszevonas
+  szakaszokbol kikerult a telefonszamos regisztracio nyoma.
+- Frissult a mobile-app-dev-environment skill: minden fejlesztes utan
+  kotelezo dokumentacios audit lett a munkafolyamat resze.
+- Letrejott az uj kezikonyv:
+  C:\Users\mulik\Documents\Fejlesztes\Fejlesztoi kornyezet\Mobil prototipus fejlesztoi kornyezet kezikonyv v8.txt
+- Appkod nem valtozott, a futtathato prototipus cache jelolese maradt:
+  2.004-prototype-autofill-reset-v286.
+- Ez helyi dokumentacios modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 AUTOMATIKUS ADATFELTOLTES RESETALLO BEALLITAS
+
+Elvegzett lokalis modositas:
+- A Beallitasok / Prototipus menuben levo Automatikus adatfeltoltes
+  kapcsolo prototipus-kornyezeti beallitaskent mukodik.
+- A Prototipusadatok torlese mar nem allitja vissza ezt a kapcsolot:
+  ha kikapcsolt allapotban volt, reset utan is kikapcsolva marad; ha
+  bekapcsolt allapotban volt, reset utan is bekapcsolva marad.
+- Ez csak prototipus-teszteszkoz, nem vegleges frontend- vagy
+  backend-funkcio, es a normal kepernyokon nincs kulon lathato nyoma.
+- Frissult dokumentaciok: docs/prototipus-mukodes.md, PROTOTYPE.md es
+  BACKEND_FEJLESZTESI_DOKUMENTACIO.md.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-prototype-autofill-reset-v286.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 FIOK LETREHOZAS VALIDACIO
+
+Elvegzett lokalis modositas:
+- A Fiok letrehozasa / E-mail regisztracio oldalon mezo szintu validacio
+  keszult nev, e-mail es jelszo mezokre.
+- A nev kotelezo, minimum 2 es maximum 80 karakter, tartalmazhat betut,
+  szamot, szokozt, kotojelet es aposztrofot.
+- Az e-mail kotelezo, 254 karakterig engedett, es ervenyes e-mail
+  formatumot ker.
+- A jelszo kotelezo, legalabb 8 karakter, kisbetu, nagybetu, szam es
+  kulonleges karakter szukseges. A hosszu szabaly nem placeholderben,
+  hanem a jelszo mezo alatti elo ellenorzo listaban jelenik meg.
+- Gepeles kozben a mezok ugyanazzal a hibas allapottal emelodnek ki,
+  mint a korabbi hibas e-mail mezo. A jelszo szabalylista soronkent
+  jelzi, mi teljesult.
+- Regisztracio gombnyomaskor konkret modalis hibaablak jelenik meg az
+  elso hibara. A Rendben gomb utan a fokusz az elso hibas mezore kerul.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-register-validation-v284.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 VISSZAFOGOTT SVG ALOLDALI VISSZAGOMB
+
+Elvegzett lokalis modositas:
+- A globalis aloldali visszagomb (`#sheetBack`) karakteres nyil helyett
+  inline SVG ikont kapott.
+- A gomb a megbeszelt 1-es, visszafogottabb latvanyterv iranyat koveti:
+  lekerekitett negyzetes feluletgomb, egyszeru vonalas balra mutato ikon,
+  semleges felulet, finom keret, accent szinu tulhangsulyozas nelkul.
+- A visszagomb funkcioi nem valtoztak: az id, a data-action es a korabbi
+  event-kezelok megmaradtak, igy a sheet-visszalepes/bezaras logika ugyanaz.
+- A docs/prototipus-mukodes.md rogzitette, hogy az aloldali visszagomb SVG
+  alapu feluletgomb, nem karakteres nyil.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-back-button-v280.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 GLOBALIS FEJLEC-ERTESITES TOAST HELYETT
+
+Elvegzett lokalis modositas:
+- A korabbi also lebego toast vizualisan megszunt: nem takarhatja tovabb
+  az also navigaciot, CTA gombokat vagy beviteli mezoket.
+- A rovid, nem blokkolo visszajelzesek globalisan fejlec-ertesiteskent
+  jelennek meg. Fo kepernyon a pageTitle sora, lathato sheet/aloldal
+  eseten a sheetSubtitle sora cserelodik le ideiglenesen.
+- Az ertesites felulrol beuszik, ikon + rovid szoveg formatumu, majd
+  automatikusan visszaallitja az eredeti oldalcimet vagy alcimet.
+- A regi #toast elem eloregio szerepben megmaradt, de vizualisan rejtett.
+- Modal rendszeruzenet nyitasakor a fejlec-ertesites megszunik; hiba es
+  folyamatblokkolas tovabbra is a modalis rendszeruzenet feladata.
+- A docs/prototipus-mukodes.md rogzitette az uj fejlec-ertesitesi szabalyokat.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-header-toast-v277.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 KEZDOOLDALI SZABALYZAT-KAPU EGYSITESE
+
+Elvegzett lokalis modositas:
+- A kezdo onboarding kepernyon a "Mar van fiokom, belepek" gomb is bekerult
+  a szabalyzat-elfogadasi kapu ala.
+- A kezdo kepernyorol indulo tovabbvivďż˝ utak igy egysegesen csak akkor
+  nyilnak meg, ha a felhasznalo elfogadta az adatvedelmi tajekoztatot es
+  a hasznalati felteteleket.
+- A belepesi es regisztracios aloldalakrol kikerult az ismetelt piparesz.
+  Az elfogadas erteke az onboarding allapotban tovabbvivodik, kesobb a
+  backendben fiokhoz kotve, idobelyeggel es szabalyzatverzioval rogzitendo.
+- A docs/prototipus-mukodes.md rogzitette az uj szabalyzat-kaput es az
+  aloldali pipaismetles megszunteteset.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-welcome-privacy-gate-v276.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 MODAL MELLETT AKTIV PROTOTIPUS TESZTESZKOZOK
+
+Elvegzett lokalis modositas:
+- A kozos rendszeruzenet ablak tovabbra is app-szintu modalis blokkot ad:
+  a fo app-reszek inert allapotba kerulnek, es az app hatterfolyamatai nem
+  kaphatnak kattintast, billentyut, inputot vagy submit esemenyt.
+- Desktop bongeszos prototipus-nezetben a fejlesztoi elonezeti eszkozok
+  kivetelek lettek: a kepernyomeret-valaszto, a meretezo fogoka, a reset
+  gomb es a prototype-frame nativ meretezese nyitott rendszeruzenet mellett
+  is hasznalhato, hogy tesztelheto legyen a reszponziv megjelenes.
+- A meretezo fogoka nyitott rendszeruzenetnel a modal retege fole kerul,
+  hogy tenylegesen megkaphassa a huzasi esemenyt a desktop elonezetben.
+- A docs/prototipus-mukodes.md rogzitette ezt a kivetelt a rendszeruzenet
+  modalitasi szabalyanal.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-modal-preview-tools-v275.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 REJTETT GOMBOK GLOBALIS JAVITASA
+
+Elvegzett lokalis modositas:
+- A globalis gombstilusok utan bekerult egy eros `[hidden]` CSS-szabaly,
+  hogy rejtett primary/secondary/text gombok sehol az appban ne rajzoljanak
+  ures keretet vagy helyet.
+- A rendszeruzenet ablak masodlagos gombja csak akkor latszik, ha tenyleg
+  van masodlagos muvelet.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-hidden-fix-v273.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 RENDSZERUZENET APP-SZINTU HATTERBLOKKOLAS
+
+Elvegzett lokalis modositas:
+- A kozos felugro rendszeruzenet aktiv allapotban app-szinten blokkolja
+  a hatterinterakciokat: a fo app-reszek inert allapotba kerulnek, es a
+  hatterkattintasok, billentyuk, inputok es submit esemenyek nem futhatnak le.
+- A kezdo onboarding szabalyzat-elfogadashoz kotott gombjai kozos
+  rendszeruzenetet nyitnak, ha nincs elfogadva a szabalyzat.
+- A "Mar van fiokom, belepek" utvonal nem kapott uj szabalyzat-blokkot,
+  mert meglevo fioknal a felhasznalo ezt korabban mar elfogadta.
+- A docs/prototipus-mukodes.md rogzitette a rendszeruzenet app-szintu
+  felfuggeszto mukodeset es az onboarding szabalyzat-kivetelt.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-message-block-v272.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 INDEX KARAKTERJAVITAS ES RENDSZERUZENET DOKUMENTACIO
+
+Elvegzett lokalis modositas:
+- Az index.html kozos app-vazaban javitva lett a Hďż˝rbeszďż˝d nev, a
+  Felolvasďż˝ / Hďż˝rfolyam / Beďż˝llďż˝tďż˝sok felirat, a vissza nyil es a
+  rendszeruzenet alap statikus szovege.
+- A kozos HTML-vaz kritikus szovegei HTML-entitasokra lettek atirva,
+  hogy egy jovobeli marker/cache frissites ne torje el ujra az ekezetes
+  es ikonkaraktereket.
+- A docs/prototipus-mukodes.md 9. szakasza dokumentalja a kozos
+  felugro rendszeruzenet ablakot, a hasznalati szabalyokat es az elso
+  bekotott peldat.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-message-encoding-v271.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 APP-SZINTU RENDSZERUZENET ABLAK
+
+Elvegzett lokalis modositas:
+- Bekerult egy kozos, app-szintu rendszeruzenet ablak, amely sotet es
+  vilagos temaban is az app megjelenesehez igazodik.
+- A rendszeruzenet ablak globalisan hivhato: window.showAppMessage(...).
+- A regisztracios e-mail mezo probakeppen formatumellenorzest kapott.
+- Hibas e-mail formatumnal a mezo korall hibakeretet es mezo alatti
+  hibaszoveget kap, es megjelenik a kozos rendszeruzenet ablak.
+- Az onboarding vedoreteg is ellenorzi az e-mail formatumot, igy hibas
+  cimmel nem lep tovabb a kodmegerosito ablakra.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-app-message-v270.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 KODMEGEROSITES GOMB TENYLEGESEN REJTVE
+
+Elvegzett lokalis modositas:
+- A kodablak "Megerosites" gombja 6 szamjegy elott mar vizualisan sem
+  jelenik meg, nem csak inaktiv.
+- Az onboarding gombokra vonatkozo eros CSS-szabalyt kulon feluliras kezeli
+  a rejtett kodmegerosito gombnal.
+- Az ellenorzo kod mezo helyorzoje 123456 helyett ------ lett.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-code-hidden-v268.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 KODMEGEROSITES CSAK 6 SZAMJEGY UTAN
+
+Elvegzett lokalis modositas:
+- A kodablak "Megerosites" gombja mar csak akkor jelenik meg, ha az
+  ellenorzo kod mezoben pontosan 6 szamjegy van.
+- A kodmezobe tovabbra is csak szam kerulhet, legfeljebb 6 karakterig.
+- A megerosito muvelet mindket auth/onboarding agban ellenorzi a 6
+  szamjegyes feltetelt.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-code-six-v267.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 KODABLAK VISSZAGOMB ES MEGEROSITES GOMB
+
+Elvegzett lokalis modositas:
+- A regisztracios kodablak cime "E-mail cim megerositese" lett,
+  alcime "Regisztracio megerositese".
+- A kodablak felso kartyaja a regisztracios oldalhoz igazodik:
+  nincs ikon, nincs kicker, csak cim es rovid instrukcio.
+- A kodablak visszagombja onboarding regisztracional mar csak egy
+  szintet lep vissza, a "Fiok letrehozasa" oldalra.
+- Az ellenorzo kod mezo csak szamokat tarthat meg, legfeljebb 6 karakterig.
+- A "Megerosites" gomb alapbol rejtett es tiltott; csak akkor jelenik
+  meg, ha a kod mezoben legalabb egy szam szerepel.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-code-step-v266.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 REGISZTRACIOS KARTYASZOVEG RENDEZVE
+
+Elvegzett lokalis modositas:
+- A "Fiok letrehozasa" oldal felso kartyaszovege at lett fogalmazva,
+  hogy ne ismetlodjon az "add meg / megadott / megadnod" szerkezet.
+- Uj kartya szoveg:
+  "Toltsd ki az urlapot, majd erositsd meg a fiokod. A kovetkezo
+  lepesben 6 jegyu kodot kuldunk az e-mail cimedre. Ird be ezt a
+  kodot a felugro ablakba."
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-register-copy-v265.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 REGISZTRACIOS KARTYA KODMEGADASI SEGEDLET
+
+Elvegzett lokalis modositas:
+- A "Fiok letrehozasa" oldal felso kartyajan a regisztracios
+  tajekoztato szoveg vege kiegeszult azzal, hogy a felugro ablakban
+  kell megadni az e-mailben erkezo visszaigazolo kodot.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-register-code-help-v264.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 REGISZTRACIOS KARTYA IKON NELKUL
+
+Elvegzett lokalis modositas:
+- A "Fiok letrehozasa" oldal felso regisztracios kartyajabol kikerult
+  az ikon es a kulon kicker felirat.
+- A kartya cime:
+  E-mail regisztracio.
+- A korabbi cim szoveges utasitas lett a kartyaban:
+  "Add meg az adataidat, majd erositsd meg a fiokod..."
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-register-card-v263.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 REGISZTRACIO VEGLEGES SZOVEG ES PRIVACY STILUS
+
+Elvegzett lokalis modositas:
+- A "Fiok letrehozasa" oldal informacios kartyajabol kikerult a
+  prototipus/proba jellegu mondat.
+- Uj regisztracios kartya szoveg:
+  "A kovetkezo lepesben egy 6 jegyu visszaigazolo kod erkezik a
+  megadott e-mail cimedre."
+- A kodmegerosito oldal szovege is vegleges app-szeru lett mindket
+  auth/onboarding agban: a visszaigazolo kodot a megadott e-mail cimre
+  kuldjuk.
+- A regisztracios oldal adatvedelmi elfogado blokkja a kezdokepernyo
+  privacy-check elrendezeset kapta meg.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-register-final-v262.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 REGISZTRACIOS OLDAL INFORMACIOSITVA
+
+Elvegzett lokalis modositas:
+- A "Fiok letrehozasa" oldal alcime:
+  Regisztracio e-mail cimmel.
+- A felso auth kartya marketinges szovege helyett regisztracios tajekoztato
+  kerult be: az adatok megadasa utan 6 jegyu visszaigazolo kod kovetkezik,
+  a prototipusban barmilyen kod elfogadott, a vegleges appban e-mailben
+  erkezik.
+- A regisztracios oldalon megmaradt a nev, e-mail cim, jelszo urlap,
+  az adatvedelmi elfogadas kozos kezdolapi komponense es egyetlen
+  "Regisztracio" gomb.
+- Kikerult a "gyors regisztracio" felirat, a kozossegi gombkeszlet es
+  a "Mar van fiokom" opcio errol az oldalrol.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-register-info-v260.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 EMAIL-ALAPU AUTH, TELEFONSZAM KIVEVE
+
+Elvegzett lokalis modositas:
+- A kezdokepernyon az emailes/telefonos regisztracios gomb uj felirata:
+  Regisztracio e-mail cimmel.
+- A regisztracios es belepesi folyamatbol kikerult a telefonszamos mezĹ‘
+  es a telefonszamos/SMS-es szovegezesi ag.
+- Az emailes auth provider felirata "Email" lett az eddigi
+  "Email / telefon" helyett.
+- A jelszo-visszaallitas es a ketlepcsos azonositas szovegei is
+  e-mail alapura valtoztak.
+- A Beallitasok ketlepcsos vedelem paneljen mar csak az e-mail kod
+  szerepel ellenorzesi modkent.
+- A regi lokalis allapotbol erkezo "Email / telefon" provider es
+  telefonszamos ketlepcsos beallitas indulaskor e-mailes ertekre
+  normalizalodik.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-email-only-auth-v259.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 KOZOSSEGI GOMBOK FOLYTATAS FELIRAT
+
+Elvegzett lokalis modositas:
+- A kozossegi gombkeszlet feliratai "Belepes ... fiokkal" helyett
+  "Folytatas ... fiokkal" formara valtoztak.
+- Erintett gombok:
+  Folytatas Google-fiokkal,
+  Folytatas Facebook-fiokkal,
+  Folytatas Apple-fiokkal.
+- A modositas a socialButtons() kozos komponensben tortent, ezert minden
+  auth feluleten ervenyes, ahol a kozossegi gombkeszlet megjelenik.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-community-continue-v258.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 ONBOARDING FOLYAMATABRA HTML TOROLVE
+
+Elvegzett lokalis modositas:
+- A korabban letrehozott docs/onboarding-folyamatabra.html fajl torolve lett.
+- A PROTOTYPE.md fajlszerkezeti hivatkozasabol kikerult az onboarding
+  folyamatabra HTML dokumentum.
+- A projektallapotbol kikerultek a kulon HTML folyamatabra letrehozasarol
+  es atalakitasarol szolo elavult bejegyzesek.
+- Innentol az onboarding folyamatabra egyszeru, chatben megjelenitett
+  Mermaid abrakent hasznalando, nem kulon HTML oldalkent.
+- Ez dokumentacios/takaritasi modositas, futasi asset marker nem valtozott.
+- GitHubra nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 ONBOARDING FRISS INDULAS SZABALY
+
+Elvegzett lokalis modositas:
+- Uj onboarding biztonsagi szabaly kerult be a prototipusba:
+  ha az elso hasznalati onboarding nincs teljesen befejezve, uj betolteskor
+  vagy kenyszeru onboarding-visszanyitaskor mindig az udvozlo /
+  regisztracios onboarding kepernyo nyilik.
+- Felkesz belepesi, fiokletrehozasi, ketlepcsos, csomagvalasztasi vagy
+  RSS-forrasvalasztasi allapotbol nem lehet tartos visszateresi pont.
+- A felkesz onboarding indulaskor torli a reszleges auth, subscription,
+  RSS-forras/temavalasztasi es onboarding lepesallapotot; a belso appba csak completed=true es
+  required=false utan lehet visszaterni.
+- Frissult dokumentaciok: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-onboarding-fresh-start-v257.
+- Ellenorizve: prototype-auth.js es sw.js szintaxis rendben; helyi szerver
+  200-as valasszal az uj v257 markert adja; bongeszoben felkesz
+  regisztracios allapotbol frissites utan az udvozlo oldal nyilik; az
+  eloremeno ut az udvozlo oldalrol a csomagvalasztasig mukodik.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 ONBOARDING BELEPES VISSZAGOMB
+
+Elvegzett lokalis modositas:
+- A kotelezo onboarding "Mar van fiokom, belepek" belepesi oldalan a bal
+  felso visszagomb mar az udvozlo / regisztracios onboarding oldalra visz.
+- A javitas ugyanazt az auth-urlap visszalepesi szabalyt hasznalja, mint a
+  "Fiok letrehozasa" oldal: a regisztracios es belepesi urlaprol is az elso
+  onboarding valaszto oldalra lehet visszaterni.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-onboarding-login-back-v256.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 ONBOARDING REGISZTRACIO VISSZAGOMB
+
+Elvegzett lokalis modositas:
+- A kotelezo onboarding "Fiok letrehozasa" regisztracios oldalan a bal felso
+  visszagomb mar nem ugyanarra az oldalra nyit vissza.
+- Ha onboarding kozben a regisztracios urlap latszik, a visszagomb az
+  onboarding kezdo / regisztracios valaszto oldalra visz.
+- A javitas csak az onboarding regisztracios urlapra szukitett; az RSS,
+  csomagvalaszto es normal appos sheet visszagombok nem kaptak uj
+  viselkedest.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-onboarding-register-back-v255.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 ONBOARDING MENUZAR ES URESKEPERNYO MENTES
+
+Elvegzett lokalis modositas:
+- Onboarding-active allapotban a bottom-nav minden nezetben display:none!important
+  lett, igy foldable/tablet oldalso menu sem tud megjelenni onboarding alatt.
+- Az onboarding kapott lathatosagi ort: ha onboarding aktiv, de a sheet
+  bezarodik vagy ures allapotba kerul, automatikusan visszanyitja az
+  aktualis onboarding lepest.
+- Normal app allapotban, ha a fonezet uresen maradna, megjelenik egy
+  helyreallito panel "Beallitasok megnyitasa" gombbal.
+- A helyreallito gomb a Beallitasok route-ra visz.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-onboarding-lock-recovery-v254.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 KEZDOKEPNYOS EMAIL GOMB STANDARD
+
+Elvegzett lokalis modositas:
+- A kezdokepernyon az "Emailes vagy telefonos regisztracio" gomb
+  kikerult a korall CTA stilusbol.
+- A gomb most standard/secondary gombkent jelenik meg, ugyanugy mint a
+  "Mar van fiokom, belepek" gomb.
+- A tenyleges regisztracios urlapon a "Regisztracio es kod kuldese"
+  CTA maradt korall, mert az mar lezaro muveleti gomb.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-welcome-email-standard-v252.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 KOZOSSEGI GOMBKESZLET
+
+Elvegzett lokalis modositas:
+- A Google, Facebook es Apple belepesi gombok kozos, brandelt
+  "kozossegi gombkeszlet" komponensre lettek cserelve.
+- A gombok kozepre igazitott ikon + felirat szerkezetet kaptak, es
+  reszponzivan az app sajat gombjaihoz igazodnak.
+- Vilagos temaban: Google feher, Facebook kek, Apple fekete.
+- Sotet/onboarding temaban: Google dark, Facebook kek, Apple fekete
+  feher kerettel.
+- A kozossegi gombkeszlet minden auth feluleten a socialButtons()
+  kozos komponensbol jelenik meg.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-community-buttons-v251.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 ONBOARDING FIX SOTET TEMA ES APPLE GOMB
+
+Elvegzett lokalis modositas:
+- Az onboarding-active allapot sajat sotet tema CSS-valtozokat kapott, igy
+  az onboarding kepernyok az app tema beallitasatol fuggetlenul sotet modban
+  futnak.
+- Az Apple belepesi gomb globalis auth stilusa frissult: sotet hatter,
+  feher keret es feher szoveg. A korabbi sotet temas feher Apple gomb
+  feluliras kikerult.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-onboarding-dark-v250.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 ONBOARDING RSS FORRASGOMB HELYE
+
+Elvegzett lokalis modositas:
+- Az onboarding RSS-forrasvalaszto sheet alcime:
+  "VĂˇlaszd ki az RSS szolgĂˇltatĂłkat."
+- A "+ RSS-forrĂˇs hozzĂˇadĂˇsa" gomb kikerult a sticky also muveleti savbol,
+  es a forraslista ala kerult normal, kepernyovel egyutt gorgetheto elemkent.
+- A sticky also muveleti savban csak a "ForrĂˇsok mentĂ©se Ă©s tovĂˇbb" gomb
+  maradt.
+- Az also mentogomb sticky kontenererol lekerult az extra felso es also
+  technikai padding, hogy ne maradjon alatta atlatszo, de helyet foglalo
+  negyzetes blokk.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-onboarding-sources-v249.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 ONBOARDING RSS FORRASVALASZTO FINOMITAS
+
+Elvegzett lokalis modositas:
+- Az onboarding RSS-forrasvalaszto also coral gombjanak uj felirata:
+  "ForrĂˇsok mentĂ©se Ă©s tovĂˇbb".
+- Az "Ăšj RSS-forrĂˇs" gomb uj felirata: "ForrĂˇs hozzĂˇadĂˇsa".
+- A forras hozzaadasa gomb az oldal also muveleti reszebe kerult, a mentes
+  gomb fole.
+- Az also sticky muveleti kontener sotet gradient hattere atlatszora valtozott,
+  hogy ne latszodjon sotet negyzetes blokk a coral gomb alatt.
+- Az RSS-forraslista bal felso visszagombja mar nem tiltja a visszalepest,
+  hanem az elozo onboarding csomagvalaszto oldalra visz. Az RSS-hozzaadas
+  aloldal visszagombja tovabbra is az RSS-forraslistara visz vissza.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-onboarding-sources-v248.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 FOLDABLE WELCOME KEZDOOLDAL ILLESZTES
+
+Elvegzett lokalis modositas:
+- Foldable elonezetben csak az elso onboarding / udvozlo bejelentkezesi
+  kepernyo kapott szukebb also tartalekot es kompaktabb felso kartyat.
+- A cel az, hogy ezen az egy kepernyon foldable meretben ne kelljen
+  gorgetni, mikozben az utolso gomb alatt kb. 32 px biztonsagi hely marad.
+- A szabaly szandekosan a .welcome-screen tartalmu sheetre van szukitve,
+  nem altalanos onboarding vagy app-szintu modositas.
+- A hullamdekor merete es margozasa nem lett modositva.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-foldable-welcome-v247.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 ONBOARDING NYITOKARTYA CHIP FINOMITAS
+
+Elvegzett lokalis modositas:
+- Az elso onboarding / bejelentkezesi oldal felso HĂ­rbeszĂ©d kartyajan a
+  kozepso chip szovege "AI felolvasĂˇs" helyett "FelolvasĂˇs" lett.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-onboarding-chip-v246.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 ONBOARDING NYITOKARTYA SZOVEG
+
+Elvegzett lokalis modositas:
+- Az elso onboarding / bejelentkezesi oldal felso HĂ­rbeszĂ©d kartyajan a cim
+  maradt: "ĂśdvĂ¶zlĂĽnk a jĂ¶vĹ‘ hĂ­rapplikĂˇciĂłjĂˇban."
+- A leiras uj szovege:
+  "Maradj kĂ©pben a friss magyar hĂ­rekkel akkor is, amikor nem a kijelzĹ‘t
+  nĂ©zed. Hallgasd a felolvasĂˇst, vezĂ©reld hanggal az appot, Ă©s kĂ©rdezz rĂˇ
+  az aktualitĂˇsokra az asszisztenstĹ‘l."
+- A harom chip uj szovege:
+  Friss hĂ­rek / AI felolvasĂˇs / HĂ­rasszisztens.
+- A prototipus verzioja maradt 2.004.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.004-onboarding-copy-v245.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+Ellenorizve:
+- prototype-auth.js es sw.js szintaxis rendben.
 
 
 LEGUTOBBI ALLAPOT - 2026-07-03, 2.004 GITHUB PUBLIKALASI PROBA
@@ -164,7 +1192,7 @@ Elvegzett fejlesztes:
   nem oldalso menus nezetben az also menu elrejtodik, az Asszisztens nezet
   leenged a menu helyere, a cset es a teljes composer box pedig a
   billentyuzet teteje fole fut.
-- Alap allonezetben a composer felett es alatt 14 px tavolsag a rogzített
+- Alap allonezetben a composer felett es alatt 14 px tavolsag a rogzĂ­tett
   szabaly; mobil fekvo nezetben kompakt 7 px.
 - A vegleges nativ appban ugyanezt a platform billentyuzet-inset erteke
   alapjan kell mukodtetni.
@@ -303,7 +1331,7 @@ LEGUTOBBI ALLAPOT - 2026-07-01, 2.002 EGYSZERUSITETT CSOMAGMODOSITAS GOMB ES FOR
 
 Elvegzett fejlesztes:
 - A Csomagok es elofizetes oldalon a modosito/jovahagyo muveleti gomb
-  egységes felirata: "Modositas jovahagyasa".
+  egysĂ©ges felirata: "Modositas jovahagyasa".
 - Kivetel az elso inditasi onboarding ingyenes tovabblepes, ahol a gomb:
   "Tovabb az ingyenes hirfolyamra".
 - A kovetkezo csomagra mar beallitott valtas szovege nem napokban
@@ -469,7 +1497,7 @@ Ellenorzendo:
   elofizetesi baseline ne AI Felolvaso proba legyen.
 
 
-LEGUTOBBI ALLAPOT - 2026-07-01, 2.002 EGYSÉGES ELOFIZETES KOZPONT
+LEGUTOBBI ALLAPOT - 2026-07-01, 2.002 EGYSĂ‰GES ELOFIZETES KOZPONT
 
 Elvegzett fejlesztes:
 - app.js: az elofizeteshez egyetlen kozponti Elofizetes oldal keszult.
@@ -488,7 +1516,7 @@ Elvegzett fejlesztes:
   nem a regi kulon onboarding csomagvalasztot.
 - styles.css: az elofizetesi allapotblokk es csomagkartyak a prototipus
   sajat surface/coral/accent stilusat kaptak.
-- ELOFIZETESI_SZABALYZAT.txt 1.2-re frissult, rogziti az egységes
+- ELOFIZETESI_SZABALYZAT.txt 1.2-re frissult, rogziti az egysĂ©ges
   elofizetesi kozpontot.
 - ELOFIZETESI_GOMB_MATRIX.md, PROTOTYPE.md, docs/prototipus-mukodes.md es
   docs/termek-specifikacio.md frissitve az uj oldal- es jovahagyasi logikaval.
@@ -531,382 +1559,382 @@ Ellenorzendo:
 - Aktiv AI Asszisztens elofizetesnel nincs elofizetesi CTA.
 
 
-LEGUTÓBBI ÁLLAPOT - 2026-06-30, 2.002 PROMÓCIÓS ÉS ELŐFIZETÉSI LOGIKA
+LEGUTĂ“BBI ĂLLAPOT - 2026-06-30, 2.002 PROMĂ“CIĂ“S Ă‰S ELĹFIZETĂ‰SI LOGIKA
 
-Elvégzett fejlesztés:
-- app.js: bekerült a három belső, hírszerű promóhír:
-  AI Felolvasó, AI Asszisztens előfizetés, AI Asszisztens 5 kérdéses heti próba.
-- app.js: a hírfolyam jogosultság szerint sorolja be a promóhíreket.
-  Ingyenes/lejárt/fizetési hiba állapotban a Felolvasó promo a 2.,
-  az Asszisztens promo a 4. helyre kerülhet.
-  Aktív AI Felolvasó előfizetőnél az Asszisztens promo a 2.,
-  a heti 5 kérdéses próba promo a 4. helyre kerülhet.
-- app.js: a Promóciók / Hírfolyam promo előresorolás kapcsoló megmaradt,
-  és csak az első kiemelt helyezést kapcsolja, a későbbi szabályozott
-  promómegjelenés ettől függetlenül tesztelhető.
-- app.js: előfizetés nélküli Felolvasó belépéskor Felolvasó promo mód nyílik,
-  amely csak a Felolvasó és Asszisztens promóhíreket váltogatja.
-- app.js: előfizetés nélküli Asszisztens belépéskor Asszisztens promo mód nyílik,
-  amely csak előfizetési kérdésekre válaszol, és minden asszisztensválasz
-  előfizetési gombot ad.
-- app.js: az AI Felolvasó előfizetők heti 5 kérdéses Asszisztens próbája
-  már nem automatikusan minden 20 hír után, hanem a saját promóhírén keresztül
-  indul, illetve a Felolvasó a próba promóhír végén kérdezhet rá.
-- prototype-topics.js, prototype-settings.js és prototype-auth.js: a Beállítások listába és panelbe
-  bekerült a Promóciók menüpont.
-- styles.css: a promókártya hírszerű maradt, coral kerettel és Kipróbálás gombbal.
-- ELOFIZETESI_SZABALYZAT.txt: verzió 1.1, friss promóciós és próbalogika.
+ElvĂ©gzett fejlesztĂ©s:
+- app.js: bekerĂĽlt a hĂˇrom belsĹ‘, hĂ­rszerĹ± promĂłhĂ­r:
+  AI FelolvasĂł, AI Asszisztens elĹ‘fizetĂ©s, AI Asszisztens 5 kĂ©rdĂ©ses heti prĂłba.
+- app.js: a hĂ­rfolyam jogosultsĂˇg szerint sorolja be a promĂłhĂ­reket.
+  Ingyenes/lejĂˇrt/fizetĂ©si hiba Ăˇllapotban a FelolvasĂł promo a 2.,
+  az Asszisztens promo a 4. helyre kerĂĽlhet.
+  AktĂ­v AI FelolvasĂł elĹ‘fizetĹ‘nĂ©l az Asszisztens promo a 2.,
+  a heti 5 kĂ©rdĂ©ses prĂłba promo a 4. helyre kerĂĽlhet.
+- app.js: a PromĂłciĂłk / HĂ­rfolyam promo elĹ‘resorolĂˇs kapcsolĂł megmaradt,
+  Ă©s csak az elsĹ‘ kiemelt helyezĂ©st kapcsolja, a kĂ©sĹ‘bbi szabĂˇlyozott
+  promĂłmegjelenĂ©s ettĹ‘l fĂĽggetlenĂĽl tesztelhetĹ‘.
+- app.js: elĹ‘fizetĂ©s nĂ©lkĂĽli FelolvasĂł belĂ©pĂ©skor FelolvasĂł promo mĂłd nyĂ­lik,
+  amely csak a FelolvasĂł Ă©s Asszisztens promĂłhĂ­reket vĂˇltogatja.
+- app.js: elĹ‘fizetĂ©s nĂ©lkĂĽli Asszisztens belĂ©pĂ©skor Asszisztens promo mĂłd nyĂ­lik,
+  amely csak elĹ‘fizetĂ©si kĂ©rdĂ©sekre vĂˇlaszol, Ă©s minden asszisztensvĂˇlasz
+  elĹ‘fizetĂ©si gombot ad.
+- app.js: az AI FelolvasĂł elĹ‘fizetĹ‘k heti 5 kĂ©rdĂ©ses Asszisztens prĂłbĂˇja
+  mĂˇr nem automatikusan minden 20 hĂ­r utĂˇn, hanem a sajĂˇt promĂłhĂ­rĂ©n keresztĂĽl
+  indul, illetve a FelolvasĂł a prĂłba promĂłhĂ­r vĂ©gĂ©n kĂ©rdezhet rĂˇ.
+- prototype-topics.js, prototype-settings.js Ă©s prototype-auth.js: a BeĂˇllĂ­tĂˇsok listĂˇba Ă©s panelbe
+  bekerĂĽlt a PromĂłciĂłk menĂĽpont.
+- styles.css: a promĂłkĂˇrtya hĂ­rszerĹ± maradt, coral kerettel Ă©s KiprĂłbĂˇlĂˇs gombbal.
+- ELOFIZETESI_SZABALYZAT.txt: verziĂł 1.1, friss promĂłciĂłs Ă©s prĂłbalogika.
 - PROTOTYPE.md, docs/prototipus-mukodes.md, docs/termek-specifikacio.md:
-  frissítve a csomagfüggő indulással, Promóciók panellel és kedvelés elnevezéssel.
+  frissĂ­tve a csomagfĂĽggĹ‘ indulĂˇssal, PromĂłciĂłk panellel Ă©s kedvelĂ©s elnevezĂ©ssel.
 
-Következő biztonságos ellenőrzés:
-- helyi böngészőben cache-busttal megnyitni;
-- Hírfolyam: ingyenes állapotban 2. és 4. promo látszik-e;
-- Beállítások / Promóciók: előresorolás kapcsoló működik-e;
-- Felolvasó: előfizetés nélkül csak a két promóhírt váltogatja-e;
-- Asszisztens: előfizetés nélkül csak előfizetési kérdésekre válaszol-e;
-- AI Felolvasó előfizető tesztállapotban megjelenik-e a heti 5 kérdéses próba promo.
+KĂ¶vetkezĹ‘ biztonsĂˇgos ellenĹ‘rzĂ©s:
+- helyi bĂ¶ngĂ©szĹ‘ben cache-busttal megnyitni;
+- HĂ­rfolyam: ingyenes Ăˇllapotban 2. Ă©s 4. promo lĂˇtszik-e;
+- BeĂˇllĂ­tĂˇsok / PromĂłciĂłk: elĹ‘resorolĂˇs kapcsolĂł mĹ±kĂ¶dik-e;
+- FelolvasĂł: elĹ‘fizetĂ©s nĂ©lkĂĽl csak a kĂ©t promĂłhĂ­rt vĂˇltogatja-e;
+- Asszisztens: elĹ‘fizetĂ©s nĂ©lkĂĽl csak elĹ‘fizetĂ©si kĂ©rdĂ©sekre vĂˇlaszol-e;
+- AI FelolvasĂł elĹ‘fizetĹ‘ tesztĂˇllapotban megjelenik-e a heti 5 kĂ©rdĂ©ses prĂłba promo.
 
 
-1. AKTUÁLIS PROJEKT HELYE
+1. AKTUĂLIS PROJEKT HELYE
 
-Elsődleges projektmappa:
-C:\Users\mulik\Documents\Fejlesztés\Hírbeszéd
+ElsĹ‘dleges projektmappa:
+C:\Users\mulik\Documents\FejlesztĂ©s\HĂ­rbeszĂ©d
 
-Általános fejlesztői kézikönyv mappája:
-C:\Users\mulik\Documents\Fejlesztés\Fejlesztői környezet
+ĂltalĂˇnos fejlesztĹ‘i kĂ©zikĂ¶nyv mappĂˇja:
+C:\Users\mulik\Documents\FejlesztĂ©s\FejlesztĹ‘i kĂ¶rnyezet
 
-Legutóbbi fejlesztői kézikönyv:
-C:\Users\mulik\Documents\Fejlesztés\Fejlesztői környezet\Mobil prototípus fejlesztői környezet kézikönyv v4.txt
+LegutĂłbbi fejlesztĹ‘i kĂ©zikĂ¶nyv:
+C:\Users\mulik\Documents\FejlesztĂ©s\FejlesztĹ‘i kĂ¶rnyezet\Mobil prototĂ­pus fejlesztĹ‘i kĂ¶rnyezet kĂ©zikĂ¶nyv v4.txt
 
-Régi projektmappa:
-C:\Users\mulik\Documents\Hírbeszéd
+RĂ©gi projektmappa:
+C:\Users\mulik\Documents\HĂ­rbeszĂ©d
 
 Fontos:
-A régi projektmappa törlése gondot okozhat ebben a régi Codex-beszélgetésben,
-mert a beszélgetés eredeti munkakönyvtára ehhez az útvonalhoz kötődött.
-A projekt tartalma már át lett helyezve az új Fejlesztés mappába.
-Ha a régi mappa törlése után Codex azt írja, hogy "A jelenlegi munkakönyvtár hiányzik",
-akkor új Codex-beszélgetést kell indítani az új projektmappából:
-C:\Users\mulik\Documents\Fejlesztés\Hírbeszéd
+A rĂ©gi projektmappa tĂ¶rlĂ©se gondot okozhat ebben a rĂ©gi Codex-beszĂ©lgetĂ©sben,
+mert a beszĂ©lgetĂ©s eredeti munkakĂ¶nyvtĂˇra ehhez az Ăştvonalhoz kĂ¶tĹ‘dĂ¶tt.
+A projekt tartalma mĂˇr Ăˇt lett helyezve az Ăşj FejlesztĂ©s mappĂˇba.
+Ha a rĂ©gi mappa tĂ¶rlĂ©se utĂˇn Codex azt Ă­rja, hogy "A jelenlegi munkakĂ¶nyvtĂˇr hiĂˇnyzik",
+akkor Ăşj Codex-beszĂ©lgetĂ©st kell indĂ­tani az Ăşj projektmappĂˇbĂłl:
+C:\Users\mulik\Documents\FejlesztĂ©s\HĂ­rbeszĂ©d
 
 
 2. MI EZ A PROJEKT?
 
-A Hírbeszéd egy magyar nyelvű RSS hírolvasó mobilalkalmazás terve és kattintható
-HTML prototípusa.
+A HĂ­rbeszĂ©d egy magyar nyelvĹ± RSS hĂ­rolvasĂł mobilalkalmazĂˇs terve Ă©s kattinthatĂł
+HTML prototĂ­pusa.
 
-Az app fő gondolata:
-- hagyományos hírfolyam RSS hírekből;
-- felolvasó, ahol az app automatikusan felolvassa a híreket;
-- szóban vezérelhető navigáció a hírek között;
-- asszisztens / cset mód, ahol a hírekről lehet beszélgetni;
-- beállítások RSS forrásokkal, témákkal, megjelenéssel, értesítésekkel;
-- később Android Auto és Apple CarPlay kompatibilis autós felület;
-- előfizetéses üzleti modell.
+Az app fĹ‘ gondolata:
+- hagyomĂˇnyos hĂ­rfolyam RSS hĂ­rekbĹ‘l;
+- felolvasĂł, ahol az app automatikusan felolvassa a hĂ­reket;
+- szĂłban vezĂ©relhetĹ‘ navigĂˇciĂł a hĂ­rek kĂ¶zĂ¶tt;
+- asszisztens / cset mĂłd, ahol a hĂ­rekrĹ‘l lehet beszĂ©lgetni;
+- beĂˇllĂ­tĂˇsok RSS forrĂˇsokkal, tĂ©mĂˇkkal, megjelenĂ©ssel, Ă©rtesĂ­tĂ©sekkel;
+- kĂ©sĹ‘bb Android Auto Ă©s Apple CarPlay kompatibilis autĂłs felĂĽlet;
+- elĹ‘fizetĂ©ses ĂĽzleti modell.
 
-Első nyelv:
+ElsĹ‘ nyelv:
 Magyar.
 
-Később megtartandó lehetőség:
-Többnyelvű működés.
+KĂ©sĹ‘bb megtartandĂł lehetĹ‘sĂ©g:
+TĂ¶bbnyelvĹ± mĹ±kĂ¶dĂ©s.
 
 
-3. FŐ MENÜPONTOK
+3. FĹ MENĂśPONTOK
 
-Alsó navigáció:
-- Hírfolyam
-- Felolvasó
+AlsĂł navigĂˇciĂł:
+- HĂ­rfolyam
+- FelolvasĂł
 - Asszisztens
-- Beállítások
+- BeĂˇllĂ­tĂˇsok
 
-Alapértelmezett indulási oldal:
-Felolvasó.
+AlapĂ©rtelmezett indulĂˇsi oldal:
+FelolvasĂł.
 
-Alapértelmezett felolvasó állapot:
+AlapĂ©rtelmezett felolvasĂł Ăˇllapot:
 - mikrofon bekapcsolva;
-- felolvasás bekapcsolva;
-- automatikus hírléptetés bekapcsolva.
+- felolvasĂˇs bekapcsolva;
+- automatikus hĂ­rlĂ©ptetĂ©s bekapcsolva.
 
 
-4. AUTÓS MÓD LÉNYEGE
+4. AUTĂ“S MĂ“D LĂ‰NYEGE
 
-A felolvasó a hírfolyamból veszi a legfrissebb hírt.
+A felolvasĂł a hĂ­rfolyambĂłl veszi a legfrissebb hĂ­rt.
 
 Megjelenik:
-- a hír RSS képe vagy prototípusban általános hírképe;
-- a hír címe;
-- a forrás és idő;
-- beszédet imitáló hullámzó / mozgó vonalak, fontos látványelemként.
+- a hĂ­r RSS kĂ©pe vagy prototĂ­pusban ĂˇltalĂˇnos hĂ­rkĂ©pe;
+- a hĂ­r cĂ­me;
+- a forrĂˇs Ă©s idĹ‘;
+- beszĂ©det imitĂˇlĂł hullĂˇmzĂł / mozgĂł vonalak, fontos lĂˇtvĂˇnyelemkĂ©nt.
 
-A felolvasás:
-- alapból csak a rövid tartalmat olvassa fel;
-- ha a felhasználó részleteket kér, akkor mehet bővebb felolvasás;
-- ha nincs reakció, automatikusan jön a következő hír.
+A felolvasĂˇs:
+- alapbĂłl csak a rĂ¶vid tartalmat olvassa fel;
+- ha a felhasznĂˇlĂł rĂ©szleteket kĂ©r, akkor mehet bĹ‘vebb felolvasĂˇs;
+- ha nincs reakciĂł, automatikusan jĂ¶n a kĂ¶vetkezĹ‘ hĂ­r.
 
-Hangutasítások gondolata:
-- következő hír;
-- előző hír;
-- állj meg;
+HangutasĂ­tĂˇsok gondolata:
+- kĂ¶vetkezĹ‘ hĂ­r;
+- elĹ‘zĹ‘ hĂ­r;
+- Ăˇllj meg;
 - folytasd;
-- részletek;
+- rĂ©szletek;
 - mentsd el;
 - mikrofon ki / be;
-- hírléptető ki / be.
+- hĂ­rlĂ©ptetĹ‘ ki / be.
 
-Felolvasó három nagy gombja:
+FelolvasĂł hĂˇrom nagy gombja:
 - Mikrofon
-- Felolvasás
-- Hírléptető aktív / Hírléptető kikapcsolt
+- FelolvasĂˇs
+- HĂ­rlĂ©ptetĹ‘ aktĂ­v / HĂ­rlĂ©ptetĹ‘ kikapcsolt
 
-Utolsó UI döntés:
-- a Felolvasás gomb középen van;
-- a Hírléptető jobb oldalon van;
-- a Hírléptető ikonja előreléptető / lejátszó jellegű;
-- inaktív állapotban piros áthúzást kap;
-- a beszédet imitáló hullámzás legyen nagy és látványos;
-- a korallszínű csíkok legyenek jobban elosztva, ne egy kupacban.
+UtolsĂł UI dĂ¶ntĂ©s:
+- a FelolvasĂˇs gomb kĂ¶zĂ©pen van;
+- a HĂ­rlĂ©ptetĹ‘ jobb oldalon van;
+- a HĂ­rlĂ©ptetĹ‘ ikonja elĹ‘relĂ©ptetĹ‘ / lejĂˇtszĂł jellegĹ±;
+- inaktĂ­v Ăˇllapotban piros ĂˇthĂşzĂˇst kap;
+- a beszĂ©det imitĂˇlĂł hullĂˇmzĂˇs legyen nagy Ă©s lĂˇtvĂˇnyos;
+- a korallszĂ­nĹ± csĂ­kok legyenek jobban elosztva, ne egy kupacban.
 
-Fontos működési elv:
-Ha a felolvasóban megy a felolvasás, és a felhasználó alsó menüvel másik oldalra lép,
-akkor a felolvasás álljon meg ÉS az oldalváltás is történjen meg egyetlen érintésre.
-
-
-5. HÍRFOLYAM
-
-A hírfolyam RSS forrásokból tölti be a híreket.
-
-Működés:
-- friss hírek fent;
-- régebbiek lefelé;
-- közösségi app-szerű görgethető feed;
-- hírkártyák rövid szöveggel és képpel;
-- kattintásra hírrészlet oldal;
-- megnyitott / meghallgatott hír olvasottnak számít;
-- átugrott hír is mehet olvasottba;
-- lehessen menteni későbbi olvasásra;
-- mentett hírek és előzmények fontosak a későbbi személyre szabáshoz.
-
-Fontos javítási előzmény:
-Korábban több gomb rossz helyre, a Megjelenés / színbeállítás oldalra vitt.
-Ezt az irányt mindig ellenőrizni kell, ha új aktív elemek kerülnek be.
+Fontos mĹ±kĂ¶dĂ©si elv:
+Ha a felolvasĂłban megy a felolvasĂˇs, Ă©s a felhasznĂˇlĂł alsĂł menĂĽvel mĂˇsik oldalra lĂ©p,
+akkor a felolvasĂˇs Ăˇlljon meg Ă‰S az oldalvĂˇltĂˇs is tĂ¶rtĂ©njen meg egyetlen Ă©rintĂ©sre.
 
 
-6. BEÁLLÍTÁSOK
+5. HĂŤRFOLYAM
 
-Fontos beállítási területek:
-- RSS források;
-- témák;
-- értesítések;
-- megjelenés;
-- adatforgalom / frissítési gyakoriság;
-- fiók és biztonság;
-- előfizetés;
-- prototípus adatok törlése.
+A hĂ­rfolyam RSS forrĂˇsokbĂłl tĂ¶lti be a hĂ­reket.
 
-Prototípus adatok törlése:
-Ideiglenesen külön menüpontként legyen elérhető a Beállításokban.
-Teszteléshez törli az állapotot, mintha az appot először indítanánk.
-Törlés után újra meg kell jelenjen a regisztráció / onboarding és az előfizetés / próbaidő folyamat.
+MĹ±kĂ¶dĂ©s:
+- friss hĂ­rek fent;
+- rĂ©gebbiek lefelĂ©;
+- kĂ¶zĂ¶ssĂ©gi app-szerĹ± gĂ¶rgethetĹ‘ feed;
+- hĂ­rkĂˇrtyĂˇk rĂ¶vid szĂ¶veggel Ă©s kĂ©ppel;
+- kattintĂˇsra hĂ­rrĂ©szlet oldal;
+- megnyitott / meghallgatott hĂ­r olvasottnak szĂˇmĂ­t;
+- Ăˇtugrott hĂ­r is mehet olvasottba;
+- lehessen menteni kĂ©sĹ‘bbi olvasĂˇsra;
+- mentett hĂ­rek Ă©s elĹ‘zmĂ©nyek fontosak a kĂ©sĹ‘bbi szemĂ©lyre szabĂˇshoz.
 
-Fiók és biztonság:
-A kisbetűs "prototípus-fiók" felirat helyett állapotot mutasson:
+Fontos javĂ­tĂˇsi elĹ‘zmĂ©ny:
+KorĂˇbban tĂ¶bb gomb rossz helyre, a MegjelenĂ©s / szĂ­nbeĂˇllĂ­tĂˇs oldalra vitt.
+Ezt az irĂˇnyt mindig ellenĹ‘rizni kell, ha Ăşj aktĂ­v elemek kerĂĽlnek be.
+
+
+6. BEĂLLĂŤTĂSOK
+
+Fontos beĂˇllĂ­tĂˇsi terĂĽletek:
+- RSS forrĂˇsok;
+- tĂ©mĂˇk;
+- Ă©rtesĂ­tĂ©sek;
+- megjelenĂ©s;
+- adatforgalom / frissĂ­tĂ©si gyakorisĂˇg;
+- fiĂłk Ă©s biztonsĂˇg;
+- elĹ‘fizetĂ©s;
+- prototĂ­pus adatok tĂ¶rlĂ©se.
+
+PrototĂ­pus adatok tĂ¶rlĂ©se:
+Ideiglenesen kĂĽlĂ¶n menĂĽpontkĂ©nt legyen elĂ©rhetĹ‘ a BeĂˇllĂ­tĂˇsokban.
+TesztelĂ©shez tĂ¶rli az Ăˇllapotot, mintha az appot elĹ‘szĂ¶r indĂ­tanĂˇnk.
+TĂ¶rlĂ©s utĂˇn Ăşjra meg kell jelenjen a regisztrĂˇciĂł / onboarding Ă©s az elĹ‘fizetĂ©s / prĂłbaidĹ‘ folyamat.
+
+FiĂłk Ă©s biztonsĂˇg:
+A kisbetĹ±s "prototĂ­pus-fiĂłk" felirat helyett Ăˇllapotot mutasson:
 - Bejelentkezve
 vagy
 - Kijelentkezve
 
 
-7. TÉMÁK
+7. TĂ‰MĂK
 
-A témák egy topics.json fájlban szerepelnek.
+A tĂ©mĂˇk egy topics.json fĂˇjlban szerepelnek.
 
-Jelenlegi témák:
+Jelenlegi tĂ©mĂˇk:
 - Friss
-- Belföld
-- Külföld
-- Gazdaság
-- Pénz
-- Vállalkozás
+- BelfĂ¶ld
+- KĂĽlfĂ¶ld
+- GazdasĂˇg
+- PĂ©nz
+- VĂˇllalkozĂˇs
 - Tech & AI
-- Időjárás
-- Közlekedés
+- IdĹ‘jĂˇrĂˇs
+- KĂ¶zlekedĂ©s
 - Ingatlan
 - Munka
-- Egészség
-- Oktatás
+- EgĂ©szsĂ©g
+- OktatĂˇs
 - Sport
-- Kultúra
-- Bulvár
-- Autó
-- Zöld
+- KultĂşra
+- BulvĂˇr
+- AutĂł
+- ZĂ¶ld
 - Jog
 - Helyi
 
-Fontos UI döntés:
-A képernyők tetején megjelenő témachipek, ha nem férnek ki, oldalirányban görgethetők legyenek.
+Fontos UI dĂ¶ntĂ©s:
+A kĂ©pernyĹ‘k tetejĂ©n megjelenĹ‘ tĂ©machipek, ha nem fĂ©rnek ki, oldalirĂˇnyban gĂ¶rgethetĹ‘k legyenek.
 
 
-8. REGISZTRÁCIÓ ÉS BELÉPÉS
+8. REGISZTRĂCIĂ“ Ă‰S BELĂ‰PĂ‰S
 
-Az appban legyen regisztráció / belépés.
+Az appban legyen regisztrĂˇciĂł / belĂ©pĂ©s.
 
-Belépési lehetőségek:
+BelĂ©pĂ©si lehetĹ‘sĂ©gek:
 - Google
 - Facebook
 - Apple
 - email
-- telefonszám
+- telefonszĂˇm
 
-Magyar piacon a Facebook belépés fontos, ne maradjon ki.
-Apple belépés is legyen, mert iOS / App Store környezetben szükséges lehet.
+Magyar piacon a Facebook belĂ©pĂ©s fontos, ne maradjon ki.
+Apple belĂ©pĂ©s is legyen, mert iOS / App Store kĂ¶rnyezetben szĂĽksĂ©ges lehet.
 
-Email és telefonszám esetén:
-- kétlépcsős azonosítás / megerősítés javasolt;
-- email vagy SMS kódos ellenőrzés később.
+Email Ă©s telefonszĂˇm esetĂ©n:
+- kĂ©tlĂ©pcsĹ‘s azonosĂ­tĂˇs / megerĹ‘sĂ­tĂ©s javasolt;
+- email vagy SMS kĂłdos ellenĹ‘rzĂ©s kĂ©sĹ‘bb.
 
-Regisztrációnál:
-- legyen adatvédelmi elfogadás pipa;
-- legyen link az adatvédelmi oldalra;
-- az adatvédelmi oldal prototípusban készüljön el, a végleges jogi szöveget később kell megírni.
-
-
-9. ONBOARDING / APP NYITÁS
-
-Legyen brandelt nyitóképernyő:
-- Hírbeszéd logó;
-- appnév;
-- marketing jellegű bevezető szöveg, például:
-  "Üdvözlünk a jövő hírapplikációjában."
-
-Fontos vizuális döntés:
-A nyitóképernyő háttere legyen elég sötét ahhoz, hogy a világos szöveg jól olvasható legyen.
-
-A regisztrációs gombok:
-- ne legyenek teljes képernyő szélesek;
-- középen legyenek;
-- azonos szélességűek;
-- egymás alatt.
-
-Apple belépési gomb:
-A felirat előtt ne legyen hibás négyzet karakter.
+RegisztrĂˇciĂłnĂˇl:
+- legyen adatvĂ©delmi elfogadĂˇs pipa;
+- legyen link az adatvĂ©delmi oldalra;
+- az adatvĂ©delmi oldal prototĂ­pusban kĂ©szĂĽljĂ¶n el, a vĂ©gleges jogi szĂ¶veget kĂ©sĹ‘bb kell megĂ­rni.
 
 
-10. ELŐFIZETÉS ÉS PRÓBAIDŐ
+9. ONBOARDING / APP NYITĂS
 
-Üzleti modell:
-- 14 nap próbaidő;
-- Basic csomag: 1500 Ft / hó;
-- Pro csomag: 3500 Ft / hó.
+Legyen brandelt nyitĂłkĂ©pernyĹ‘:
+- HĂ­rbeszĂ©d logĂł;
+- appnĂ©v;
+- marketing jellegĹ± bevezetĹ‘ szĂ¶veg, pĂ©ldĂˇul:
+  "ĂśdvĂ¶zlĂĽnk a jĂ¶vĹ‘ hĂ­rapplikĂˇciĂłjĂˇban."
 
-Fizetés:
-Az appáruházak beépített fizetési rendszere kezelje:
+Fontos vizuĂˇlis dĂ¶ntĂ©s:
+A nyitĂłkĂ©pernyĹ‘ hĂˇttere legyen elĂ©g sĂ¶tĂ©t ahhoz, hogy a vilĂˇgos szĂ¶veg jĂłl olvashatĂł legyen.
+
+A regisztrĂˇciĂłs gombok:
+- ne legyenek teljes kĂ©pernyĹ‘ szĂ©lesek;
+- kĂ¶zĂ©pen legyenek;
+- azonos szĂ©lessĂ©gĹ±ek;
+- egymĂˇs alatt.
+
+Apple belĂ©pĂ©si gomb:
+A felirat elĹ‘tt ne legyen hibĂˇs nĂ©gyzet karakter.
+
+
+10. ELĹFIZETĂ‰S Ă‰S PRĂ“BAIDĹ
+
+Ăśzleti modell:
+- 14 nap prĂłbaidĹ‘;
+- Basic csomag: 1500 Ft / hĂł;
+- Pro csomag: 3500 Ft / hĂł.
+
+FizetĂ©s:
+Az appĂˇruhĂˇzak beĂ©pĂ­tett fizetĂ©si rendszere kezelje:
 - Google Play Billing;
 - Apple In-App Purchase.
 
-Fontos döntés:
-Első indításkor ne kényszerítsen azonnali fizetésre.
-Legyen harmadik opció:
-- Próbaidő megkezdése
+Fontos dĂ¶ntĂ©s:
+ElsĹ‘ indĂ­tĂˇskor ne kĂ©nyszerĂ­tsen azonnali fizetĂ©sre.
+Legyen harmadik opciĂł:
+- PrĂłbaidĹ‘ megkezdĂ©se
 
-Ez legyen az alapértelmezetten kijelölt opció.
+Ez legyen az alapĂ©rtelmezetten kijelĂ¶lt opciĂł.
 
-Előfizetés választó oldal:
+ElĹ‘fizetĂ©s vĂˇlasztĂł oldal:
 - legyen brandelt;
-- legyen szebb, prémiumabb;
+- legyen szebb, prĂ©miumabb;
 - mutassa, hogy melyik csomag mit tud;
-- később a próbaidő lejártakor ugyanez az oldal használható előfizetés választásra.
+- kĂ©sĹ‘bb a prĂłbaidĹ‘ lejĂˇrtakor ugyanez az oldal hasznĂˇlhatĂł elĹ‘fizetĂ©s vĂˇlasztĂˇsra.
 
 Pro csomag:
-- jobb minőségű AI / profi felolvasó hang;
+- jobb minĹ‘sĂ©gĹ± AI / profi felolvasĂł hang;
 - kb. 240 perc Pro hangkeret;
-- a keret után visszavált alap hangra.
+- a keret utĂˇn visszavĂˇlt alap hangra.
 
-Lejárt előfizetés / fizetés elmulasztása:
-Az app álljon meg egy előfizetés választó képernyőn,
-ahol Basic vagy Pro csomag választható.
+LejĂˇrt elĹ‘fizetĂ©s / fizetĂ©s elmulasztĂˇsa:
+Az app Ăˇlljon meg egy elĹ‘fizetĂ©s vĂˇlasztĂł kĂ©pernyĹ‘n,
+ahol Basic vagy Pro csomag vĂˇlaszthatĂł.
 
-Basic felhasználónak:
-Hetente egyszer legyen Pro hang ízelítő, például 3 hír erejéig.
-Ez reklámként mutatja meg a Pro minőségét.
+Basic felhasznĂˇlĂłnak:
+Hetente egyszer legyen Pro hang Ă­zelĂ­tĹ‘, pĂ©ldĂˇul 3 hĂ­r erejĂ©ig.
+Ez reklĂˇmkĂ©nt mutatja meg a Pro minĹ‘sĂ©gĂ©t.
 
 
-11. DESIGN ÉS BRAND
+11. DESIGN Ă‰S BRAND
 
 App neve:
-Hírbeszéd
+HĂ­rbeszĂ©d
 
-Logó:
-Beszédbuborék / hanghullám jellegű ikon.
+LogĂł:
+BeszĂ©dbuborĂ©k / hanghullĂˇm jellegĹ± ikon.
 
-Színvilág:
-- sötét, mély zöldeskék / petrol alap;
-- világos témában finom, világos mentás háttér;
-- korall / narancs kiemelőszín óvatosan használva.
+SzĂ­nvilĂˇg:
+- sĂ¶tĂ©t, mĂ©ly zĂ¶ldeskĂ©k / petrol alap;
+- vilĂˇgos tĂ©mĂˇban finom, vilĂˇgos mentĂˇs hĂˇttĂ©r;
+- korall / narancs kiemelĹ‘szĂ­n Ăłvatosan hasznĂˇlva.
 
-Fontos döntés:
-A korall szín csak óvatosan jelenjen meg:
-- fontos kiemeléseknél;
-- aktív elemeknél;
-- logó / Hír felirat részben;
-- beszédhullám / állapotjelzés részleteiben.
+Fontos dĂ¶ntĂ©s:
+A korall szĂ­n csak Ăłvatosan jelenjen meg:
+- fontos kiemelĂ©seknĂ©l;
+- aktĂ­v elemeknĂ©l;
+- logĂł / HĂ­r felirat rĂ©szben;
+- beszĂ©dhullĂˇm / ĂˇllapotjelzĂ©s rĂ©szleteiben.
 
-Logó / felirat:
-A "Hír" rész legyen narancs / korall színű,
-a "beszéd" rész maradjon világos / fehér vagy témához illő.
+LogĂł / felirat:
+A "HĂ­r" rĂ©sz legyen narancs / korall szĂ­nĹ±,
+a "beszĂ©d" rĂ©sz maradjon vilĂˇgos / fehĂ©r vagy tĂ©mĂˇhoz illĹ‘.
 
-Korábbi design változatokat töröltük / félretettük.
-A végleges irány:
-- legutóbbi logó;
-- sötét és világos téma;
-- finom korall kiemelések.
+KorĂˇbbi design vĂˇltozatokat tĂ¶rĂ¶ltĂĽk / fĂ©lretettĂĽk.
+A vĂ©gleges irĂˇny:
+- legutĂłbbi logĂł;
+- sĂ¶tĂ©t Ă©s vilĂˇgos tĂ©ma;
+- finom korall kiemelĂ©sek.
 
 
-12. HELYI FEJLESZTŐI SZERVER
+12. HELYI FEJLESZTĹI SZERVER
 
-A helyi prototípust egyszerű HTTP szerver szolgálja ki.
+A helyi prototĂ­pust egyszerĹ± HTTP szerver szolgĂˇlja ki.
 
-Helyi cím:
+Helyi cĂ­m:
 http://localhost:8000/
 
-Hálózati / telefonos teszteléshez korábbi LAN cím:
+HĂˇlĂłzati / telefonos tesztelĂ©shez korĂˇbbi LAN cĂ­m:
 http://192.168.90.15:8000/
 
 Fontos:
-A felhasználó nem akar Ctrl+C billentyűparanccsal szervert kezelni.
+A felhasznĂˇlĂł nem akar Ctrl+C billentyĹ±paranccsal szervert kezelni.
 
 Munkafolyamat:
-- ha a felhasználó azt kéri: "indítsd el a helyi szervert",
-  Codex indítja el;
-- ha a felhasználó azt kéri: "állítsd le a szervert",
-  Codex állítja le;
-- a Ctrl+C nem része a normál használatnak.
+- ha a felhasznĂˇlĂł azt kĂ©ri: "indĂ­tsd el a helyi szervert",
+  Codex indĂ­tja el;
+- ha a felhasznĂˇlĂł azt kĂ©ri: "ĂˇllĂ­tsd le a szervert",
+  Codex ĂˇllĂ­tja le;
+- a Ctrl+C nem rĂ©sze a normĂˇl hasznĂˇlatnak.
 
-Legutóbbi állapot:
-A helyi szerver le lett állítva.
-Korábban a 8000-es porton futott, a leállított folyamat azonosítója 20060 volt.
+LegutĂłbbi Ăˇllapot:
+A helyi szerver le lett ĂˇllĂ­tva.
+KorĂˇbban a 8000-es porton futott, a leĂˇllĂ­tott folyamat azonosĂ­tĂłja 20060 volt.
 
 
-13. GITHUB / PUBLIKÁLT PROTOTÍPUS
+13. GITHUB / PUBLIKĂLT PROTOTĂŤPUS
 
-GitHub Pages prototípus:
+GitHub Pages prototĂ­pus:
 https://muliksandor-arch.github.io/hirbeszed-prototipus/
 
 Fontos munkafolyamat:
-Elsőként helyben dolgozunk a gépen.
-GitHubra csak akkor töltjük fel a módosításokat, amikor a felhasználó ezt kifejezetten kéri.
+ElsĹ‘kĂ©nt helyben dolgozunk a gĂ©pen.
+GitHubra csak akkor tĂ¶ltjĂĽk fel a mĂłdosĂ­tĂˇsokat, amikor a felhasznĂˇlĂł ezt kifejezetten kĂ©ri.
 
-Ezen a környezeten a .git mappa megvan a projektben.
-A git parancs a jelenlegi PowerShell futtatásban nem volt elérhetőként felismerve.
-Ha szükséges, később ellenőrizni kell, hogy a Git telepítve van-e vagy PATH-ban van-e,
-vagy GitHub webes / GitHub Desktop / más feltöltési módot kell használni.
+Ezen a kĂ¶rnyezeten a .git mappa megvan a projektben.
+A git parancs a jelenlegi PowerShell futtatĂˇsban nem volt elĂ©rhetĹ‘kĂ©nt felismerve.
+Ha szĂĽksĂ©ges, kĂ©sĹ‘bb ellenĹ‘rizni kell, hogy a Git telepĂ­tve van-e vagy PATH-ban van-e,
+vagy GitHub webes / GitHub Desktop / mĂˇs feltĂ¶ltĂ©si mĂłdot kell hasznĂˇlni.
 
 
-14. FONTOS FÁJLOK A PROJEKTBEN
+14. FONTOS FĂJLOK A PROJEKTBEN
 
-Projekt gyökér:
-C:\Users\mulik\Documents\Fejlesztés\Hírbeszéd
+Projekt gyĂ¶kĂ©r:
+C:\Users\mulik\Documents\FejlesztĂ©s\HĂ­rbeszĂ©d
 
-Fontos fájlok:
+Fontos fĂˇjlok:
 - index.html
 - app.js
 - styles.css
@@ -923,7 +1951,7 @@ Fontos fájlok:
 - PROTOTYPE.md
 - PROJEKT_ALLAPOT_CODEX.txt
 
-Fontos mappák:
+Fontos mappĂˇk:
 - assets
 - docs
 - .git
@@ -931,188 +1959,188 @@ Fontos mappák:
 - .agents
 
 
-15. FONTOS KORÁBBI HIBÁK, AMIKRE FIGYELNI KELL
+15. FONTOS KORĂBBI HIBĂK, AMIKRE FIGYELNI KELL
 
-1. Több gomb rossz helyre vitt.
-   Tipikus hiba: gombnyomás után a Megjelenés / színbeállítás oldal nyílt meg.
-   Ha új gombot vagy menüt adunk hozzá, végig kell tesztelni az aktív elemeket.
+1. TĂ¶bb gomb rossz helyre vitt.
+   Tipikus hiba: gombnyomĂˇs utĂˇn a MegjelenĂ©s / szĂ­nbeĂˇllĂ­tĂˇs oldal nyĂ­lt meg.
+   Ha Ăşj gombot vagy menĂĽt adunk hozzĂˇ, vĂ©gig kell tesztelni az aktĂ­v elemeket.
 
-2. Beállítások / RSS forrás hozzáadása korábban rossz oldalra vitt.
+2. BeĂˇllĂ­tĂˇsok / RSS forrĂˇs hozzĂˇadĂˇsa korĂˇbban rossz oldalra vitt.
 
-3. Mentett hírek / előzmények gombok is rossz helyre vittek.
+3. Mentett hĂ­rek / elĹ‘zmĂ©nyek gombok is rossz helyre vittek.
 
-4. Hírrészlet oldalon több gomb megnyomására is rossz menü jött fel.
+4. HĂ­rrĂ©szlet oldalon tĂ¶bb gomb megnyomĂˇsĂˇra is rossz menĂĽ jĂ¶tt fel.
 
-5. Felolvasóban alsó menüre nyomva korábban csak a felolvasás állt meg,
-   de az oldalváltás nem történt meg első érintésre.
-   Elvárt viselkedés: leállítás és oldalváltás egyszerre.
+5. FelolvasĂłban alsĂł menĂĽre nyomva korĂˇbban csak a felolvasĂˇs Ăˇllt meg,
+   de az oldalvĂˇltĂˇs nem tĂ¶rtĂ©nt meg elsĹ‘ Ă©rintĂ©sre.
+   ElvĂˇrt viselkedĂ©s: leĂˇllĂ­tĂˇs Ă©s oldalvĂˇltĂˇs egyszerre.
 
-6. Világos onboarding háttéren fehér szöveg rosszul olvasható volt.
-   Elvárt: sötétebb brandelt háttér vagy megfelelő kontraszt.
+6. VilĂˇgos onboarding hĂˇttĂ©ren fehĂ©r szĂ¶veg rosszul olvashatĂł volt.
+   ElvĂˇrt: sĂ¶tĂ©tebb brandelt hĂˇttĂ©r vagy megfelelĹ‘ kontraszt.
 
-7. Apple belépési gombon felesleges négyzet karakter jelent meg.
-
-
-16. SZERVER / MUNKAKÖNYVTÁR PROBLÉMA MAGYARÁZATA
-
-Ez a régi Codex-beszélgetés eredetileg innen indult:
-C:\Users\mulik\Documents\Hírbeszéd
-
-A projektet áthelyeztük ide:
-C:\Users\mulik\Documents\Fejlesztés\Hírbeszéd
-
-Ha a régi mappa törölve lesz, a régi beszélgetés jelezheti:
-"A jelenlegi munkakönyvtár hiányzik"
-
-Ez nem a projekt hibája.
-Ez csak azt jelenti, hogy a régi beszélgetés belső munkakönyvtára hiányzik.
-
-Megoldás:
-- új Codex-beszélgetést kell indítani az új Hírbeszéd mappából;
-- ott első lépésként ezt a fájlt kell elolvastatni;
-- a munka onnan folytatható.
+7. Apple belĂ©pĂ©si gombon felesleges nĂ©gyzet karakter jelent meg.
 
 
-17. NAS / MÁS GÉPEN FOLYTATÁS
+16. SZERVER / MUNKAKĂ–NYVTĂR PROBLĂ‰MA MAGYARĂZATA
 
-A cél, hogy minden fejlesztési projekt a Dokumentumok alatti Fejlesztés mappában legyen:
-C:\Users\mulik\Documents\Fejlesztés
+Ez a rĂ©gi Codex-beszĂ©lgetĂ©s eredetileg innen indult:
+C:\Users\mulik\Documents\HĂ­rbeszĂ©d
 
-Ez a mappa szinkronizálható NAS-ra.
+A projektet ĂˇthelyeztĂĽk ide:
+C:\Users\mulik\Documents\FejlesztĂ©s\HĂ­rbeszĂ©d
 
-Másik gépen előfordulhat, hogy az útvonal nem pontosan ugyanez lesz.
-Ez kezelhető úgy, hogy:
-- a Fejlesztés mappát ugyanúgy létrehozzuk a Dokumentumok alatt, ha lehet;
-- ha más az útvonal, akkor az új Codex-beszélgetésben meg kell adni az aktuális projektmappát;
-- a kézikönyvben szereplő útvonalakat az új gép helyi útvonalaira kell értelmezni.
+Ha a rĂ©gi mappa tĂ¶rĂ¶lve lesz, a rĂ©gi beszĂ©lgetĂ©s jelezheti:
+"A jelenlegi munkakĂ¶nyvtĂˇr hiĂˇnyzik"
 
-Másik gépen folytatás lépései:
-1. NAS-ról / szinkronból legyen meg a Fejlesztés\Hírbeszéd mappa.
-2. Codexben ezt a mappát kell munkakönyvtárnak választani.
-3. A beszélgetés elején ezt kell kérni:
-   "Olvasd el a PROJEKT_ALLAPOT_CODEX.txt fájlt, innen folytatjuk."
-4. Ha a prototípust nézni kell, indíttatni kell a helyi szervert Codexszel.
-5. GitHubra csak külön kérésre töltsünk.
+Ez nem a projekt hibĂˇja.
+Ez csak azt jelenti, hogy a rĂ©gi beszĂ©lgetĂ©s belsĹ‘ munkakĂ¶nyvtĂˇra hiĂˇnyzik.
+
+MegoldĂˇs:
+- Ăşj Codex-beszĂ©lgetĂ©st kell indĂ­tani az Ăşj HĂ­rbeszĂ©d mappĂˇbĂłl;
+- ott elsĹ‘ lĂ©pĂ©skĂ©nt ezt a fĂˇjlt kell elolvastatni;
+- a munka onnan folytathatĂł.
 
 
-18. KÖVETKEZŐ MUNKAIRÁNYOK
+17. NAS / MĂS GĂ‰PEN FOLYTATĂS
 
-Lehetséges következő lépések:
-- új Codex-beszélgetés indítása az új projektmappából;
-- régi C:\Users\mulik\Documents\Hírbeszéd mappa törlése, ha már semmi nem fogja;
-- helyi szerver újraindítása az új mappából;
-- onboarding / regisztráció / előfizetés oldal finomítása;
-- teljes kattintható prototípus újbóli végigtesztelése;
-- csak jóváhagyás után feltöltés GitHub Pages-re.
+A cĂ©l, hogy minden fejlesztĂ©si projekt a Dokumentumok alatti FejlesztĂ©s mappĂˇban legyen:
+C:\Users\mulik\Documents\FejlesztĂ©s
 
+Ez a mappa szinkronizĂˇlhatĂł NAS-ra.
 
-19. RÖVID ÖSSZEFOGLALÓ CODEXNEK
+MĂˇsik gĂ©pen elĹ‘fordulhat, hogy az Ăştvonal nem pontosan ugyanez lesz.
+Ez kezelhetĹ‘ Ăşgy, hogy:
+- a FejlesztĂ©s mappĂˇt ugyanĂşgy lĂ©trehozzuk a Dokumentumok alatt, ha lehet;
+- ha mĂˇs az Ăştvonal, akkor az Ăşj Codex-beszĂ©lgetĂ©sben meg kell adni az aktuĂˇlis projektmappĂˇt;
+- a kĂ©zikĂ¶nyvben szereplĹ‘ Ăştvonalakat az Ăşj gĂ©p helyi Ăştvonalaira kell Ă©rtelmezni.
 
-Ez egy magyar RSS hírolvasó / autós felolvasó app prototípusa.
-A felhasználó kezdő, de tudatosan halad: előbb működés és prototípus, utána kódolás.
-Fontos neki, hogy helyben lássa a prototípust, és GitHubra csak külön kérésre töltsünk.
-Nem akar szervert üzemeltetni a végleges apphoz, de helyi fejlesztői szervert használunk a prototípushoz.
-Nem akar Ctrl+C-vel szervert kezelni: Codex indítsa és állítsa le.
-A projekt új helye:
-C:\Users\mulik\Documents\Fejlesztés\Hírbeszéd
-
-Elsőként mindig ebből a mappából dolgozz.
+MĂˇsik gĂ©pen folytatĂˇs lĂ©pĂ©sei:
+1. NAS-rĂłl / szinkronbĂłl legyen meg a FejlesztĂ©s\HĂ­rbeszĂ©d mappa.
+2. Codexben ezt a mappĂˇt kell munkakĂ¶nyvtĂˇrnak vĂˇlasztani.
+3. A beszĂ©lgetĂ©s elejĂ©n ezt kell kĂ©rni:
+   "Olvasd el a PROJEKT_ALLAPOT_CODEX.txt fĂˇjlt, innen folytatjuk."
+4. Ha a prototĂ­pust nĂ©zni kell, indĂ­ttatni kell a helyi szervert Codexszel.
+5. GitHubra csak kĂĽlĂ¶n kĂ©rĂ©sre tĂ¶ltsĂĽnk.
 
 
-20. 2026-06-23 CODEX FOLYTATÁS
+18. KĂ–VETKEZĹ MUNKAIRĂNYOK
 
-GitHub áttekintés:
+LehetsĂ©ges kĂ¶vetkezĹ‘ lĂ©pĂ©sek:
+- Ăşj Codex-beszĂ©lgetĂ©s indĂ­tĂˇsa az Ăşj projektmappĂˇbĂłl;
+- rĂ©gi C:\Users\mulik\Documents\HĂ­rbeszĂ©d mappa tĂ¶rlĂ©se, ha mĂˇr semmi nem fogja;
+- helyi szerver ĂşjraindĂ­tĂˇsa az Ăşj mappĂˇbĂłl;
+- onboarding / regisztrĂˇciĂł / elĹ‘fizetĂ©s oldal finomĂ­tĂˇsa;
+- teljes kattinthatĂł prototĂ­pus ĂşjbĂłli vĂ©gigtesztelĂ©se;
+- csak jĂłvĂˇhagyĂˇs utĂˇn feltĂ¶ltĂ©s GitHub Pages-re.
+
+
+19. RĂ–VID Ă–SSZEFOGLALĂ“ CODEXNEK
+
+Ez egy magyar RSS hĂ­rolvasĂł / autĂłs felolvasĂł app prototĂ­pusa.
+A felhasznĂˇlĂł kezdĹ‘, de tudatosan halad: elĹ‘bb mĹ±kĂ¶dĂ©s Ă©s prototĂ­pus, utĂˇna kĂłdolĂˇs.
+Fontos neki, hogy helyben lĂˇssa a prototĂ­pust, Ă©s GitHubra csak kĂĽlĂ¶n kĂ©rĂ©sre tĂ¶ltsĂĽnk.
+Nem akar szervert ĂĽzemeltetni a vĂ©gleges apphoz, de helyi fejlesztĹ‘i szervert hasznĂˇlunk a prototĂ­pushoz.
+Nem akar Ctrl+C-vel szervert kezelni: Codex indĂ­tsa Ă©s ĂˇllĂ­tsa le.
+A projekt Ăşj helye:
+C:\Users\mulik\Documents\FejlesztĂ©s\HĂ­rbeszĂ©d
+
+ElsĹ‘kĂ©nt mindig ebbĹ‘l a mappĂˇbĂłl dolgozz.
+
+
+20. 2026-06-23 CODEX FOLYTATĂS
+
+GitHub ĂˇttekintĂ©s:
 - repo: muliksandor-arch/hirbeszed-prototipus
 - nyitott pull request: nincs
 - nyitott issue: nincs
-- ezért nem review / CI / publikálási workflow következett, hanem lokális prototípusmunka.
+- ezĂ©rt nem review / CI / publikĂˇlĂˇsi workflow kĂ¶vetkezett, hanem lokĂˇlis prototĂ­pusmunka.
 
-Lokális git állapot:
-A Codex csomagolt Gitje szerint az új projektmappa jelenleg nem érvényes git checkout.
-A .git mappa látszik, de a git parancs azt adta vissza, hogy nem git repository.
-Commit / push előtt ezt rendbe kell tenni vagy újra kell inicializálni / klónozni a repót.
+LokĂˇlis git Ăˇllapot:
+A Codex csomagolt Gitje szerint az Ăşj projektmappa jelenleg nem Ă©rvĂ©nyes git checkout.
+A .git mappa lĂˇtszik, de a git parancs azt adta vissza, hogy nem git repository.
+Commit / push elĹ‘tt ezt rendbe kell tenni vagy Ăşjra kell inicializĂˇlni / klĂłnozni a repĂłt.
 
 Helyi szerver:
-Elindítva innen:
-C:\Users\mulik\Documents\Fejlesztés\Hírbeszéd
+ElindĂ­tva innen:
+C:\Users\mulik\Documents\FejlesztĂ©s\HĂ­rbeszĂ©d
 
-Cím:
+CĂ­m:
 http://127.0.0.1:8000/
 
-Indított folyamat:
+IndĂ­tott folyamat:
 PID 22476
 
-Elvégzett javítás:
-Aktív próbaidő után a Beállítások -> Előfizetés korábban újra az onboarding jellegű
-"Próbaidő és csomagok" oldalt mutatta.
-Ez javítva lett.
+ElvĂ©gzett javĂ­tĂˇs:
+AktĂ­v prĂłbaidĹ‘ utĂˇn a BeĂˇllĂ­tĂˇsok -> ElĹ‘fizetĂ©s korĂˇbban Ăşjra az onboarding jellegĹ±
+"PrĂłbaidĹ‘ Ă©s csomagok" oldalt mutatta.
+Ez javĂ­tva lett.
 
-Módosított fájlok:
+MĂłdosĂ­tott fĂˇjlok:
 - onboarding-polish.js
 - index.html
 - sw.js
 - PROJEKT_ALLAPOT_CODEX.txt
 
-Részletek:
-- onboarding-polish.js új verziója: v5
-- service worker cache új verziója: hirbeszed-prototype-v34
-- aktív / próba előfizetésnél az onboarding automatikus csere már nem írja felül az előfizetés-kezelőt
-- Beállítások -> Előfizetés most a tagsági / használati képernyőt mutatja
-- Csomagváltás külön Alap / Pro választó oldalt kapott
-- Pro-ra váltás után az előfizetés-kezelő 240 perc prémium AI-hangkeretet mutat
+RĂ©szletek:
+- onboarding-polish.js Ăşj verziĂłja: v5
+- service worker cache Ăşj verziĂłja: hirbeszed-prototype-v34
+- aktĂ­v / prĂłba elĹ‘fizetĂ©snĂ©l az onboarding automatikus csere mĂˇr nem Ă­rja felĂĽl az elĹ‘fizetĂ©s-kezelĹ‘t
+- BeĂˇllĂ­tĂˇsok -> ElĹ‘fizetĂ©s most a tagsĂˇgi / hasznĂˇlati kĂ©pernyĹ‘t mutatja
+- CsomagvĂˇltĂˇs kĂĽlĂ¶n Alap / Pro vĂˇlasztĂł oldalt kapott
+- Pro-ra vĂˇltĂˇs utĂˇn az elĹ‘fizetĂ©s-kezelĹ‘ 240 perc prĂ©mium AI-hangkeretet mutat
 
-Tesztelve böngészőben, mobil viewporttal:
-- Prototípusadatok törlése után visszajön a brandelt onboarding
-- adatvédelmi pipa nélkül nem enged tovább
-- Facebook belépés után megjelenik a próbaidő / csomag oldal
-- Basic próba elindítása után Felolvasóra tér vissza
-- Hírfolyamra váltás működik
-- Mentett hírek / Könyvtár működik
-- RSS-források és Új RSS-forrás nem visz rossz oldalra
-- Megjelenés oldal jó helyre nyílik
-- Fiók és biztonság Bejelentkezve állapotot mutat
-- Előfizetés aktív próbaidőnél kezelőoldalt mutat, nem onboardingot
-- Csomagváltás Pro-ra működik, 240 perc kerettel
-- Konzolhibát a teszt közben nem találtunk
+Tesztelve bĂ¶ngĂ©szĹ‘ben, mobil viewporttal:
+- PrototĂ­pusadatok tĂ¶rlĂ©se utĂˇn visszajĂ¶n a brandelt onboarding
+- adatvĂ©delmi pipa nĂ©lkĂĽl nem enged tovĂˇbb
+- Facebook belĂ©pĂ©s utĂˇn megjelenik a prĂłbaidĹ‘ / csomag oldal
+- Basic prĂłba elindĂ­tĂˇsa utĂˇn FelolvasĂłra tĂ©r vissza
+- HĂ­rfolyamra vĂˇltĂˇs mĹ±kĂ¶dik
+- Mentett hĂ­rek / KĂ¶nyvtĂˇr mĹ±kĂ¶dik
+- RSS-forrĂˇsok Ă©s Ăšj RSS-forrĂˇs nem visz rossz oldalra
+- MegjelenĂ©s oldal jĂł helyre nyĂ­lik
+- FiĂłk Ă©s biztonsĂˇg Bejelentkezve Ăˇllapotot mutat
+- ElĹ‘fizetĂ©s aktĂ­v prĂłbaidĹ‘nĂ©l kezelĹ‘oldalt mutat, nem onboardingot
+- CsomagvĂˇltĂˇs Pro-ra mĹ±kĂ¶dik, 240 perc kerettel
+- KonzolhibĂˇt a teszt kĂ¶zben nem talĂˇltunk
 
 
-21. 2026-06-23 ONBOARDING RSS LÉPÉS
+21. 2026-06-23 ONBOARDING RSS LĂ‰PĂ‰S
 
-Elvégzett módosítás:
-Új felhasználói belépés után a próbaidő / előfizetés kiválasztása már nem visz azonnal
-a Felolvasóra.
+ElvĂ©gzett mĂłdosĂ­tĂˇs:
+Ăšj felhasznĂˇlĂłi belĂ©pĂ©s utĂˇn a prĂłbaidĹ‘ / elĹ‘fizetĂ©s kivĂˇlasztĂˇsa mĂˇr nem visz azonnal
+a FelolvasĂłra.
 
-Új sorrend:
-1. Brandelt onboarding / belépés.
-2. Próbaidő vagy csomag kiválasztása.
-3. RSS-források beállítása.
-4. Felolvasó megnyitása.
-5. Felolvasás automatikus indítása.
+Ăšj sorrend:
+1. Brandelt onboarding / belĂ©pĂ©s.
+2. PrĂłbaidĹ‘ vagy csomag kivĂˇlasztĂˇsa.
+3. RSS-forrĂˇsok beĂˇllĂ­tĂˇsa.
+4. FelolvasĂł megnyitĂˇsa.
+5. FelolvasĂˇs automatikus indĂ­tĂˇsa.
 
-Módosított fájlok:
+MĂłdosĂ­tott fĂˇjlok:
 - onboarding-polish.js
 - index.html
 - sw.js
 - PROJEKT_ALLAPOT_CODEX.txt
 
-Részletek:
-- onboarding-polish.js új verziója: v7
-- service worker cache új verziója: hirbeszed-prototype-v36
-- az RSS-forrás választó a Beállításokban használt lista vizuális mintáját követi
-- legalább egy RSS-forrásnak bekapcsolva kell maradnia
-- új forrás ajánlásból vagy RSS-linkkel hozzáadható az onboarding közben is
-- a források mentése után a Felolvasó nyílik meg
-- a Felolvasóban a felolvasás automatikusan aktív állapotba kerül
-- ha a böngésző nem támogatja vagy nem engedi a Web Speech API indítását, a prototípus vizuálisan akkor is aktív felolvasási állapotot mutat
+RĂ©szletek:
+- onboarding-polish.js Ăşj verziĂłja: v7
+- service worker cache Ăşj verziĂłja: hirbeszed-prototype-v36
+- az RSS-forrĂˇs vĂˇlasztĂł a BeĂˇllĂ­tĂˇsokban hasznĂˇlt lista vizuĂˇlis mintĂˇjĂˇt kĂ¶veti
+- legalĂˇbb egy RSS-forrĂˇsnak bekapcsolva kell maradnia
+- Ăşj forrĂˇs ajĂˇnlĂˇsbĂłl vagy RSS-linkkel hozzĂˇadhatĂł az onboarding kĂ¶zben is
+- a forrĂˇsok mentĂ©se utĂˇn a FelolvasĂł nyĂ­lik meg
+- a FelolvasĂłban a felolvasĂˇs automatikusan aktĂ­v Ăˇllapotba kerĂĽl
+- ha a bĂ¶ngĂ©szĹ‘ nem tĂˇmogatja vagy nem engedi a Web Speech API indĂ­tĂˇsĂˇt, a prototĂ­pus vizuĂˇlisan akkor is aktĂ­v felolvasĂˇsi Ăˇllapotot mutat
 
-Tesztelve böngészőben, mobil viewporttal:
-- Prototípusadatok törlése után megjelenik a brandelt onboarding
-- adatvédelmi pipa után Facebook belépés működik
-- Próbaidő indítása után megjelenik az RSS-források beállítása oldal
-- RSS-forrás ki- és bekapcsolása működik
-- források mentése után a Felolvasó nyílik meg
-- a felolvasás gomb "Leállítás" állapotban jelenik meg
-- konzolhibát a teszt közben nem találtunk
+Tesztelve bĂ¶ngĂ©szĹ‘ben, mobil viewporttal:
+- PrototĂ­pusadatok tĂ¶rlĂ©se utĂˇn megjelenik a brandelt onboarding
+- adatvĂ©delmi pipa utĂˇn Facebook belĂ©pĂ©s mĹ±kĂ¶dik
+- PrĂłbaidĹ‘ indĂ­tĂˇsa utĂˇn megjelenik az RSS-forrĂˇsok beĂˇllĂ­tĂˇsa oldal
+- RSS-forrĂˇs ki- Ă©s bekapcsolĂˇsa mĹ±kĂ¶dik
+- forrĂˇsok mentĂ©se utĂˇn a FelolvasĂł nyĂ­lik meg
+- a felolvasĂˇs gomb "LeĂˇllĂ­tĂˇs" Ăˇllapotban jelenik meg
+- konzolhibĂˇt a teszt kĂ¶zben nem talĂˇltunk
 
 
 22. 2026-06-23 NYITOKEPERNYO GOMB LAYOUT JAVITAS
@@ -1142,7 +2170,7 @@ Ellenorizve:
 23. 2026-06-23 PROTOTIPUS KESZNEK TEKINTETT BASELINE
 
 Allapot:
-A Hírbeszéd mobilprototipust ebben az allapotban kesznek tekintjuk.
+A HĂ­rbeszĂ©d mobilprototipust ebben az allapotban kesznek tekintjuk.
 A felhasznaloi visszajelzes szerint a jelenlegi mukodes es irany szimpatikus.
 
 Aktualis publikus ellenorzesi URL:
@@ -1283,7 +2311,7 @@ Allapot:
 A Felolvaso oldalon a Felolvasas gomb pause/folytatas mukodese javitva lett.
 
 Elvegzett modositas:
-- a Felolvasas gombrol kikerult a torékeny inline onclick kezeles
+- a Felolvasas gombrol kikerult a torĂ©keny inline onclick kezeles
 - a Felolvasas gomb rendereles utan sajat, direkt click kezelot kap
 - a gomb tovabbra is ugyanazt a toggleCarPlayback logikat hasznalja
 - a dokumentumszintu kezeles nem tudja megduplazni a kattintast
@@ -1419,7 +2447,7 @@ Elvegzett modositas:
 - settings-hotfix.js verzio: settings-hotfix.js?v=21
 - sw.js cache verzio: hirbeszed-prototype-v69
 - a Felolvasas aktiv felirata "Felolvasas leallitasa"
-- a Hirlépteto visszakapcsolaskor a kovetkezo hirre lep es elinditja a felolvasasi utvonalat
+- a HirlĂ©pteto visszakapcsolaskor a kovetkezo hirre lep es elinditja a felolvasasi utvonalat
 - uj masodik vezerlosor keszult:
   Elozo
   Pillanatstop / Folytatas
@@ -1435,7 +2463,7 @@ Ellenorizve helyben:
 - helyi bongeszoben betolt: app.js?v=24, styles.css?v=14, settings-hotfix.js?v=21
 - hat Felolvaso vezerlo jelenik meg SVG ikonnal
 - Elozo es Kovetkezo gomb valtja a hirt
-- Hirlépteto kikapcsolasa utan visszakapcsolaskor a kovetkezo hirre lep
+- HirlĂ©pteto kikapcsolasa utan visszakapcsolaskor a kovetkezo hirre lep
 - bongeszo konzolban nincs error
 
 Megjegyzes:
@@ -1510,7 +2538,7 @@ Elvegzett modositas:
 - sw.js cache verzio: hirbeszed-prototype-v72
 - a fo Felolvasas gomb mar nem stop/play logika, hanem:
   Felolvasas
-  Szünet
+  SzĂĽnet
   Folytatas
 - pause utan a felolvasas folytataskor nem kezdi elolrol a hirt
 - a korabbi Pillanatstop gomb helyere Reszletes hirek / Roviditett hirek gomb kerult
@@ -2106,7 +3134,7 @@ gombnal a lenyomas animacio lefutott, majd felengedes utan villant.
 
 Ok:
 - a settings-hotfix.js regi kattintaskorrekcioja minden dokumentum-kattintasnal
-  levette a documentElement data-theme attribútumat
+  levette a documentElement data-theme attribĂştumat
 - majd setTimeout(0)-val azonnal visszatette
 - sotet modban ez egy pillanatra visszaejthette az appot alap/vilagos
   szinvaltozokra, ezert tunt ugy, mintha a teljes app villanna
@@ -2556,13 +3584,13 @@ Ez helyi prototipus-fejlesztes. GitHubra ebben a korben nem lett publikalva.
 112. 2026-06-29 PROTOTIPUS VERZIOEMELES 2.002
 
 Allapot:
-A Hírbeszéd prototípus helyi verziója 2.002-re lett emelve.
+A HĂ­rbeszĂ©d prototĂ­pus helyi verziĂłja 2.002-re lett emelve.
 
 Elvegzett modositas:
 - index.html: app-version meta ertek 2.002 lett.
 - index.html: minden betoltott CSS es JS asset query verzio v=2.002 lett.
 - sw.js: cache nev hirbeszed-prototype-2.002 lett.
-- sw.js: minden cache-elt CSS es JS asset v=2.002 query verziót használ.
+- sw.js: minden cache-elt CSS es JS asset v=2.002 query verziĂłt hasznĂˇl.
 - manifest.webmanifest: version ertek 2.002 lett.
 - PROTOTYPE.md: aktualis prototipusverzio 2.002 lett.
 - docs/prototipus-mukodes.md: aktualis prototipusverzio 2.002 lett.
@@ -2571,144 +3599,144 @@ Elvegzett modositas:
 Ellenorizve helyben:
 - sw.js JavaScript syntax check rendben.
 - manifest.webmanifest JSON parse rendben.
-- helyi böngészőben betöltött URL:
+- helyi bĂ¶ngĂ©szĹ‘ben betĂ¶ltĂ¶tt URL:
   http://127.0.0.1:8000/?cachebust=prototype-2.002-local-1782754117029
-- böngészős eredmény:
+- bĂ¶ngĂ©szĹ‘s eredmĂ©ny:
   app-version 2.002
   CSS assetek: styles.css?v=2.002, prototype-topics.css?v=2.002,
   prototype-settings.css?v=2.002
-  JS assetek: minden betöltött JS v=2.002
-- böngésző konzolban nincs error vagy warning.
+  JS assetek: minden betĂ¶ltĂ¶tt JS v=2.002
+- bĂ¶ngĂ©szĹ‘ konzolban nincs error vagy warning.
 
 Megjegyzes:
-Ez helyi verzioemeles. GitHubra ebben a körben nem lett publikálva.
+Ez helyi verzioemeles. GitHubra ebben a kĂ¶rben nem lett publikĂˇlva.
 
 
 111. 2026-06-29 HIRFOLYAM FEJLEC KEDVELTEK ES OLVASOTTAK IKONOK
 
 Allapot:
-A Hírfolyam fejlécében a kereső mellett külön Kedveltek és Olvasottak ikon
-jelent meg. Az olvasott hírek alapból látszanak, de a felhasználó egy
-fejlécikonon ki/be tudja kapcsolni őket, és az állapot mentődik.
+A HĂ­rfolyam fejlĂ©cĂ©ben a keresĹ‘ mellett kĂĽlĂ¶n Kedveltek Ă©s Olvasottak ikon
+jelent meg. Az olvasott hĂ­rek alapbĂłl lĂˇtszanak, de a felhasznĂˇlĂł egy
+fejlĂ©cikonon ki/be tudja kapcsolni Ĺ‘ket, Ă©s az Ăˇllapot mentĹ‘dik.
 
 Elvegzett modositas:
-- app.js: showReadInFeed állapot bekerült, alapértéke true.
-- app.js: a hírfolyam fejlécét a feedHeaderActions() állítja össze:
-  Keresés, Kedveltek, Olvasottak kapcsoló.
-- app.js és prototype-topics.js: a hírfolyam szűrése figyeli a showReadInFeed
-  értéket; kikapcsolt állapotban az olvasott hírek nem jelennek meg.
-- app.js: a toggle-read-feed akció menti az állapotot és újrarendereli a feedet.
-- app.js: a Kedveltek ikon a Kedvelt hírek / Könyvtár nézetet nyitja.
-- styles.css: a fejléc feed ikonjai fehér színűek, a kereső méretéhez
-  igazodó 40x40 px ikonbuttonok.
-- styles.css: az Olvasottak ikon aktív állapotban coral pontot kap.
-- styles.css: a hírkártyán az üres szív ikon már currentColor, tehát
-  alapból a többi hír-akció ikon színével egyezik.
-- index.html és sw.js: asset query/cache verzio 2.001-feed-read-toggle lett.
+- app.js: showReadInFeed Ăˇllapot bekerĂĽlt, alapĂ©rtĂ©ke true.
+- app.js: a hĂ­rfolyam fejlĂ©cĂ©t a feedHeaderActions() ĂˇllĂ­tja Ă¶ssze:
+  KeresĂ©s, Kedveltek, Olvasottak kapcsolĂł.
+- app.js Ă©s prototype-topics.js: a hĂ­rfolyam szĹ±rĂ©se figyeli a showReadInFeed
+  Ă©rtĂ©ket; kikapcsolt Ăˇllapotban az olvasott hĂ­rek nem jelennek meg.
+- app.js: a toggle-read-feed akciĂł menti az Ăˇllapotot Ă©s Ăşjrarendereli a feedet.
+- app.js: a Kedveltek ikon a Kedvelt hĂ­rek / KĂ¶nyvtĂˇr nĂ©zetet nyitja.
+- styles.css: a fejlĂ©c feed ikonjai fehĂ©r szĂ­nĹ±ek, a keresĹ‘ mĂ©retĂ©hez
+  igazodĂł 40x40 px ikonbuttonok.
+- styles.css: az Olvasottak ikon aktĂ­v Ăˇllapotban coral pontot kap.
+- styles.css: a hĂ­rkĂˇrtyĂˇn az ĂĽres szĂ­v ikon mĂˇr currentColor, tehĂˇt
+  alapbĂłl a tĂ¶bbi hĂ­r-akciĂł ikon szĂ­nĂ©vel egyezik.
+- index.html Ă©s sw.js: asset query/cache verzio 2.001-feed-read-toggle lett.
 
 Ellenorizve helyben:
 - JavaScript syntax check rendben: app.js, prototype-topics.js
-- helyi böngészőben betöltött URL:
+- helyi bĂ¶ngĂ©szĹ‘ben betĂ¶ltĂ¶tt URL:
   http://127.0.0.1:8000/?cachebust=feed-read-toggle-persist-v188-1782753743620
-- fejlécikonok:
-  Keresés, Kedveltek, Olvasott hírek elrejtése
-- mindhárom fejlécikon 40x40 px és fehér színű.
-- az Olvasottak ikon aktív állapotban coral pontot mutat.
-- az üres szív ikon színe megegyezik a megosztás ikon színével.
-- olvasott hírek kikapcsolása:
-  30 látható hír helyett 7 maradt, olvasott kártya 0 lett.
-- újratöltés után a kikapcsolt állapot megmaradt.
-- visszakapcsolás után ismét 30 hír látszott, 23 olvasott kártyával.
+- fejlĂ©cikonok:
+  KeresĂ©s, Kedveltek, Olvasott hĂ­rek elrejtĂ©se
+- mindhĂˇrom fejlĂ©cikon 40x40 px Ă©s fehĂ©r szĂ­nĹ±.
+- az Olvasottak ikon aktĂ­v Ăˇllapotban coral pontot mutat.
+- az ĂĽres szĂ­v ikon szĂ­ne megegyezik a megosztĂˇs ikon szĂ­nĂ©vel.
+- olvasott hĂ­rek kikapcsolĂˇsa:
+  30 lĂˇthatĂł hĂ­r helyett 7 maradt, olvasott kĂˇrtya 0 lett.
+- ĂşjratĂ¶ltĂ©s utĂˇn a kikapcsolt Ăˇllapot megmaradt.
+- visszakapcsolĂˇs utĂˇn ismĂ©t 30 hĂ­r lĂˇtszott, 23 olvasott kĂˇrtyĂˇval.
 - Kedveltek ikon:
-  Könyvtár / Kedvelt hírek / Kedveltek tab nyílt meg.
-- böngésző konzolban nincs error vagy warning.
+  KĂ¶nyvtĂˇr / Kedvelt hĂ­rek / Kedveltek tab nyĂ­lt meg.
+- bĂ¶ngĂ©szĹ‘ konzolban nincs error vagy warning.
 
 Megjegyzes:
-Ez helyi prototípus-fejlesztés. GitHubra ebben a körben nem lett publikálva.
+Ez helyi prototĂ­pus-fejlesztĂ©s. GitHubra ebben a kĂ¶rben nem lett publikĂˇlva.
 
 
 110. 2026-06-29 HIR AKCIOK META SORBA VISSZAHELYEZVE
 
 Allapot:
-A hírkártyákon a Kedvelés / Megosztás / Olvasott-állapot ikonok nem
-külön alsó gombsorként jelennek meg, hanem az eredeti mentés ikon helyén,
-a hírforrás és időbélyeg sorában, jobbra igazítva.
+A hĂ­rkĂˇrtyĂˇkon a KedvelĂ©s / MegosztĂˇs / Olvasott-Ăˇllapot ikonok nem
+kĂĽlĂ¶n alsĂł gombsorkĂ©nt jelennek meg, hanem az eredeti mentĂ©s ikon helyĂ©n,
+a hĂ­rforrĂˇs Ă©s idĹ‘bĂ©lyeg sorĂˇban, jobbra igazĂ­tva.
 
 Elvegzett modositas:
-- app.js: az articleCard akciói a meta-line sorba kerültek.
-- app.js: a hírkártyák alól kikerült a külön news-actions sor, így a cím
-  és a rövid hír szövege visszakapta a helyet.
-- app.js: a Felolvasó aktuális hírénél az akciók szintén a forrás/idő sorba
-  kerültek, nem külön alsó sorba.
-- styles.css: meta-news-actions szabály készült 3 kisebb, ikonméretű gombbal.
-- styles.css: a kártyán a látható gombfeliratok el vannak rejtve, az
+- app.js: az articleCard akciĂłi a meta-line sorba kerĂĽltek.
+- app.js: a hĂ­rkĂˇrtyĂˇk alĂłl kikerĂĽlt a kĂĽlĂ¶n news-actions sor, Ă­gy a cĂ­m
+  Ă©s a rĂ¶vid hĂ­r szĂ¶vege visszakapta a helyet.
+- app.js: a FelolvasĂł aktuĂˇlis hĂ­rĂ©nĂ©l az akciĂłk szintĂ©n a forrĂˇs/idĹ‘ sorba
+  kerĂĽltek, nem kĂĽlĂ¶n alsĂł sorba.
+- styles.css: meta-news-actions szabĂˇly kĂ©szĂĽlt 3 kisebb, ikonmĂ©retĹ± gombbal.
+- styles.css: a kĂˇrtyĂˇn a lĂˇthatĂł gombfeliratok el vannak rejtve, az
   aria-label megmarad.
-- index.html és sw.js: asset query/cache verzio 2.001-news-actions-meta lett.
+- index.html Ă©s sw.js: asset query/cache verzio 2.001-news-actions-meta lett.
 
 Ellenorizve helyben:
 - JavaScript syntax check rendben: app.js
-- helyi böngészőben betöltött URL:
+- helyi bĂ¶ngĂ©szĹ‘ben betĂ¶ltĂ¶tt URL:
   http://127.0.0.1:8000/?cachebust=news-actions-meta-v187-1782752994147
-- Hírfolyamban az első hírkártyán:
-  az akciócsoport a meta soron belül van
-  három ikon 26 px széles / 24 px magas
-  az akciócsoport a cím fölött marad, nem takarja a hírszöveget
-- a látható címkék 1x1 px-re rejtve vannak, a gombok akadálymentes neve
+- HĂ­rfolyamban az elsĹ‘ hĂ­rkĂˇrtyĂˇn:
+  az akciĂłcsoport a meta soron belĂĽl van
+  hĂˇrom ikon 26 px szĂ©les / 24 px magas
+  az akciĂłcsoport a cĂ­m fĂ¶lĂ¶tt marad, nem takarja a hĂ­rszĂ¶veget
+- a lĂˇthatĂł cĂ­mkĂ©k 1x1 px-re rejtve vannak, a gombok akadĂˇlymentes neve
   megmaradt
-- Felolvasó nézetben:
-  az akciók a car-meta-line sorban vannak, külön car-news-actions sor nincs.
+- FelolvasĂł nĂ©zetben:
+  az akciĂłk a car-meta-line sorban vannak, kĂĽlĂ¶n car-news-actions sor nincs.
 
 Megjegyzes:
-Ez helyi prototípus-fejlesztés. GitHubra ebben a körben nem lett publikálva.
+Ez helyi prototĂ­pus-fejlesztĂ©s. GitHubra ebben a kĂ¶rben nem lett publikĂˇlva.
 
 
 109. 2026-06-29 HIR AKCIOK KEDVELESRE ATNEVEZVE ES EGYESEGESITVE
 
 Allapot:
-A hírmentés funkció felületi neve az alkalmazásban Kedvelés/Kedvelted lett.
-A hírekhez tartozó állapotgombok egységes szabály szerint jelennek meg:
-Kedvelés, Megosztás, Olvasatlan/Olvasott.
+A hĂ­rmentĂ©s funkciĂł felĂĽleti neve az alkalmazĂˇsban KedvelĂ©s/Kedvelted lett.
+A hĂ­rekhez tartozĂł Ăˇllapotgombok egysĂ©ges szabĂˇly szerint jelennek meg:
+KedvelĂ©s, MegosztĂˇs, Olvasatlan/Olvasott.
 
 Elvegzett modositas:
-- app.js: közös hír-akció komponens készült a hírekhez.
-- app.js: a Mentés/Mentett feliratok helyett Kedvelés/Kedvelted jelenik meg.
-- app.js: kedvelt állapotban a szív tömör coral ikon lett, nem vonalrajz.
-- app.js: az olvasottsági ikon üres kör, olvasott állapotban coral ponttal.
-- app.js: a megosztás Hírbeszéd-appnyitó / telepítési javaslat jellegű linket készít,
-  nem az eredeti forráslinket osztja tovább.
-- app.js: a hírfolyam, keresés, könyvtár, részletes hír és felolvasó hírmegjelenítései
-  ugyanazt a hír-akciósort használják.
-- app.js: a felolvasó hangutasítások között a parancs neve Kedvelés lett.
-- prototype-topics.js: a hírfolyam fejlécében Kedveltek és előzmények szerepel.
-- prototype-auth.js: a hírmentésre vonatkozó fiók/próbaidő/jogi magyarázó szövegek
-  kedvelés/kedvelt hírek szóhasználatra váltottak.
-- styles.css: egységes hír-akció gombsor, tömör coral kedvelt szív és
-  olvasottsági kör/coral pont szabály készült.
-- index.html és sw.js: asset query/cache verzio 2.001-news-actions lett,
-  hogy a helyi böngésző biztosan az új fájlokat töltse be.
+- app.js: kĂ¶zĂ¶s hĂ­r-akciĂł komponens kĂ©szĂĽlt a hĂ­rekhez.
+- app.js: a MentĂ©s/Mentett feliratok helyett KedvelĂ©s/Kedvelted jelenik meg.
+- app.js: kedvelt Ăˇllapotban a szĂ­v tĂ¶mĂ¶r coral ikon lett, nem vonalrajz.
+- app.js: az olvasottsĂˇgi ikon ĂĽres kĂ¶r, olvasott Ăˇllapotban coral ponttal.
+- app.js: a megosztĂˇs HĂ­rbeszĂ©d-appnyitĂł / telepĂ­tĂ©si javaslat jellegĹ± linket kĂ©szĂ­t,
+  nem az eredeti forrĂˇslinket osztja tovĂˇbb.
+- app.js: a hĂ­rfolyam, keresĂ©s, kĂ¶nyvtĂˇr, rĂ©szletes hĂ­r Ă©s felolvasĂł hĂ­rmegjelenĂ­tĂ©sei
+  ugyanazt a hĂ­r-akciĂłsort hasznĂˇljĂˇk.
+- app.js: a felolvasĂł hangutasĂ­tĂˇsok kĂ¶zĂ¶tt a parancs neve KedvelĂ©s lett.
+- prototype-topics.js: a hĂ­rfolyam fejlĂ©cĂ©ben Kedveltek Ă©s elĹ‘zmĂ©nyek szerepel.
+- prototype-auth.js: a hĂ­rmentĂ©sre vonatkozĂł fiĂłk/prĂłbaidĹ‘/jogi magyarĂˇzĂł szĂ¶vegek
+  kedvelĂ©s/kedvelt hĂ­rek szĂłhasznĂˇlatra vĂˇltottak.
+- styles.css: egysĂ©ges hĂ­r-akciĂł gombsor, tĂ¶mĂ¶r coral kedvelt szĂ­v Ă©s
+  olvasottsĂˇgi kĂ¶r/coral pont szabĂˇly kĂ©szĂĽlt.
+- index.html Ă©s sw.js: asset query/cache verzio 2.001-news-actions lett,
+  hogy a helyi bĂ¶ngĂ©szĹ‘ biztosan az Ăşj fĂˇjlokat tĂ¶ltse be.
 
 Ellenorizve helyben:
 - JavaScript syntax check rendben:
   app.js, prototype-topics.js, prototype-auth.js, prototype-reader-controls.js
-- helyi böngészőben betöltött URL:
+- helyi bĂ¶ngĂ©szĹ‘ben betĂ¶ltĂ¶tt URL:
   http://127.0.0.1:8000/?cachebust=news-actions-v186-1782752195512
-- hírfolyamban az első kártyán megjelent:
-  Kedvelés, Megosztás, Olvasott/Olvasatlan
-- kedvelés kattintás után:
-  Kedvelted + tömör coral szív állapot működött
-- olvasottság kattintás után:
-  Olvasatlan + üres kör állapot működött
-- részletes hír oldalon:
-  Részletes hír cím, három egységes akciógomb, Kedvelted tömör szív,
-  Megosztás gomb, Olvasott állapot működött
-- Könyvtár panelen:
-  Kedveltek tab, Kedvelt hírek alcím, kedvelt hír megjelenése ellenőrizve
-- Felolvasó nézetben:
-  hír-akciósor megjelent, hangutasítás szövegben Kedvelés szerepel
-- Felolvasó nézetben az új akciósor nem okozott vertikális túlcsordulást.
+- hĂ­rfolyamban az elsĹ‘ kĂˇrtyĂˇn megjelent:
+  KedvelĂ©s, MegosztĂˇs, Olvasott/Olvasatlan
+- kedvelĂ©s kattintĂˇs utĂˇn:
+  Kedvelted + tĂ¶mĂ¶r coral szĂ­v Ăˇllapot mĹ±kĂ¶dĂ¶tt
+- olvasottsĂˇg kattintĂˇs utĂˇn:
+  Olvasatlan + ĂĽres kĂ¶r Ăˇllapot mĹ±kĂ¶dĂ¶tt
+- rĂ©szletes hĂ­r oldalon:
+  RĂ©szletes hĂ­r cĂ­m, hĂˇrom egysĂ©ges akciĂłgomb, Kedvelted tĂ¶mĂ¶r szĂ­v,
+  MegosztĂˇs gomb, Olvasott Ăˇllapot mĹ±kĂ¶dĂ¶tt
+- KĂ¶nyvtĂˇr panelen:
+  Kedveltek tab, Kedvelt hĂ­rek alcĂ­m, kedvelt hĂ­r megjelenĂ©se ellenĹ‘rizve
+- FelolvasĂł nĂ©zetben:
+  hĂ­r-akciĂłsor megjelent, hangutasĂ­tĂˇs szĂ¶vegben KedvelĂ©s szerepel
+- FelolvasĂł nĂ©zetben az Ăşj akciĂłsor nem okozott vertikĂˇlis tĂşlcsordulĂˇst.
 
 Megjegyzes:
-Ez helyi prototípus-fejlesztés. GitHubra ebben a körben nem lett publikálva.
+Ez helyi prototĂ­pus-fejlesztĂ©s. GitHubra ebben a kĂ¶rben nem lett publikĂˇlva.
 
 
 108. 2026-06-29 BAL OLDALI MENU KOZEPOZICIO ES BEALLITASOK ALUL
@@ -2723,7 +3751,7 @@ Elvegzett modositas:
 - styles.css: az is-side-nav allapotban a bottom-nav mar CSS grid alapra valt
 - a grid sorai: felso rugalmas hely, 3 darab 66 px-es fo ikon, also rugalmas
   hely
-- Hírfolyam grid-row:2, Felolvaso grid-row:3, Asszisztens grid-row:4
+- HĂ­rfolyam grid-row:2, Felolvaso grid-row:3, Asszisztens grid-row:4
 - Beallitasok grid-row:5 es align-self:end, tehat lent marad
 - index.html es sw.js: asset query/cache verzio 2.001-leftnav-center lett
 - a korabbi jobb oldalra helyezheto menuvalto tovabbra sincs visszateve
@@ -2733,7 +3761,7 @@ Ellenorizve helyben:
   prototype-auth.js, sw.js
 - helyi URL:
   http://127.0.0.1:8000/?cachebust=leftnav-center-v188-local
-- Foldable nezetben a fo ikonok csoportkozepe es a menüsav kozepe egyezik:
+- Foldable nezetben a fo ikonok csoportkozepe es a menĂĽsav kozepe egyezik:
   mainCenterDelta = 0 px
 - Beallitasok also tavolsaga: 12 px
 - route gombok szama: 4
@@ -2830,7 +3858,7 @@ Ellenorizve helyben:
 - Foldable oldalvaltas utan: jobb oldali menu, preferencia mentodik
 - Mobil fekvo: also menu marad
 - Tablet fekvo: oldalso menu aktiv, a mentett oldalpoziciot koveti
-- fo menuikonok: Hírfolyam, Felolvaso, Asszisztens, Beallitasok eredeti
+- fo menuikonok: HĂ­rfolyam, Felolvaso, Asszisztens, Beallitasok eredeti
   SVG ikonokkal maradtak
 - bongeszo konzolban nincs error vagy warning
 
@@ -3123,22 +4151,22 @@ Utologos finomitas:
 100. 2026-06-29 RESZLETES HIRNEZET KARTYAS ES FEKVO LAYOUT
 
 Allapot:
-A Hírfolyamból megnyitott részletes hírnézet saját, kártyás megjelenést kapott.
-A felső sheet cím mostantól nem "Hírrészlet", hanem "Részletes hír".
+A HĂ­rfolyambĂłl megnyitott rĂ©szletes hĂ­rnĂ©zet sajĂˇt, kĂˇrtyĂˇs megjelenĂ©st kapott.
+A felsĹ‘ sheet cĂ­m mostantĂłl nem "HĂ­rrĂ©szlet", hanem "RĂ©szletes hĂ­r".
 
 Elvegzett modositas:
-- app.js: az openArticle() a részletes hírt detail-sheet osztállyal nyitja meg
-- app.js: a részletes hír HTML-je külön lead kártyára és tartalom kártyára
+- app.js: az openArticle() a rĂ©szletes hĂ­rt detail-sheet osztĂˇllyal nyitja meg
+- app.js: a rĂ©szletes hĂ­r HTML-je kĂĽlĂ¶n lead kĂˇrtyĂˇra Ă©s tartalom kĂˇrtyĂˇra
   bomlik
-- app.js: a Mentés, Megosztás és Olvasatlan gombok funkciója változatlan maradt
-- prototype-layout.js: bekerült az is-tablet-landscape állapot felismerése
-- styles.css: mobil/tablet álló nézetben a részletes hír egymás alatti kártyás
-  megjelenést kap
-- styles.css: mobil fekvő és tablet fekvő nézetben bal oldalon van a kép és cím,
-  jobb oldalon a tartalom, az akciógombok és az eredeti cikk gomb
-- styles.css: fekvő részletes hírnézetben a külső sheet görgetése tiltva van,
-  szükség esetén csak a jobb oldali tartalomkártya görgethető
-- index.html és sw.js: friss cache-verziók a detail módosításhoz
+- app.js: a MentĂ©s, MegosztĂˇs Ă©s Olvasatlan gombok funkciĂłja vĂˇltozatlan maradt
+- prototype-layout.js: bekerĂĽlt az is-tablet-landscape Ăˇllapot felismerĂ©se
+- styles.css: mobil/tablet ĂˇllĂł nĂ©zetben a rĂ©szletes hĂ­r egymĂˇs alatti kĂˇrtyĂˇs
+  megjelenĂ©st kap
+- styles.css: mobil fekvĹ‘ Ă©s tablet fekvĹ‘ nĂ©zetben bal oldalon van a kĂ©p Ă©s cĂ­m,
+  jobb oldalon a tartalom, az akciĂłgombok Ă©s az eredeti cikk gomb
+- styles.css: fekvĹ‘ rĂ©szletes hĂ­rnĂ©zetben a kĂĽlsĹ‘ sheet gĂ¶rgetĂ©se tiltva van,
+  szĂĽksĂ©g esetĂ©n csak a jobb oldali tartalomkĂˇrtya gĂ¶rgethetĹ‘
+- index.html Ă©s sw.js: friss cache-verziĂłk a detail mĂłdosĂ­tĂˇshoz
 
 Verziok:
 - styles.css?v=2.000-detail1
@@ -3147,15 +4175,15 @@ Verziok:
 - sw.js cache: hirbeszed-prototype-2.000-detail1
 
 Kovetkezo biztonsagos lepes:
-- felhasználói vizuális átnézés, majd finomítás, ha a kép/cím és a tartalom
-  aránya valamelyik fekvő méretben még nem kényelmes.
+- felhasznĂˇlĂłi vizuĂˇlis ĂˇtnĂ©zĂ©s, majd finomĂ­tĂˇs, ha a kĂ©p/cĂ­m Ă©s a tartalom
+  arĂˇnya valamelyik fekvĹ‘ mĂ©retben mĂ©g nem kĂ©nyelmes.
 
 Ellenorizve helyben:
 - JavaScript syntax check rendben: app.js, prototype-layout.js, sw.js
 - helyi szerver index ellenorzes: styles.css?v=2.000-detail1,
   app.js?v=2.000-detail1 es prototype-layout.js?v=2.000-detail1 betoltese rendben
-- bongeszoben alap nezet: sheet cim Részletes hír, detail-sheet osztaly,
-  lead es content kartya, Mentés/Megosztás/Olvasatlan gombok lathatok
+- bongeszoben alap nezet: sheet cim RĂ©szletes hĂ­r, detail-sheet osztaly,
+  lead es content kartya, MentĂ©s/MegosztĂˇs/Olvasatlan gombok lathatok
 - bongeszoben mobil fekvo preset: is-mobile-landscape aktiv, ketoszlopos layout,
   kulso sheet overflow hidden, jobb oldali tartalom overflow auto
 - bongeszoben tablet fekvo preset: is-tablet-landscape aktiv, ketoszlopos layout,
@@ -3179,7 +4207,7 @@ Masodik utologos finomitas:
   401 px, kulonbseg 0 px
 
 Harmadik utologos finomitas:
-- a reszletes hirnezet Mentés, Megosztás es Olvasatlan gombjai kikerultek a
+- a reszletes hirnezet MentĂ©s, MegosztĂˇs es Olvasatlan gombjai kikerultek a
   szoveges tartalom kartyajanak keretebol
 - a harom gomb kulon, keret nelkuli, egyenletes meretu gombsorkent a reszletes
   cikkszoveg ele kerult
@@ -3209,7 +4237,7 @@ Elvegzett modositas:
   latszik, a Figyelek/Felolvasok felirat a hullam ala kerul
 - styles.css: Asszisztens Gepeles es Nema modban a hullam es modfelirat eltunik,
   csak a modvalaszto, cset es szovegbevitel marad
-- Hírfolyam es Beallitasok tartalmi nezetehez nem keszult kulon fekvo mobil
+- HĂ­rfolyam es Beallitasok tartalmi nezetehez nem keszult kulon fekvo mobil
   modositas, ezek valtozatlanok maradnak
 - index.html es sw.js: friss cache-verziok a landscape szabalyokhoz
 
@@ -3236,14 +4264,14 @@ Utologos finomitas:
 98. 2026-06-27 HIRBESZED PROTOTIPUS 2.000 NAGYVERZIO
 
 Allapot:
-A felhasznalo kerese alapjan a teljes kattinthato Hírbeszéd prototipust
+A felhasznalo kerese alapjan a teljes kattinthato HĂ­rbeszĂ©d prototipust
 2.000 nagyverziora kellett leptetni, majd a GitHub Pages szerveren
 publikalni es online bongeszoben ellenorizni.
 
 Elvegzett modositas:
 - index.html: bekerult az app-version meta ertek: 2.000
 - index.html: az osszes betoltott CSS es JS query verzio 2.000 lett
-- manifest.webmanifest: bekerult a "version": "2.000" mező
+- manifest.webmanifest: bekerult a "version": "2.000" mezĹ‘
 - sw.js: a cache neve hirbeszed-prototype-2.000 lett
 - sw.js: az osszes cache-elt CSS es JS asset 2.000 query verzioval szerepel
 - PROTOTYPE.md: aktualis prototipusverzio 2.000
@@ -3258,7 +4286,7 @@ Ellenorizve helyben:
 - JavaScript syntax check keszult: app.js, sw.js
 - helyi bongeszoben ellenorzott URL:
   http://127.0.0.1:8000/?cachebust=prototype-2.000-local
-- eredmeny: app-version 2.000, CSS/JS query verziok 2.000, Mentés hangutasitas latszik
+- eredmeny: app-version 2.000, CSS/JS query verziok 2.000, MentĂ©s hangutasitas latszik
 
 GitHub publikacio:
 - repository: muliksandor-arch/hirbeszed-prototipus
@@ -3267,25 +4295,25 @@ GitHub publikacio:
   https://muliksandor-arch.github.io/hirbeszed-prototipus/?cachebust=prototype-2.000-a5c223d-fresh-2
 - raw GitHub ellenorzes: index.html es sw.js mar 2.000 verziot tartalmaz
 - online bongeszos ellenorzes: app-version 2.000, CSS/JS query verziok 2.000,
-  Hírfolyam/Felolvasó/Asszisztens/Beállítások menuk kattinthatok, konzolhiba nem volt
+  HĂ­rfolyam/FelolvasĂł/Asszisztens/BeĂˇllĂ­tĂˇsok menuk kattinthatok, konzolhiba nem volt
 - hirkep ellenorzes: HVG, Telex es 24.hu kepek valodi merettel betoltodtek
 
 
 97. 2026-06-27 FELOLVASO HANGUTASITAS MENTES PARANCS
 
 Allapot:
-A Felolvaso hangutasitas-listajabol hianyzott a Mentés parancs, mikozben
-a hír mentese fontos hangvezerelt muvelet.
+A Felolvaso hangutasitas-listajabol hianyzott a MentĂ©s parancs, mikozben
+a hĂ­r mentese fontos hangvezerelt muvelet.
 
 Elvegzett modositas:
-- app.js: a Felolvaso hangutasitas-listajaba bekerult a "Mentés"
+- app.js: a Felolvaso hangutasitas-listajaba bekerult a "MentĂ©s"
 - app.js: a parancslista mind a teljes renderelesnel, mind a celzott
   updateCarDom() frissitesnel ugyanazt a listat mutatja
 - app.js: a hangfelismero mar a "ment..." kezdetu alakokat is elfogadja,
   igy mukodik a "mentes", "mentesd", "mentsd el" jellegu parancs
-- app.js: hangutasitasnal a mentés nem kikapcsolo toggle: ha a hír mar
-  mentett, akkor nem veszi ki a mentésekbol, csak jelzi, hogy mar mentve van
-- docs/prototipus-mukodes.md: a hangutasitas-pelda frissult a Mentés
+- app.js: hangutasitasnal a mentĂ©s nem kikapcsolo toggle: ha a hĂ­r mar
+  mentett, akkor nem veszi ki a mentĂ©sekbol, csak jelzi, hogy mar mentve van
+- docs/prototipus-mukodes.md: a hangutasitas-pelda frissult a MentĂ©s
   paranccsal
 
 Verziok:
@@ -3298,7 +4326,7 @@ Ellenorizve helyben:
 - helyi bongeszoben betoltott URL:
   http://127.0.0.1:8000/?cachebust=reader-save-command-v171
 - a futo oldal az uj app.js?v=82 fajlt tolti be
-- Felolvaso hangutasitas-panel tartalmazza: Mentés
+- Felolvaso hangutasitas-panel tartalmazza: MentĂ©s
 - bongeszo konzolban nincs error vagy warning
 
 Megjegyzes:
@@ -3319,16 +4347,16 @@ Elvegzett modositas:
 - app.js: a Felolvaso mar nem indit folyamatos mikrofonfigyelest
   route-aktivaskor vagy a Mikrofon gomb bekapcsolasakor
 - app.js: bekapcsolt Mikrofon mellett a mikrofon csak akkor valik
-  tenylegesen aktivva, amikor a hír felolvasasa a vegere ert
-- app.js: bekapcsolt Hirlepteto mellett minden hír vegen 3 masodperces
+  tenylegesen aktivva, amikor a hĂ­r felolvasasa a vegere ert
+- app.js: bekapcsolt Hirlepteto mellett minden hĂ­r vegen 3 masodperces
   mikrofonablak nyilik, majd a program automatikusan tovabblep
 - app.js: ha a 3 masodperces automata ablakban ervenyes hangutasitas erkezik,
   a parancs lefut, es nem indul plusz automatikus leptetes
-- app.js: ha a Hirlepteto ki van kapcsolva, a hír vegen a mikrofonablak
+- app.js: ha a Hirlepteto ki van kapcsolva, a hĂ­r vegen a mikrofonablak
   nyitva marad, amig uj felolvasas nem indul, a Mikrofon ki nem kapcsol,
   vagy Elozo/Kovetkezo navigacio nem indul
 - app.js: a Felolvaso hullam csak akkor mutat figyelo allapotot, amikor
-  tenylegesen nyitva van a hír vegi mikrofonablak
+  tenylegesen nyitva van a hĂ­r vegi mikrofonablak
 - docs/termek-specifikacio.md es docs/prototipus-mukodes.md frissitve
   a prototipus es a vegleges AI-mukodes kulonbsegevel
 
@@ -3354,11 +4382,11 @@ Megjegyzes:
 Ez helyi prototipus-finomhangolas. GitHubra meg nincs publikalt uj verzio.
 
 
-95. 2026-06-27 ASSZISZTENS MODVALASZTO IKONOK EGYSÉGESÍTESE
+95. 2026-06-27 ASSZISZTENS MODVALASZTO IKONOK EGYSĂ‰GESĂŤTESE
 
 Allapot:
 Az Asszisztens tetejen levo modvalaszto es a jobb felso gyorsvalto
-vizualisan nem volt egységes. A gepeles jel ertheto volt, a Beszed es Nema
+vizualisan nem volt egysĂ©ges. A gepeles jel ertheto volt, a Beszed es Nema
 modhoz viszont apphoz illo ikonnyelvre volt szukseg.
 
 Elvegzett modositas:
@@ -3367,11 +4395,11 @@ Elvegzett modositas:
   modvalto es a kattintaslogika ugyanazt a valtasi sorrendet hasznalja
 - app.js: a modvalaszto gombok ikon+felirat szerkezetet kaptak
 - app.js: a jobb felso modvalto ikonja mar a kovetkezo modot mutatja
-  egységes SVG ikoncsaladbol
+  egysĂ©ges SVG ikoncsaladbol
 - styles.css: a Beszed, Gepeles es Nema ikonok merete, aktiv/inaktiv
-  szinezese es gombon beluli elrendezese egységesitve lett
+  szinezese es gombon beluli elrendezese egysĂ©gesitve lett
 - docs/termek-specifikacio.md: rogzitve lett, hogy az asszisztens
-  modvalasztoja egységes ikon+felirat vezerlot hasznal
+  modvalasztoja egysĂ©ges ikon+felirat vezerlot hasznal
 
 Verziok:
 - app.js?v=79
@@ -3549,8 +4577,8 @@ Ellenorizve helyben:
   - regi kezzel irt allhir-valasz nem jelent meg
 
 Kepernyomentesek:
-- C:\Users\mulik\Documents\Fejlesztés\Hírbeszéd\tmp-screenshots\rss-feed-v164.png
-- C:\Users\mulik\Documents\Fejlesztés\Hírbeszéd\tmp-screenshots\rss-reader-v164.png
+- C:\Users\mulik\Documents\FejlesztĂ©s\HĂ­rbeszĂ©d\tmp-screenshots\rss-feed-v164.png
+- C:\Users\mulik\Documents\FejlesztĂ©s\HĂ­rbeszĂ©d\tmp-screenshots\rss-reader-v164.png
 
 Megjegyzes:
 Ez fejlesztesi celra keszult statikus RSS-pillanatkep. A vegleges appban
@@ -3824,7 +4852,7 @@ Ellenorizve helyben:
   http://127.0.0.1:8000/?cachebust=assistant-voice-compact-passive-v158
 - a futo oldal az app.js?v=73 es styles.css?v=61 fajlokat tolti be
 - Beszed modban a hullam es csetablak kozti tavolsag 32 px
-- Beszed modban nincs composer es nincs h1 fokerdés
+- Beszed modban nincs composer es nincs h1 fokerdĂ©s
 - Beszed mod csetpanel: pointer-events:none, touch-action:none
 - Beszed mod csetpanel belso gorgetese: overflow hidden
 - Beszed mod buborekai: nowrap, overflow hidden, text-overflow ellipsis
@@ -3871,7 +4899,7 @@ Ellenorizve helyben:
 - a csetablak 20 px tavolsaggal indul a hullam alatt
 - a csetablak also szegelye a Beszed oldal also szegelyehez er:
   0 px also elteres
-- Beszed modban tovabbra sincs composer es nincs h1 fokerdés
+- Beszed modban tovabbra sincs composer es nincs h1 fokerdĂ©s
 - bongeszo konzolban nincs error vagy warning
 
 Megjegyzes:
@@ -3885,10 +4913,10 @@ Allapot:
 Beszed modban a hullam alatti fokerdest es segedszoveget probakeppen
 lecsereltuk egy kisebb, buborekos csetablakra. Ez ugyanazt az aktualis
 assistantChat elozmenyt mutatja, mint Gepeles es Nema modban, de nincs
-gepelomező es nem teljes magassagu chatfelulet.
+gepelomezĹ‘ es nem teljes magassagu chatfelulet.
 
 Elvegzett modositas:
-- app.js: Beszed mod renderelesebol kikerult a h1/p fokerdés blokk
+- app.js: Beszed mod renderelesebol kikerult a h1/p fokerdĂ©s blokk
 - app.js: bekerult az assistantVoiceChatMarkup(), amely a kozos chatLogot
   kompakt Beszed mod feluletben jeleniti meg
 - styles.css: bekerult az assistant-voice-chat-panel 176 px magas,
@@ -3911,7 +4939,7 @@ Ellenorizve helyben:
 - helyi beepitett bongeszoben betoltott URL:
   http://127.0.0.1:8000/?cachebust=assistant-voice-chat-v155
 - a futo oldal az uj app.js?v=72 es styles.css?v=58 fajlokat tolti be
-- Beszed modban nincs h1 fokerdés, nincs segedszoveg es nincs composer
+- Beszed modban nincs h1 fokerdĂ©s, nincs segedszoveg es nincs composer
 - Beszed modban van assistant-voice-chat-panel, merete 330 x 176 px
 - Gepeles modban bekuldott "sport" kerdes utan Beszed modban ugyanaz a
   3 buborekos cset latszott a kompakt csetablakban
@@ -4086,7 +5114,7 @@ Elvegzett modositas:
   szovegbevitel
 - app.js: a nagy "Figyelek/Felolvasok" statusz csak Hang modban el
 - app.js: Gepeles/Nema modban visszakerult a regi statuszjelleg:
-  "● GEPELES", "● NEMA", illetve felolvasas kozben "● FELOLVAS"
+  "â—Ź GEPELES", "â—Ź NEMA", illetve felolvasas kozben "â—Ź FELOLVAS"
 - styles.css: a kozepre rendezett voice-only layout csak
   .assistant-mode-voice alatt ervenyes, nem hat a Gepeles es Nema
   nezetekre
@@ -4104,10 +5132,10 @@ Ellenorizve helyben:
   http://127.0.0.1:8000/?cachebust=assistant-mode-scope-v151
 - Hang mod: nincs composer/chatLog, nagy "Figyelek/Felolvasok" statusz,
   voice-only kozepre rendezett felulet
-- Gepeles mod: chatLog es composer latszik, statusz "● GEPELES",
+- Gepeles mod: chatLog es composer latszik, statusz "â—Ź GEPELES",
   szoveges kerdes bekuldese utan valaszbuborekok jelennek meg es
   felolvasasi allapot indul
-- Nema mod: chatLog es composer latszik, statusz "● NEMA",
+- Nema mod: chatLog es composer latszik, statusz "â—Ź NEMA",
   szoveges kerdes bekuldese utan valaszbuborekok jelennek meg, a hullam
   idle marad
 - bongeszo konzolban nincs error vagy warning
@@ -4587,7 +5615,7 @@ es a fenyudvar a 76 px-es keretbol kilogtak.
 Elvegzett modositas:
 - styles.css: a car-wave-area fix magassaga 76 px-rol 132 px-re nott
 - styles.css: a car-wave-area alatti .wave is 132 px magas lett
-- prototype-reader-controls.js: a kiegészito hullamstilus .wave
+- prototype-reader-controls.js: a kiegĂ©szito hullamstilus .wave
   magassaga is 132 px-re lett allitva
 - a gombsorrend es az also blokk sorrendje nem valtozott
 
@@ -4708,7 +5736,7 @@ Elvegzett modositas:
 - app.js: a Felolvaso renderCar() markup sorrendje modosult
 - uj sorrend felulrol lefele: hanghullam, hangutasitasok doboz,
   Pro hang ajanlo kartya, fo vezerlogombsor, lepteto/reszletezo gombsor
-- styles.css: a car-bottom-stack egységes 9 px gapet es 9 px also
+- styles.css: a car-bottom-stack egysĂ©ges 9 px gapet es 9 px also
   paddinget kapott
 - styles.css: a gombsorok es a Pro/hangutasitas kartyak kozotti regi
   egyedi margok ki lettek valtva a kozos stack gapre
@@ -4827,7 +5855,7 @@ Ez helyi prototipus-finomhangolas. GitHubra meg nincs publikalt uj verzio.
 63. 2026-06-27 NYITO ONBOARDING TIPOGRAFIAI ES KARTYA TOKENEK
 
 Allapot:
-Letrejott egy egységes, app-szintu, de egyelore csak a nyito/onboarding
+Letrejott egy egysĂ©ges, app-szintu, de egyelore csak a nyito/onboarding
 feluletekre rahuzott meret- es kartyaszabaly. A Beallitasok es a belso
 appnezetek nem kaptak kozvetlen atirast.
 
@@ -4837,13 +5865,13 @@ Elvegzett modositas:
   padding es gap ertekek
 - styles.css: a tokenek csak .phone-shell.onboarding-active alatt
   ervenyesulnek
-- styles.css: a nyito/onboarding hero kartyak egységes 24 px radiusu
+- styles.css: a nyito/onboarding hero kartyak egysĂ©ges 24 px radiusu
   nagy kartyak lettek
-- styles.css: a gombok egységesen 50 px magasak, 16 px radiusuak,
+- styles.css: a gombok egysĂ©gesen 50 px magasak, 16 px radiusuak,
   13 px betumerettel
-- styles.css: a csomagkartyak egységes 18 px radius, 12/13 px padding,
+- styles.css: a csomagkartyak egysĂ©ges 18 px radius, 12/13 px padding,
   14 px kartyacim, 11 px leiras, 12 px ar meretet kaptak
-- styles.css: a hero cim merete 24 px-re egységesult a nyito oldalaknal
+- styles.css: a hero cim merete 24 px-re egysĂ©gesult a nyito oldalaknal
 
 Verziok:
 - styles.css?v=43
@@ -4996,7 +6024,7 @@ Elvegzett modositas:
 - a kezelo csak akkor lep mukodesbe, ha kotelezo onboarding kozben a
   csomagvalaszto kepernyo latszik
 - ilyen esetben a bejelentkezesi reszallapotot visszatorli, az onboarding
-  folyamatot az elso Hírbeszéd udvozlo kepernyore allitja vissza
+  folyamatot az elso HĂ­rbeszĂ©d udvozlo kepernyore allitja vissza
 - mas sheetek, RSS-onboarding es normal app navigacio visszagombjai nem
   kaptak uj viselkedest
 
@@ -5009,7 +6037,7 @@ Ellenorizve helyben:
 - helyi bongeszoben betoltott URL:
   http://127.0.0.1:8000/?cachebust=onboarding-back-v120
 - a futo oldal az uj prototype-auth.js?v=10 fajlt tolti be
-- meglevo csomagvalaszto allapotbol a visszagomb a Hírbeszéd
+- meglevo csomagvalaszto allapotbol a visszagomb a HĂ­rbeszĂ©d
   kezdokepernyore vitt
 - teljes utvonal tesztelve: udvozlo kepernyo -> Google belepes ->
   Probaido es csomagok -> visszagomb -> udvozlo kepernyo

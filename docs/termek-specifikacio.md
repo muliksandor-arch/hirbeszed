@@ -1,6 +1,6 @@
 # Hírbeszéd – termék- és működési specifikáció
 
-**Verzió:** 2.004  
+**Verzió:** 2.1  
 **Állapot:** tervezési alap, fejlesztés előtti egyeztetésre  
 **Elsődleges nyelv:** magyar  
 **Célplatformok:** iPhone, Android, Apple CarPlay, Android Auto
@@ -21,6 +21,8 @@ Az alkalmazás nem saját hírtartalmat gyárt. A felhasználó által engedély
 - A hírfolyamban nincs hangvezérlés és automatikus felolvasás.
 - Az olvasott, meghallgatott és átugrott hír egységesen **olvasott** állapotú.
 - A **Kedvelés** az olvasottságtól független állapot.
+- A hírfolyam kártyáin a Kedvelés, Megosztás és Olvasott/Olvasatlan gyorsműveletek kompakt, ikon-only vezérlőként jelennek meg a forrás + idő meta sorában, nem növelhetik meg annak magasságát, és egymástól elválasztva kell megjelenniük a biztonságosabb tappolás miatt. A prototípusban a láthatatlan érinthető szélesség 32 px gombonként.
+- A hírfolyam normál hírkártyái egységes rácselemek. Az első listaelem nem kap automatikus vezetőhír/kiemelt kártya megjelenést; ilyen eltérés csak külön termékdöntéssel vezethető be.
 - A hírfolyam alapértelmezett rendezése fordított időrend: a legfrissebb hír van felül.
 - A mobilnetes működés alapértelmezetten engedélyezett.
 - A helyi hírekhez csak opcionális, hozzávetőleges helyadatot használunk.
@@ -32,6 +34,9 @@ Az alkalmazás nem saját hírtartalmat gyárt. A felhasználó által engedély
 - A Felolvasó és Asszisztens oldalak jobb felső előfizetési CTA gombjainak állapotfüggő feliratát az `ELOFIZETESI_GOMB_MATRIX.md` döntési tábla rögzíti.
 - Az előfizetéskezelés központi felülete a `Csomagok és előfizetés` oldal. Ide vezet az első indítás, a menü, a CTA, a promóció, a próba lejárta, a fizetési hiba és a vásárlás-visszaállítás.
 - Csomagkártyára kattintva csak kijelölés történik. A prototípusban a jóváhagyó gomb állítja át az állapotot, a végleges appban ez az App Store / Google Play fizetési vagy csomagváltási folyamatát indítja.
+- Amíg az első indítási onboarding nincs teljesen befejezve és az app belső felülete nem nyílt meg, új betöltéskor vagy helyreállításkor az onboarding mindig az üdvözlő/regisztrációs képernyőről indul. Félkész belépési, előfizetési vagy RSS-választási oldal nem lehet tartós visszatérési pont.
+- Kijelentkezéskor az app auth-zárba kerül és az üdvözlő / belépési képernyőt mutatja, menü nélkül. A kliens ilyenkor törli a helyben tárolt, fiókhoz kötött adatokat, hogy másik fiók belépésekor ne keveredjenek a korábbi felhasználó frontend-adatai a backendből érkező állapottal.
+- Bejelentkezés után a backendből visszaáll a felhasználó teljes személyes állapota: előfizetés, RSS-források, témák, érdeklődési profil, olvasási/kedvelési adatok, megjelenési és hangpreferenciák, fiókbiztonsági beállítások és kapcsolt fiókok. Másik eszközön belépve ugyanazt az appélményt kell megkapnia.
 
 ## 3. Felhasználói szerepkör
 
@@ -52,7 +57,7 @@ A felhasználó:
 1. Indítóképernyő
 2. Rövid termékbemutató
 3. Regisztráció és belépés
-4. E-mail/telefon ellenőrzése
+4. E-mail-cím ellenőrzése
 5. Első beállítás
    - témák kiválasztása;
    - ajánlott RSS-források kiválasztása;
@@ -99,6 +104,8 @@ A felhasználó:
 - Adatvédelem és adatok törlése
 - Súgó
 
+A Fiók és biztonság beállítási panel egyoldalas fiókbiztonsági felület. `Fiók adatai` összefoglalót, kapcsolt belépési mód kártyákat, kétlépcsős védelem sort, kijelentkezési műveletet és külön fióktörlési veszélyzónát tartalmaz. A Google/Facebook/Apple kártyák brandelt SVG ikont használnak, az e-mailes belépés saját appikonja megmarad. A régi külön Profiladatok és Kapcsolt fiókok almenü nem része az aktuális iránynak.
+
 ## 5. Regisztráció és fiók
 
 ### 5.1. Belépési módok
@@ -107,23 +114,48 @@ A felhasználó:
 - Google
 - Facebook
 - E-mail
-- Telefonszám
 
 Az iOS-verzióban az Apple-belépés a többi közösségi belépéssel azonos hangsúllyal jelenik meg.
+
+A jelenlegi termékirány e-mail-alapú regisztrációt és közösségi fiókos folytatást használ. Telefonszámos vagy SMS-kódos regisztráció nincs az aktuális MVP-ben.
+
+A közösségi fiókos folytatás a belépés előtti kezdőképernyőn jelenik meg. A külön `Belépés` oldal e-mailes belépési oldal: e-mail cím, jelszó, `Belépés` gomb és `Elfelejtett jelszó` link tartozik hozzá, közösségi gombok és regisztrációs terelő gomb nélkül.
+
+Az e-mailes belépés hibáit külön kell kezelni: hiányzó e-mail cím, hibás e-mail formátum, hiányzó jelszó, sikertelen e-mail/jelszó páros, túl sok próbálkozás, megerősítetlen e-mail cím, zárolt vagy nem használható fiók, valamint hálózati vagy szerverhiba. A sikertelen e-mail/jelszó párosnál a felület ne árulja el, hogy az e-mail cím létezik-e.
+
+A jelszó-visszaállítás a Belépés oldal alfolyamata. A reset kéréshez érvényes e-mail formátum szükséges, de a sikeres visszajelzés nem árulhatja el, hogy az e-mail címhez tartozik-e fiók. A folyamatnak kezelnie kell a hiányzó vagy hibás e-mail címet, túl gyakori kérést, nem használható fiókállapotot, valamint hálózati vagy szerverhibát. Sikeres kérés után a felhasználó visszakerülhet a Belépés oldalra.
+
+E-mailes fiókoknál a kétlépcsős azonosítás alapértelmezett védelem. Bekapcsolt állapotban sikeres e-mail + jelszó után 6 számjegyű e-mail kódot kell kérni. A felhasználó a fiókbiztonsági menüben kikapcsolhatja, de regisztrációnál az e-mail cím megerősítése ettől függetlenül kötelező. Közösségi belépésnél a Hírbeszéd nem kér külön e-mailes 2FA-kódot, mert a Google/Facebook/Apple hitelesítési védelme érvényes.
 
 ### 5.2. Ajánlott biztonsági modell
 
 - A közösségi fiókok hitelesítését az adott szolgáltató végzi.
 - E-mailes regisztrációnál e-mail-cím ellenőrzése szükséges.
-- Telefonszámos belépésnél egyszer használatos SMS-kód szükséges.
+- E-mailes regisztrációnál név, e-mail-cím és jelszó szükséges.
+- A jelszó minimum 8 karakter, és tartalmaz kisbetűt, nagybetűt, számot, valamint különleges karaktert.
+- A regisztrációt 6 számjegyű e-mailben küldött megerősítő kód zárja.
+- Az e-mailes megerősítő kód hibáit külön kell kezelni: hibás kód, lejárt kód, túl sok próbálkozás, túl gyakori újraküldés, sikertelen kódküldés és megszakadt vagy érvénytelen regisztrációs folyamat.
+- Ezeknél a folyamatot megakasztó hibáknál egységes modális rendszerüzenet jelenjen meg, és mezőhöz kötött hiba esetén a kódmező is kapjon egyértelmű hibajelzést.
 - Új vagy gyanús készüléknél külön megerősítés kérhető.
-- A kétlépcsős védelem választható; adminisztrátori rendszer esetén kötelező.
+- A kétlépcsős védelem e-mailes fióknál alapértelmezetten bekapcsolt, de a felhasználó kikapcsolhatja; adminisztrátori rendszer esetén kötelező lehet.
 - A munkamenet visszavonható a Fiók és biztonság oldalon.
-- A felhasználó az alkalmazáson belül kezdeményezheti a fiók törlését.
+- A felhasználó az alkalmazáson belül kezdeményezheti a fiók törlését. Ez nem azonos a kijelentkezéssel: külön megerősítést, szerveroldali törlési folyamatot, auditálható állapotot és adatmegőrzési/jogi szabályok szerinti kezelést igényel.
 
 ### 5.3. Fiók-összekapcsolás
 
-Azonos személy Apple-, Google-, Facebook-, e-mail- és telefonszámos belépése egyetlen profilhoz kapcsolható. Összekapcsolás előtt újrahitelesítés szükséges.
+Azonos személy Apple-, Google-, Facebook- és e-mailes belépése egyetlen Hírbeszéd-profilhoz kapcsolható. A végleges appban a felhasználói profil és a belépési azonosság külön kezelendő: ugyanahhoz a profilhoz több hitelesítési szolgáltató tartozhat.
+
+Ha a felhasználó korábban például Facebookkal lépett be, majd később Google-fiókkal próbál belépni, a rendszer ellenőrzött e-mail egyezés alapján felismerheti, hogy a két belépés valószínűleg ugyanahhoz a személyhez tartozik. Ilyenkor nem történhet csendes automatikus összefésülés: a felhasználónak egyértelmű összekapcsolási megerősítést kell kapnia.
+
+Összekapcsolás előtt újrahitelesítés vagy e-mailes megerősítés szükséges. Apple Hide My Email vagy más privát/relay e-mail esetén az e-mail-egyezés önmagában nem használható automatikus összekapcsolásra; csak bejelentkezett fiókból indított, explicit kapcsolás vagy külön megerősítési folyamat engedélyezhető.
+
+A Fiók és biztonság oldalon a felhasználó grafikusan lássa, mely belépési módok kapcsoltak. A jelenlegi munkamenet jelölése külön magyarázó sor legyen, ne keveredjen a kapcsolt/nem kapcsolt állapottal. Nem kapcsolt Google/Facebook/Apple szolgáltató kapcsolható a közösségi gombkészlet stílusában. Social fiókkal létrejött profilhoz e-mailes belépés is hozzáadható, de ez nem hozhat létre új profilt: az e-mail címet, jelszót és 6 számjegyű megerősítő kódot ugyanazzal a biztonsági szabálykészlettel kell kezelni, mint az e-mailes regisztrációnál.
+
+Legalább egy működő belépési módnak mindig maradnia kell. Az utolsó kapcsolt azonosító leválasztását a frontendnek jeleznie, a backendnek pedig hitelesen tiltania kell.
+
+### 5.4. Fiók törlése
+
+A fióktörlés a Fiók és biztonság oldalon indítható, de vizuálisan és működésben különüljön el a kijelentkezéstől. A kijelentkezés szövege jelezze, hogy csak az adott eszközön léptet ki, a fiók, előfizetés és felhőben mentett beállítások megmaradnak. A fióktörlés előtt a felhasználó kapjon egyértelmű, végfelhasználói figyelmeztetést arról, hogy a felhőben tárolt fiókadatok, beállítások, RSS-források, érdeklődési adatok és kapcsolt belépési módok törlődnek, és a művelet nem állítható vissza. App Store- vagy Google Play-előfizetés esetén a fióktörlési folyamatnak külön fel kell hívnia a figyelmet arra, hogy az áruházi előfizetést az áruházban kell lemondani; a fiók törlése önmagában nem tekinthető az áruházi számlázás automatikus megszüntetésének. A végleges appban a backendnek kell kezelnie a törlési állapotot, a kapcsolt belépési azonosságokat, a felhasználói preferenciákat, RSS-beállításokat, érdeklődési profilt, előfizetési/jogosultsági adatokat, áruházi entitlement-ellenőrzést és minden adatmegőrzési kivételt.
 
 ## 6. Első beállítás
 
@@ -136,6 +168,8 @@ Az első beállítás legfeljebb öt rövid lépésből áll, és később minde
 5. Magyar felolvasóhang és sebesség próbája.
 
 A rendszerengedélyeket csak akkor kérjük, amikor a hozzájuk tartozó funkciót a felhasználó bekapcsolja.
+
+Ha a felhasználó az első beállítást nem fejezi be teljesen, az app a következő indításkor nem a félbehagyott köztes lépésre tér vissza. A folyamat biztonsági okból az üdvözlő/regisztrációs képernyőről indul újra, és csak akkor minősül befejezettnek, ha a belépés/fiók, a csomagválasztás, az RSS-források mentése és az app belső felületének megnyitása megtörtént.
 
 ## 7. Hírfolyam
 
@@ -494,9 +528,8 @@ Saját RSS-szerver nélkül a háttérben történő frissítés és helyi érte
 ## 19. Megjelenés és hozzáférhetőség
 
 - Rendszer szerinti, világos és sötét téma.
-- Dinamikus betűméret.
+- Az első használati onboarding képernyői beállítástól függetlenül sötét vizuális környezetben indulnak, hogy a belépés előtti élmény egységes legyen.
 - Képernyőolvasó-kompatibilis címkék.
-- Magas kontraszt.
 - Színtől független állapotjelzés.
 - Nagy érintési célok a Felolvasóban.
 - Felirat és vizuális visszajelzés a hangállapotokról.
@@ -612,7 +645,7 @@ Pontos helyadat, mikrofonfelvétel és teljes letöltött cikktartalom nem kerü
 
 ### 23.2. Menedzselt szolgáltatásban
 
-- Apple, Google, Facebook, e-mail és telefonos hitelesítés;
+- Apple, Google, Facebook és e-mailes hitelesítés;
 - opcionális beállítás- és kedvelésszinkron;
 - AI-szolgáltatás titkos kulcsának védelme;
 - rövid életű AI-munkamenetek létrehozása;
@@ -629,7 +662,7 @@ Ez a szabály nem büntető jellegű: a váltás legyen gyors és érthető, de 
 
 ### 23.4. Fontos biztonsági szabály
 
-AI-, SMS- vagy más szolgáltatói titkos kulcs nem építhető közvetlenül a mobilalkalmazásba. A kulcsot menedzselt titoktároló és minimális serverless funkció védi.
+AI- vagy más szolgáltatói titkos kulcs nem építhető közvetlenül a mobilalkalmazásba. A kulcsot menedzselt titoktároló és minimális serverless funkció védi.
 
 ## 24. Hibaállapotok
 
@@ -649,13 +682,14 @@ Az alkalmazás érthető, rövid visszajelzést ad:
 
 Egyetlen hibás RSS-forrás nem állíthatja le a teljes frissítést vagy a Felolvasót.
 
+Folyamatot megakasztó hibáknál egységes modális rendszerüzenetet kell használni. Nem blokkoló siker- vagy információs visszajelzés csak akkor jelenjen meg, ha a felületváltozás önmagában nem elég; ilyenkor a fejlécben megjelenő rövid értesítés az irány, nem alsó toast.
+
 ## 25. Első kiadás – MVP
 
 ### Benne van
 
 - teljes magyar felület;
 - regisztráció Apple, Google, Facebook és e-mail használatával;
-- telefonszámos belépés, ha a választott hitelesítési csomag támogatja;
 - ajánlott és kézzel megadott RSS-források;
 - időrendi hírfolyam;
 - olvasott és kedvelt állapot;

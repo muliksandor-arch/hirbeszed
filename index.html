@@ -4,25 +4,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=overlays-content">
   <meta name="theme-color" content="#0D191E">
-  <meta name="description" content="A Hírbeszéd mobilalkalmazás kattintható prototípusa.">
-  <meta name="app-version" content="2.004">
-  <title>Hírbeszéd – mobilprototípus</title>
+  <meta name="description" content="A H&iacute;rbesz&eacute;d mobilalkalmaz&aacute;s kattinthat&oacute; protot&iacute;pusa.">
+  <meta name="app-version" content="2.1">
+  <title>H&iacute;rbesz&eacute;d &ndash; mobilprotot&iacute;pus</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/brand/hirbeszed-app-icon-light.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/brand/hirbeszed-app-icon-light.svg">
-  <link rel="stylesheet" href="styles.css?v=2.004-publish-test-v244">
-  <link rel="stylesheet" href="prototype-topics.css?v=2.004-publish-test-v244">
-  <link rel="stylesheet" href="prototype-settings.css?v=2.004-publish-test-v244">
+  <link rel="stylesheet" href="styles.css?v=2.1-release-v317">
+  <link rel="stylesheet" href="prototype-topics.css?v=2.1-release-v317">
+  <link rel="stylesheet" href="prototype-settings.css?v=2.1-release-v317">
 </head>
 <body>
-  <div class="prototype-frame" aria-label="Méretezhető prototípus előnézet">
+  <div class="prototype-frame" aria-label="M&eacute;retezhet&#337; protot&iacute;pus el&#337;n&eacute;zet">
   <div id="phone" class="phone-shell startup-locked">
     <header class="topbar">
-      <div class="brand-block" aria-label="Hírbeszéd">
+      <div class="brand-block" aria-label="H&iacute;rbesz&eacute;d">
         <img id="brandMark" src="assets/brand/hirbeszed-mark-light.svg" alt="">
         <div>
-          <div class="wordmark"><span>Hír</span>beszéd</div>
-          <div id="pageTitle" class="page-title">Felolvasó</div>
+          <div class="wordmark"><span>H&iacute;r</span>besz&eacute;d</div>
+          <div id="pageTitle" class="page-title">Felolvas&oacute;</div>
         </div>
       </div>
       <div id="headerActions" class="header-actions"></div>
@@ -30,40 +30,59 @@
 
     <main id="view" class="view" tabindex="-1"></main>
 
-    <nav class="bottom-nav" aria-label="Fő navigáció">
-      <button type="button" data-route="feed" aria-label="Hírfolyam">
-        <span class="nav-icon" data-nav-icon="feed">▤</span><span>Hírfolyam</span>
+    <nav class="bottom-nav" aria-label="F&#337; navig&aacute;ci&oacute;">
+      <button type="button" data-route="feed" aria-label="H&iacute;rfolyam">
+        <span class="nav-icon" data-nav-icon="feed">&#9636;</span><span>H&iacute;rfolyam</span>
       </button>
-      <button type="button" data-route="car" aria-label="Felolvasó">
-        <span class="nav-icon" data-nav-icon="reader">▰</span><span>Felolvasó</span>
+      <button type="button" data-route="car" aria-label="Felolvas&oacute;">
+        <span class="nav-icon" data-nav-icon="reader">&#9648;</span><span>Felolvas&oacute;</span>
       </button>
       <button type="button" data-route="assistant" aria-label="Asszisztens">
-        <span class="nav-icon" data-nav-icon="assistant">◉</span><span>Asszisztens</span>
+        <span class="nav-icon" data-nav-icon="assistant">&#9673;</span><span>Asszisztens</span>
       </button>
-      <button type="button" data-route="settings" aria-label="Beállítások">
-        <span class="nav-icon" data-nav-icon="settings">⚙</span><span>Beállítások</span>
+      <button type="button" data-route="settings" aria-label="Be&aacute;ll&iacute;t&aacute;sok">
+        <span class="nav-icon" data-nav-icon="settings">&#9881;</span><span>Be&aacute;ll&iacute;t&aacute;sok</span>
       </button>
     </nav>
 
     <section id="sheet" class="sheet" aria-hidden="true">
       <header class="sheet-header">
-        <button id="sheetBack" class="icon-button sheet-back-button" type="button" data-action="close-sheet" aria-label="Vissza">←</button>
+        <button id="sheetBack" class="icon-button sheet-back-button" type="button" data-action="close-sheet" aria-label="Vissza">
+          <svg class="sheet-back-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M19 12H7"></path>
+            <path d="M12 7l-5 5 5 5"></path>
+          </svg>
+        </button>
         <div><h2 id="sheetTitle"></h2><p id="sheetSubtitle"></p></div>
       </header>
       <div id="sheetBody" class="sheet-body"></div>
     </section>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="appMessageOverlay" class="app-message-overlay" aria-hidden="true">
+      <section id="appMessageCard" class="app-message-card" role="alertdialog" aria-modal="true" aria-labelledby="appMessageTitle" aria-describedby="appMessageText" data-message-type="error">
+        <div id="appMessageIcon" class="app-message-icon" aria-hidden="true">!</div>
+        <div class="app-message-copy">
+          <p id="appMessageKicker" class="app-message-kicker">Hiba</p>
+          <h2 id="appMessageTitle">Valami nem siker&uuml;lt</h2>
+          <p id="appMessageText">Pr&oacute;b&aacute;ld &uacute;jra.</p>
+        </div>
+        <div class="app-message-actions">
+          <button id="appMessageSecondary" class="secondary-button" type="button" hidden>M&eacute;gsem</button>
+          <button id="appMessagePrimary" class="primary-button coral-button" type="button">Rendben</button>
+        </div>
+      </section>
+    </div>
   </div>
   </div>
-  <script src="app.js?v=2.004-publish-test-v244"></script>
-  <script src="prototype-onboarding.js?v=2.004-publish-test-v244"></script>
-  <script src="prototype-topics.js?v=2.004-publish-test-v244"></script>
-  <script src="prototype-settings.js?v=2.004-publish-test-v244"></script>
-  <script src="prototype-reader-controls.js?v=2.004-publish-test-v244"></script>
-  <script src="prototype-auth.js?v=2.004-publish-test-v244"></script>
-  <script src="prototype-layout.js?v=2.004-publish-test-v244"></script>
-  <script src="prototype-auto-preview.js?v=2.004-publish-test-v244"></script>
-  <script src="prototype-navigation.js?v=2.004-publish-test-v244"></script>
+  <script src="app.js?v=2.1-release-v317"></script>
+  <script src="prototype-onboarding.js?v=2.1-release-v317"></script>
+  <script src="prototype-topics.js?v=2.1-release-v317"></script>
+  <script src="prototype-settings.js?v=2.1-release-v317"></script>
+  <script src="prototype-reader-controls.js?v=2.1-release-v317"></script>
+  <script src="prototype-auth.js?v=2.1-release-v317"></script>
+  <script src="prototype-layout.js?v=2.1-release-v317"></script>
+  <script src="prototype-auto-preview.js?v=2.1-release-v317"></script>
+  <script src="prototype-navigation.js?v=2.1-release-v317"></script>
 </body>
 </html>
