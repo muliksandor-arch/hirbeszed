@@ -1,31 +1,33 @@
-PROJEKTĂLLAPOT CODEX FOLYTATĂSHOZ
-Projekt: HĂ­rbeszĂ©d
-VerziĂł: 1
-DĂˇtum: 2026-06-23
+PROJEKTÁLLAPOT CODEX FOLYTATÁSHOZ
+Projekt: Hírbeszéd
+Verzió: 1
+Dátum: 2026-06-23
 
-Ez a fĂˇjl azĂ©rt kĂ©szĂĽlt, hogy a HĂ­rbeszĂ©d projekt Ăşj Codex-beszĂ©lgetĂ©sbĹ‘l,
-vagy mĂˇsik gĂ©pen is folytathatĂł legyen akkor is, ha az eredeti beszĂ©lgetĂ©si
-kontextus nem Ă©rhetĹ‘ el teljesen.
+Ez a fájl azért készült, hogy a Hírbeszéd projekt új Codex-beszélgetésből,
+vagy másik gépen is folytatható legyen akkor is, ha az eredeti beszélgetési
+kontextus nem érhető el teljesen.
 
-Ăšj Codex-beszĂ©lgetĂ©s indĂ­tĂˇsakor ezt kell mondani:
+Új Codex-beszélgetés indításakor ezt kell mondani:
 
-Olvasd el a PROJEKT_ALLAPOT_CODEX.txt fĂˇjlt, innen folytatjuk a HĂ­rbeszĂ©d projektet.
+Olvasd el a PROJEKT_ALLAPOT_CODEX.txt fájlt, innen folytatjuk a Hírbeszéd projektet.
 
 
-LEGUTOBBI ALLAPOT - 2026-07-04, 2.1 NAGY VERZIOEMELES ES GITHUB PUBLIKALAS ELOTT
+LEGUTOBBI ALLAPOT - 2026-07-04, 2.1 NAGY VERZIOEMELES ES GITHUB PUBLIKALAS
 
-Elvegzett lokalis modositas:
-- A prototipus nagy verzioemelest kapott: az app-version 2.004-rol 2.1-re
-  valtozott.
+Elvegzett lokalis es publikalasi modositas:
+- A prototipus app-version erteke 2.1 lett.
 - Az aktualis asset/cache marker: 2.1-release-v317.
-- Az index.html, sw.js, manifest.webmanifest es prototype-auth.js verziojelolesei
-  az uj 2.1-es kiadasi allapothoz igazodnak.
-- A dokumentacioban az aktualis prototipusverzio 2.1-re frissult:
-  PROTOTYPE.md, docs/prototipus-mukodes.md, docs/termek-specifikacio.md,
-  BACKEND_FEJLESZTESI_DOKUMENTACIO.md.
-- Ez a bejegyzes a helyi ellenorzes es GitHub Pages publikacio elotti
-  allapotot rogzitette. A publikalas eredmenyet a kovetkezo bejegyzesben kell
-  frissiteni.
+- Az index.html, sw.js, manifest.webmanifest, app.js es prototype-auth.js verziojelolesei az uj 2.1-es kiadasi allapothoz igazodnak.
+- Javitas: normal, nem-onboarding appindulaskor a `startup-locked` osztaly mar lekerul, igy nem marad lathatatlan a renderelt hirfolyam es a menu. Onboarding/auth kapu eseten a menuzar tovabbra is megmarad.
+- A helyreallitasi ellenorzes soran javitva lettek a prototype-auth.js-ben maradt karaktercsere-maradvanyok es belso fuggvenynevek: a belepes, kodellenorzes es fiokbiztonsagi szovegek ujra olvashatok es mukodok.
+- Helyi ellenorzes: localhost 8000, cachebust v2.1-release-v317; app-version 2.1, 9/9 JS asset es 3/3 CSS asset 2.1-release-v317 markerrel, konzolhiba nelkul, `startup-locked` nelkul.
+- Helyi smoke teszt: Beallitasok -> Fiok es biztonsag megnyilik; a Fiok adatai, kapcsolt belepesi modok, Ketlepcsos vedelem, Kijelentkezes es Fiok torlese elemek latszanak, konzolhiba nelkul.
+- Publikalas: a kanonikus `./publikalas.cmd -Message "release: prototype v2.1"` feltoltotte a f29dc4949668d6c19765a5f04cc3d182b1783011 commitot, de az elso GitHub Pages futas sikertelen lett.
+- A GitHub UI `Re-run failed jobs` gombja nem lett hasznalva. A projekt sajat `./publikalas.cmd -RetryDeployment` folyamata uj, tiszta deploy futast inditott.
+- Vegleges GitHub commit: 546ec1710b5d53eb86f7c04398e70ca28fed5cee.
+- Sikeres GitHub Actions futas: https://github.com/muliksandor-arch/hirbeszed/actions/runs/28710918295.
+- Elo GitHub Pages ellenorzes: https://muliksandor-arch.github.io/hirbeszed/?cachebust=v2.1-release-v317-live ; app-version 2.1, asset marker 2.1-release-v317, konzolhiba nelkul, `startup-locked` nelkul.
+- A dokumentacioban az aktualis prototipusverzio 2.1-re frissult: PROTOTYPE.md, docs/prototipus-mukodes.md, docs/termek-specifikacio.md, BACKEND_FEJLESZTESI_DOKUMENTACIO.md.
 
 LEGUTOBBI ALLAPOT - 2026-07-04, 2.004 KETLEPCSOS VEDELEM PAJZS IKON
 
