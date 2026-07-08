@@ -12,6 +12,544 @@ kontextus nem érhető el teljesen.
 Olvasd el a PROJEKT_ALLAPOT_CODEX.txt fájlt, innen folytatjuk a Hírbeszéd projektet.
 
 
+ALLANDO MUNKAREND - HIRBESZED HELYI FEJLESZTES
+
+- A projekt gyokerkonyvtaraban nem kell .git mappat keresni, es nem kell
+  ott `git status` vagy `git diff` ellenorzest futtatni. Ez a mappa nem
+  Git worktree-kent mukodik.
+- GitHub publikalas csak kulon felhasznaloi keresre tortenik, a kanonikus
+  parancs tovabbra is: `.\publikalas.cmd`.
+- A publikalasi Git repo kulon helyen van vagy ott jon letre:
+  `.publish\hirbeszed-full-repo\.git`. Ezt a publikalasi script kezeli.
+- JavaScript szintaktikai ellenorzesnel ne a PATH-on levo `node`
+  parancsbol indulj ki. Hasznald a Codex csomagolt Node futtatot:
+  `C:\Users\mulik\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe`.
+- Eltavolitas-ellenorzesnel a live kodot es a torteneti dokumentaciot
+  valaszd szet. A `PROJEKT_ALLAPOT_CODEX.txt` regi bejegyzeseiben
+  termeszetesen elofordulhatnak mar megszunt funkciok nevei.
+- Fejlesztes utan a normal ellenorzesi rend: celzott live-fajl kereses,
+  csomagolt Node szintaktikai ellenorzes, helyi bongeszos ellenorzes,
+cache-marker ellenorzes, dokumentacios audit. GitHub csak keresre.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-08, 2.1 BEALLITASOK MENU RENDSZEREZES ES SVG IKONOK V353
+
+Elvegzett lokalis prototipus modositas:
+- A Beallitasok fomenuben az elso sor a `Csomagok es elofizetes`.
+- A menu harom logikai szakaszra rendezodott:
+  `Hirbeallitasok`, `Alkalmazas`, `Prototipus`.
+- A `Hirbeallitasok` szakasz elemei:
+  RSS-forrasok, Temak es erdeklodes, Helyi hirek, Ertesitesek.
+- Az `Alkalmazas` szakasz elemei:
+  Fiok es biztonsag, Megjelenes, Hang es felolvaso, Mobiladat es tarhely.
+- A `Prototipus` szakasz elemei:
+  Prototipus, CarPlay / Android Auto nezet.
+- A CarPlay / Android Auto elonezet lekerult a menu tetejerol, es a
+  Prototipus szakasz ala kerult.
+- A Beallitasok fomenupontjai egységes, szemantikus inline SVG ikonokat
+  kaptak a korabbi ertesitesi ikonok vekony, lekerekitett, coral akcentusu
+  stilusaban.
+- Az ikonok bekerultek az elofizetes, RSS, temak, helyi hirek, ertesitesek,
+  fiok, megjelenes, hang/felolvaso, mobiladat/tarhely, prototipus es
+  CarPlay / Android Auto sorokhoz.
+- A regi render-felulirasok miatt frissult a `prototype-auth.js` es a
+  `prototype-topics.js`, hogy a Beallitasok uj csoportos szerkezete minden
+  betoltesi sorrendben megmaradjon.
+- A fejlesztes elotti helyi snapshot:
+  `20260708-135147_v348_before-settings-menu-icons`.
+- Uj asset/cache marker:
+  `2.1-settings-menu-icons-v353`.
+- Frissitett dokumentumok:
+  PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md, PROJEKT_ALLAPOT_CODEX.txt.
+- Helyi ellenorzes: csomagolt Node szintaktikai ellenorzes az erintett
+  JavaScript fajlokra es sw.js-re; helyi bongeszos ellenorzes v353
+  cachebusttal; Beallitasok oldalon 11 SVG ikon, 3 szakaszcim es 1
+  CarPlay / Android Auto elonezeti sor latszott; az elonezeti sheet megnyilt
+  Android Auto es CarPlay fulekkel; konzolhiba nem jelent meg.
+- GitHubra meg nincs publikalva.
+
+
+KORABBI ALLAPOT - 2026-07-08, 2.1 HELYI VERZIOMENTESI RENDSZER V348
+
+Elvegzett lokalis fejlesztoi kornyezeti modositas:
+- Letrejott a teljes helyi snapshot rendszer:
+  `helyi_mentes.cmd`, `helyi_mentes.ps1`,
+  `helyi_osszehasonlitas.cmd`, `helyi_osszehasonlitas.ps1`.
+- A kanonikus helyi mentesi parancs:
+  `.\helyi_mentes.cmd -Name "rovid-nev"`.
+- A mentések alapertelmezett gyokere:
+  `C:\Users\mulik\Documents\Fejlesztés\Hírbeszéd_verziok`.
+- A kanonikus osszehasonlito parancsok:
+  `.\helyi_osszehasonlitas.cmd -Latest`,
+  illetve `.\helyi_osszehasonlitas.cmd -Snapshot "mentes-mappa-neve"`.
+- A snapshot teljes projektmasolatot keszit, de kihagyja a fejlesztoi es
+  generalt mellektermekeket: `.publish`, `.git`, `node_modules`, `.cache`,
+  `_snapshot_meta`, `local-server.log`, `local-server.err.log`.
+- A snapshot metaadatai a mentett mappan beluli `_snapshot_meta` mappaba
+  kerulnek: `SNAPSHOT_INFO.txt`, `SNAPSHOT_MANIFEST.tsv`.
+- Automatikus visszaallito parancs szandekosan nincs. Visszaallitas elott
+  eloszor uj mentest kell kesziteni az aktualis allapotrol, es csak ezutan
+  szabad celzottan visszahozni fajlokat egy korabbi mentésbol.
+- A `mobile-app-dev-environment` skill es hivatkozott dokumentumai frissultek,
+  hogy a jovoben a helyi snapshot rendszer a fejlesztoi kornyezet resze legyen.
+- Uj emberi fejlesztoi kornyezet kezikonyv keszult:
+  `Mobil prototípus fejlesztői környezet kézikönyv v9.txt`.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  PROJEKT_ALLAPOT_CODEX.txt, mobile-app-dev-environment skill dokumentumai.
+- A prototipusverzio maradt 2.1.
+- A service worker cache es a script/css query verziok nem valtoztak:
+  2.1-notification-delayed-threshold-v348.
+- Ellenorzes: PowerShell parse OK; `helyi_mentes.cmd -DryRun` OK;
+  `helyi_mentes.cmd -Name "v348-local-snapshot-system"` futott; az
+  osszehasonlito snapshot-kizarasi logikaja javitva lett; a friss
+  `helyi_osszehasonlitas.cmd -Latest` szerint nincs elteres az aktualis
+  projekt es a legutobbi mentes kozott.
+- Ez helyi fejlesztoi kornyezeti modositas, GitHubra meg nincs publikalva.
+
+
+KORABBI ALLAPOT - 2026-07-07, 2.1 SZEMELYES ERTESITES KESLELTETETT KUSZOB V348
+
+Elvegzett lokalis modositas:
+- A `Szemelyes hirosszefoglalo` szabaly es feluleti szoveg pontosult:
+  nem fix ketorankenti ertesites, hanem ket feltetel egyutt kell hozza.
+- Uj hangos szemelyes ertesites csak akkor lehet, ha az utolso hangos
+  ertesites ota eltelt legalabb 2 ora, es azota legalabb +10 uj szemelyes
+  hir gyult ossze.
+- Ha a 2 ora mar eltelt, de meg nincs meg a +10 hir, az app nem kuld
+  hangos ertesitest a 2 oras pontnal. Tovabb var, es a 10. uj hir
+  erkezesekor ertesit hangosan; innen indul ujra a kovetkezo 2 oras ablak.
+- A dontesi seged visszaadja a `waitingForNewsThreshold` allapotot is,
+  amikor az idoablak mar nyitott, de a +10 hires kuszob meg nincs meg.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-notification-delayed-threshold-v348.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md, PROJEKT_ALLAPOT_CODEX.txt.
+- Ellenorzes: csomagolt Node `--check` app.js, prototype-settings.js,
+  sw.js; local HTTP 200; 12/12 asset v348 markerrel, 0 regi v347 marker.
+  Szabalyteszt atment: 2 ora + 9 uj hir meg varakozik
+  `waitingForNewsThreshold` allapotban, 2 ora + 10 uj hir mar hangos
+  ertesitest enged. Bongeszoben ellenorizve: nincs `2 orankent` vagy
+  `hangos frissites` szoveg, a Mukodes kartya tartalmazza a kesleltetett
+  kuszob es az ujraindulo 2 oras ablak leirasat, nincs konzolhiba.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+KORABBI ALLAPOT - 2026-07-07, 2.1 ERTESITESI MENU IKONOK ES MUKODES KARTYA V347
+
+Elvegzett lokalis modositas:
+- Az Ertesitesek panel ket kapcsoloja SVG ikont kapott:
+  `Rendkivuli hirek` = figyelmezteto haromszog coral felkialtojellel,
+  `Szemelyes hirosszefoglalo` = hirkartya/lista coral szikraval.
+- A `Szemelyes hirosszefoglalo` sor szovege javult:
+  `10 uj hir utan - hangos ertesites 2 orankent`.
+- A panel ala bekerult egy `Mukodes` informacios kartya, amely kulon irja le
+  a rendkivuli hirek es a szemelyes hirosszefoglalo mukodeset.
+- A rendkivuli hir kulon, azonnali ertesitesi agkent van rogzitve:
+  ha be van kapcsolva, nem vonatkozik ra a szemelyes hirosszefoglalo 2 oras
+  es +10 hires szabaly.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-notification-info-card-v347.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md, PROJEKT_ALLAPOT_CODEX.txt.
+- Ellenorzes: csomagolt Node `--check` app.js, prototype-settings.js,
+  sw.js; local HTTP 200; 12/12 asset v347 markerrel, 0 regi v346 marker.
+  Szabalyteszt atment: szemelyes 10 hir / 2 ora / +10 uj hir, rendkivuli
+  hir es idojarasi riasztas kulon azonnali ag. Bongeszoben ellenorizve:
+  ket 22x22 px SVG ikon, `hangos ertesites` szoveg, `Mukodes` kartya,
+  nincs `hangos frissites`, nincs konzolhiba.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+KORABBI ALLAPOT - 2026-07-07, 2.1 ERTESITESI SZABALYOK V345
+
+Elvegzett lokalis modositas:
+- Az Ertesitesek menubol kikerult a `Napi osszefoglalo` es a
+  `Csendes idoszak` sor. Ezek nem reszei az aktualis iranynak.
+- A menu ket fo ertesitesi kapcsolot mutat: `Rendkivuli hirek` es
+  `Szemelyes hirosszefoglalo`.
+- A `Rendkivuli hirek` kapcsolo a valódi rendkivuli hireket es az
+  idojarasi riasztasokat fogja ossze.
+- A `Szemelyes hirosszefoglalo` szabalyalapu: eloszor 10 uj szemelyes
+  hirnel jelenhet meg; aktiv ertesites eseten ugyanaz az ertesites frissul;
+  uj hangos jelzes csak legalabb 2 ora elteltevel es legalabb +10 uj
+  szemelyes hir utan lehet.
+- A napi idoponthoz kotott osszefoglalo es csendes idoszak prefek a
+  betoltott helyi allapotbol is torlodnek.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-notification-summary-rules-v345.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md.
+- Ellenorzes: csomagolt Node `--check` app.js, prototype-settings.js,
+  prototype-topics.js, sw.js; local HTTP 200; 12/12 asset v345 markerrel,
+  0 regi v344 marker. Bongeszoben ellenorizve: az Ertesitesek panelben csak
+  `Rendkivuli hirek` es `Szemelyes hirosszefoglalo` latszik, nincs
+  `Napi osszefoglalo` vagy `Csendes idoszak`. A dontesi szabalyteszt
+  atment: 10 hir kuszob, 2 ora renotify, +10 uj hir feltetel.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+KORABBI ALLAPOT - 2026-07-07, 2.1 FRISS HIRKARTYA KEP JAVITAS V344
+
+Elvegzett lokalis modositas:
+- A friss hirkartya coral felso jelolocsikja nem grid elemkent jelenik meg
+  tobbe, hanem abszolut overlaykent a kartya tetejen.
+- Ez javitja azt a hibat, hogy `fresh-news-card` allapotban a nagy hirkartya
+  kepe kb. 29 px magasra nyomodott, mert a `::before` pseudo elem kulon
+  grid sort foglalt.
+- A normal nagy hirkartya arany visszaallt: a kepmezoben kb. 394 x 228 px,
+  a szovegmezoben kb. 394 x 165 px meret merheto Alap 430 x 860 presetben.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-fresh-card-image-fix-v344.
+- Ellenorzes: csomagolt Node `--check` app.js es sw.js; local HTTP 200;
+  12/12 asset v344 markerrel, 0 regi v343 marker. Bongeszoben ellenorizve:
+  `simulateFreshNews=3`, `Idorend`, 3 friss hirkartya `Uj` jelolessel,
+  a friss kartya `::before` pozicioja absolute, nincs konzolhiba.
+- Dokumentacios audit: termeklogika nem valtozott, ez layout-hibajavitas;
+  a folytatasi allapot ebben a fajlban frissult.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+KORABBI ALLAPOT - 2026-07-07, 2.1 FEED FRISSITES ES FELOLVASO MEMORIA V343
+
+Elvegzett lokalis modositas:
+- A kozos Hirfolyam/Felolvaso hírfolyamnezet-valto harom nezetre tisztult:
+  `Szemelyes / Idorend / Kedvelt`. Az `Osszes` nezet kikerult.
+- A `Szemelyes` es `Idorend` nezetben az olvasott hirek mar nem tunnek el,
+  csak olvasott vizualis allapotot kapnak.
+- Uj hir erkezesekor a Hirfolyam nem ugrik el automatikusan. Felulrol
+  beuszo, lebego ertesites jelzi: `N uj hir erkezett · Megtekintem`.
+- A `Megtekintem` utan az uj hirek a feedben finom `Uj` jelolest kapnak.
+  A jeloles akkor tunik el, amikor a felhasznalo vegiggorgette az osszes
+  ujkent jelolt hirt.
+- Helyi prototipus-teszthez bekerult a `simulateFreshNews=3` URL-parameter.
+  Ez csak ellenorzesi seged, nem vegtermek-funkcio.
+- A Felolvaso regi 5 elemu visszalepesi kerulomemoriaja kikerult. Helyette
+  30 elemu, hir-ID alapu lejatszasi memoria dolgozik.
+- Az `Elozo` a tenylegesen elozo lejatszott hirre lep; a `Kovetkezo`
+  visszalepes utan a memoria bejart utvonalan halad, a memoria vegen pedig
+  az aktualis feed kovetkezo meg nem olvasott/felolvasott hirere ugrik.
+- Frissiteskor a Felolvaso nem szakitja meg az aktualis hirt, de a kovetkezo
+  leptetes mar a legfrissebb, meg nem felolvasott hireket veszi figyelembe.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-feed-refresh-reader-memory-v343.
+- Ellenorzes: csomagolt Node `--check` app.js, prototype-topics.js es sw.js;
+  local app 8000, cachebust feed-refresh-reader-memory-v343-20260707;
+  12/12 asset v343 markerrel, 0 regi v342 marker. Bongeszoben ellenorizve:
+  `Szemelyes / Idorend / Kedvelt` gombsor, `3 uj hir erkezett Megtekintem`
+  ertesites, 3 uj hirkartya `Uj` jelolessel, vegiggorgetes utan 0 uj
+  jeloles, olvasott allapot valtasnal a kartyaszam 30 maradt, konzolhiba
+  nelkul.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+KORABBI ALLAPOT - 2026-07-06, 2.1 AKCIOIKONOK V331
+
+Elvegzett lokalis modositas:
+- A Megosztas papirrepulo ikonjarol lekerultek a coral repulesi csikok.
+- Az Olvasott szem allapotban mar nem csak a belso kor coral, hanem az
+  egesz szemikon coral szint kap.
+- Az Olvasatlan szem tovabbra is semleges kontur es ures pupilla marad.
+- A Kedveles aktiv allapotban tovabbra is tomor coral szivkitoltest hasznal.
+- Az action-icons-svg-preview.svg elonezeti kep is az aktualis SVG
+  ikonkeszletet mutatja.
+- A meglevo ikonkeretek es gombmeretek nem valtoztak.
+- A prototipus verzioja maradt 2.1.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-action-icons-solid-read-v331.
+- Ellenorzes: csomagolt Node `--check` app.js es sw.js; local app 8000,
+  cachebust action-icons-solid-read-v331-20260706; 12/12 asset v331
+  markerrel, 0/12 regi v330 asset, 90/90 hirkartya-akcioikon SVG-kent
+  renderelt, `share-trail` es `read-check` elem nincs, az olvasott szem
+  ikon computed szine coral, konzolhiba nelkul. A teszt utan a Hirfolyam
+  nezet visszaallt `Szemelyes` allapotra.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-06, 2.1 AKCIOIKONOK FINOMITASA
+
+Elvegzett lokalis modositas:
+- A hirkartya-akcioikonok a felhasznaloi visszajelzes szerint finomodtak.
+- A Kedveles aktiv allapotban mar tomor coral szivkitoltest hasznal.
+- A Megosztas ikon coral repulesi csikjai a papirrepulo vegere kerultek,
+  nem kulon, mellette allo vonalakkent jelennek meg.
+- Az Olvasott szem ikonbol kikerult a pipa; az olvasott allapotot csak
+  a kozepen levo tomor coral kor jelzi.
+- A szem ikon rajza nagyobb/nyitottabb lett, hogy optikailag egymagassagu
+  legyen a sziv es megosztas ikonokkal, mikozben a meglevo ikonkeretek
+  es gombmeretek valtozatlanok maradtak.
+- Az action-icons-svg-preview.svg elonezeti kep is ugyanezt az aktualis
+  SVG keszletet mutatja.
+- A prototipus verzioja maradt 2.1.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-action-icons-refine-v330.
+- Ellenorzes: csomagolt Node `--check` app.js es sw.js; local app 8000,
+  cachebust action-icons-refine-v330-20260706; 12/12 asset v330
+  markerrel, 0/12 regi v329 asset, 90/90 hirkartya-akcioikon SVG-kent
+  renderelt, a meta sor elso ikonjai 12x12 px meretuek, `read-check`
+  elem nincs, konzolhiba nelkul. A teszt utan a Hirfolyam nezet visszaallt
+  `Szemelyes` allapotra.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-06, 2.1 HIRKARTYA AKCIOIKONOK SVG
+
+Elvegzett lokalis modositas:
+- A hirkartya-akciok ikonrajza egységes inline SVG keszletre valtott.
+- A Kedveles ikon finom szivkontur, aktiv allapotban coral kitoltessel
+  es coral korvonallal.
+- A Megosztas ikon a valasztott 1. variacio szerinti lekerekitett
+  papirrepulo/kuldes ikon lett, kis coral mozgascsikokkal.
+- Az Olvasatlan/Olvasott ikon nyitott szem motivum: olvasatlan allapotban
+  semleges kontur es ures pupilla, olvasott allapotban coral pupilla es
+  kis coral pipa jelzi az allapotot.
+- A meglevo meretezes megmaradt: a teljes hirkartya-gombokban 16 px,
+  a meta sor ikon-only hasznalataban 12 px, kiskartyas meta sorban 11 px
+  vizualis ikonkeret.
+- A prototipus verzioja maradt 2.1.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-action-icons-svg-v329.
+- Ellenorzes: csomagolt Node `--check` app.js es sw.js; local app 8000,
+  cachebust action-icons-svg-v329-20260706; 12/12 asset v329 markerrel,
+  0/12 regi v328 asset, 42/42 hirkartya-akcioikon SVG-kent renderelt,
+  meta sorban 12x12 px merettel, konzolhiba nelkul.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-06, 2.1 FELOLVASO ELOZO MEMORIA
+
+Elvegzett lokalis modositas:
+- A Felolvaso `Szemelyes` es `Idorend` hirfolyamnezetben ideiglenes,
+  csak kepernyon beluli visszalepesi memoriat kapott.
+- Ha a Felolvaso olvasottnak jelol egy hirt es az emiatt kiesik a nem
+  olvasott listabol, az utolso 5 ilyen hir azonositoja megmarad.
+- Az `Elozo` gomb vagy hangutasitas eloszor ebbol a memoriabol hozza
+  vissza a legutobb kiesett hirt, majd ismetelt hasznalatnal legfeljebb
+  az utolso 5 elemen lep vissza.
+- A visszahozott hir nem kerul vissza tartosan a normal hirfolyamba; a
+  `Kovetkezo` visszater az aktualis elo listara.
+- A memoria torlodik kepernyovaltaskor, hirfolyamnezet-valtaskor,
+  temachip-valtaskor, illetve forras-/temakor valtozasakor.
+- Az `Osszes` es `Kedvelt` nezethez nem kellett kulon memoria, mert
+  ezekben a listakban az olvasott vagy kedvelt hirek eleve elerhetok.
+- A prototipus verzioja maradt 2.1.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-reader-back-memory-v328.
+- Ellenorzes: csomagolt Node `--check` app.js, prototype-topics.js,
+  prototype-reader-controls.js es sw.js; local app 8000, cachebust
+  reader-back-memory-v328-20260706; 12/12 asset v328 markerrel, 0/12
+  regi v327 asset, konzolhiba nelkul. Felolvaso Szemelyes nezetben a
+  Kovetkezo olvasottnak jelolte az aktualis hirt, az Elozo visszahozta,
+  majd a Kovetkezo visszatert az elo listara.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-06, 2.1 HIRFOLYAMNEZETEK ES FELOLVASO SZINKRON
+
+Elvegzett lokalis modositas:
+- A Hirfolyam felso nezetsavja negy kozos hirfolyamnezetre valtott:
+  `Szemelyes / Idorend / Osszes / Kedvelt`.
+- Az alapertelmezett nezet uj tiszta prototipusallapotban `Szemelyes`.
+- A `Szemelyes` es `Idorend` nezet csak nem olvasott hireket mutat; az
+  `Osszes` minden hirt idorendben mutat, olvasott hirekkel egyutt; a
+  `Kedvelt` csak a szivecskevel jelolt hireket mutatja idorendben.
+- A regi `Legfrissebb / Nekem / Olvasatlan` belso nezetlogika es az
+  elavult olvasott-hirek fejléc kapcsolo kikerult az elo kodbol.
+- A Felolvaso kepernyo tetejere is bekerult ugyanez a kozos
+  hirfolyamnezet-valto. A valasztas oroklodik a Hirfolyam es a
+  Felolvaso kozott.
+- A Felolvaso mar nem kulon globalis `articles` listabol lep, hanem az
+  aktualis kozos hirfolyamnezet listajabol. Az Elozo, Kovetkezo es
+  automatikus hirlepteto az uj lista szerint mukodik.
+- Hangutasitassal is valthato a Felolvaso hirfolyamnezete: Szemelyes,
+  Idorend, Osszes / Minden hir, Kedvelt hirek.
+- A Temak es erdeklodes panelrol kikerult a korabbi arva
+  `Szemelyre szabott sorrend` es `Erdeklodesi profil torlese` sor.
+- A prototipus verzioja maradt 2.1.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-feed-views-reader-sync-v327.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-06, 2.1 HIRFOLYAM MINDEN TEMA CHIP
+
+Elvegzett lokalis modositas:
+- A Hirfolyam temachip-soraban a `Friss` osszesito chip neve `Minden tema`
+  lett.
+- A belso azonosito tovabbra is `fresh`, vagyis a temaszures nelkuli
+  osszesito mukodes nem valtozott.
+- A regi, mentett `Friss` kategoriaallapot kompatibilisen tovabbra is a
+  `fresh` azonositohoz terelodik.
+- A Temak es erdeklodes panelen is `Minden tema` jelenik meg, es tovabbra
+  mindig elerheto, nem kikapcsolhato osszesito elem.
+- A prototipus verzioja maradt 2.1.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-feed-all-topics-chip-v326.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-06, 2.1 FELOLVASO HANGUTASITAS KARTYA NELKUL
+
+Elvegzett lokalis modositas:
+- A Felolvaso kepernyorol kikerult a Hangutasitasok kartya es a rajta
+  megjeleno minden tartalom.
+- A Felolvaso aljan a hanghullam es a vezerlogombok maradnak; fekvo
+  mobil nezetben a hanghullam tolti ki a korabbi bal oldali kartyahelyet.
+- A Felolvaso funkcio inditasakor egyszer rovid hangos utmutato hangzik el:
+  ha a mikrofon aktiv, a Felolvaso hangutasitasokkal vezerelheto; a
+  parancsok a vezerlogombok cimei; a hir a Kedveles paranccsal mentheto
+  el kesobbre.
+- Az utmutato nem ismetlodik automata hirleptetesnel vagy szunet utani
+  folytataskor ugyanabban a Felolvaso munkamenetben.
+- A prototipus verzioja maradt 2.1.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-reader-voice-intro-v325.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-06, 2.1 ASSZISZTENS MODVALTO MAGASSAG IGAZITAS
+
+Elvegzett lokalis modositas:
+- Az Asszisztens `Beszed / Cset` modvaltojanak teljes magassaga igazodott
+  a Hirfolyam `Legfrissebb / Nekem / Olvasatlan` szegmentalt gombsorahez.
+- Kikerult az Asszisztens modgombok kulon `min-height` magasito szabalyja.
+- A fekvo mobil modvalto kulonszabaly is a Hirfolyam szegmens teljes
+  magassagi logikajahoz igazodott.
+- A Beszed es Cset ikonok, az aktiv surface allapot es a Cset panel
+  kozvetlen indulasa nem valtozott.
+- A prototipus verzioja maradt 2.1.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-assistant-mode-height-v324.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-06, 2.1 ASSZISZTENS MODVALTO FEED STILUS
+
+Elvegzett lokalis modositas:
+- Az Asszisztens `Beszed / Cset` modvaltoja atvette a Hirfolyam
+  `Legfrissebb / Nekem / Olvasatlan` szegmentalt gombsoranak
+  dizajnnyelvet.
+- A modvalto teljes szelessegu, ketoszlopos, surface-2 hatteru
+  vezerlo lett, aktiv surface allapottal es finom arnyekkal.
+- A Beszed es Cset ikonok megmaradtak a gombokon.
+- A Cset panel tovabbra is kozvetlenul a modvalto alatt indul,
+  kulon coral `Cset` cimsor nelkul.
+- A prototipus verzioja maradt 2.1.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-assistant-mode-segmented-v322.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-06, 2.1 ASSZISZTENS CSET CIM NELKUL
+
+Elvegzett lokalis modositas:
+- Cset modban kikerult a modvalaszto alatti coral szinu `Cset` allapotcim.
+- A normal Cset kepernyon a csetpanel kozvetlenul a `Beszed / Cset`
+  modvalaszto alatt indul, igy a beszelgetes feljebb kerul.
+- A Beszed mod, a Cset mod mukodese, a beviteli mezo es a
+  billentyuzet-overlay logika nem valtozott.
+- A promo/elofizetesi cset informacios fejlece megmaradt, mert az nem a
+  normal Cset mod `Cset` cime.
+- A prototipus verzioja maradt 2.1.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-assistant-chat-tight-v321.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-06, 2.1 ASSZISZTENS BESZED CSET MOD
+
+Elvegzett lokalis modositas:
+- Az Asszisztens kepernyon a harom mod helyett ket mod maradt:
+  `Beszed` es `Cset`.
+- A korabbi `Gepeles` mod teljesen kikerult a valaszthato modok kozul.
+- A `Cset` mod a korabbi `Nema` mod mukodeset viszi tovabb:
+  gepelt kerdes, irott valasz, hangos felolvasas nelkul.
+- A korabbi mentett `text` es `silent` assistantMode ertekeket a
+  prototipus automatikusan `chat` modra migralja.
+- A Beszed mod ikonja maradt a hanghullam SVG.
+- A Cset mod uj SVG uzenetbuborek ikont kapott, finom coral belso
+  vonalakkal, a Hirbeszed stilusahoz igazitva.
+- A Cset kepernyo a korabbi Nema kepernyo elrendezeset hasznalja:
+  felso `Cset` allapot, csetlista, beviteli mezo, alulrol epulo
+  buborekok es billentyuzet-overlay szabaly.
+- A prototipus verzioja maradt 2.1.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-assistant-chat-mode-v320.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+
+LEGUTOBBI ALLAPOT - 2026-07-06, 2.1 ASSZISZTENS JOBB FELSO CSAK CTA
+
+Elvegzett lokalis modositas:
+- Az Asszisztens kepernyo jobb felso fejleceben megszunt a modvalto ikon
+  (`assistant-toggle` megjelenese).
+- Az Asszisztens modvaltas tovabbra is a kepernyon beluli felso
+  `Beszed / Gepeles / Nema` vezerlovel tortenik.
+- Ha nincs Asszisztens CTA, a jobb felso fejlecakcio ures. Teljes
+  AI Asszisztens elofizetesnel ez az alapallapot.
+- Ha Asszisztens CTA kell, peldaul aktiv heti 5 kerdeses probanal vagy
+  elofizetesi teendonal, jobb felul tovabbra is CTA jelenhet meg.
+- Az AI Asszisztens heti proba CTA/panel feluletei nem mutatnak kulon
+  maradek kerdesszamot. A prototipus belso keretszamlalasa megmaradt.
+- Ez UX/design-only prototipus-modositas, backend-szabalyt nem erint.
+- A prototipus verzioja maradt 2.1.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-assistant-cta-only-v319.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md, ELOFIZETESI_GOMB_MATRIX.md.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
+LEGUTOBBI ALLAPOT - 2026-07-06, 2.1 HIRFOLYAM FEJLEC KERESES ONLY
+
+Elvegzett lokalis modositas:
+- A Hirfolyam jobb felso fejlecgombsorabol kikerult a `Kedveltek` es az
+  `Olvasott hirek mutatasa/elrejtese` gomb.
+- A Hirfolyam fejleceben csak a `Kereses` ikon marad.
+- A kereses ikon szine `var(--accent)` lett, igy vilagos temaban is
+  lathato, es illeszkedik az alkalmazas zold accent szinrendszerehez.
+- A hirkartyakon levo Kedveles, Megosztas es Olvasott/Olvasatlan
+  meta-sori gyorsmuveletek nem valtoztak.
+- Ez UX/design-only prototipus-modositas, backend-szabalyt nem erint.
+- Ellenorzes: local app 8000, cachebust feed-search-only-v318-20260706;
+  app-version 2.1, 9/9 JS asset es 3/3 CSS asset
+  2.1-feed-search-only-v318 markerrel, konzolhiba nelkul.
+- Helyi smoke teszt: Hirfolyam fejlecben pontosan 1 gomb van,
+  `data-action="search"`, aria-label `Kereses`; nincs `library` es nincs
+  `toggle-read-feed` fejlecgomb. Vilagos temaban a kereses ikon mért szine
+  rgb(47, 129, 120). A Kereses gomb megnyitja a `Kereses` sheetet es a
+  search inputot.
+- A prototipus verzioja maradt 2.1.
+- A service worker cache es a script/css query verziok uj jelolese:
+  2.1-feed-search-only-v318.
+- Dokumentacios audit frissult: PROTOTYPE.md, docs/prototipus-mukodes.md,
+  docs/termek-specifikacio.md. BACKEND_FEJLESZTESI_DOKUMENTACIO.md nem
+  igenyel frissitest, mert backend oldali szabalyt nem erint.
+- Ez helyi prototipus-modositas, GitHubra meg nincs publikalva.
+
 LEGUTOBBI ALLAPOT - 2026-07-04, 2.1 NAGY VERZIOEMELES ES GITHUB PUBLIKALAS
 
 Elvegzett lokalis es publikalasi modositas:

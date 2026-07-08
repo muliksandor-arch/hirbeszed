@@ -13,7 +13,7 @@ const EMPTY_ARTICLE = {
 };
 
 const topics = [
-  {id:'fresh',name:'Friss',description:'Legfrissebb és vezető hírek'},
+  {id:'fresh',name:'Minden téma',description:'Összes téma hírei egy helyen'},
   {id:'domestic',name:'Belföld',description:'Magyar közélet, politika és társadalom'},
   {id:'foreign',name:'Külföld',description:'Nemzetközi hírek, EU, világpolitika'},
   {id:'economy',name:'Gazdaság',description:'Infláció, árak, forint, cégek és ipar'},
@@ -34,6 +34,39 @@ const topics = [
   {id:'law',name:'Jog',description:'Törvények, rendeletek, fogyasztóvédelem és adatvédelem'},
   {id:'local',name:'Helyi',description:'Budapest, vármegyék, városi és helyi hírek'}
 ];
+
+const FEED_VIEW_OPTIONS = [
+  {id:'personal',label:'Személyes'},
+  {id:'timeline',label:'Időrend'},
+  {id:'liked',label:'Kedvelt'}
+];
+const READER_PLAYBACK_MEMORY_LIMIT = 30;
+const NEWS_SUMMARY_NOTIFICATION_THRESHOLD = 10;
+const NEWS_SUMMARY_NOTIFICATION_RENOTIFY_MS = 2 * 60 * 60 * 1000;
+
+function feedViewKey(value){
+  return String(value||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+}
+function normalizeFeedView(value){
+  const aliases={
+    personal:'personal',szemelyes:'personal',nekem:'personal',preferred:'personal',
+    timeline:'timeline',latest:'timeline',friss:'timeline',legfrissebb:'timeline',idorend:'timeline',idorendi:'timeline',
+    liked:'liked',saved:'liked',kedvelt:'liked',kedvencek:'liked',kedvenc:'liked'
+  };
+  return aliases[feedViewKey(value)]||'personal';
+}
+function feedViewOption(id=state.feedView){
+  const normalized=normalizeFeedView(id);
+  return FEED_VIEW_OPTIONS.find(option=>option.id===normalized)||FEED_VIEW_OPTIONS[0];
+}
+function feedViewLabel(id=state.feedView){
+  return feedViewOption(id).label;
+}
+function feedViewSwitchMarkup(extraClass=''){
+  const classes=['segmented','feed-view-switch'];
+  if(extraClass)classes.push(extraClass);
+  return `<div class="${classes.join(' ')}" aria-label="Hírfolyamnézetek">${FEED_VIEW_OPTIONS.map(option=>`<button type="button" data-feed-view="${option.id}" class="${normalizeFeedView(state.feedView)===option.id?'active':''}">${option.label}</button>`).join('')}</div>`;
+}
 
 const ASSISTANT_CHAT_MAX_MESSAGES = 40;
 const READER_TRIAL_DEFAULT_DAYS = 14;
@@ -138,10 +171,6 @@ const defaultSubscription = {
 };
 const defaultSettingsPrefs = {
   personalized:true,
-  digestEnabled:true,
-  digestTime:'07:30',
-  quietEnabled:true,
-  quietPeriod:'22:00-07:00',
   voiceName:'Magyar rendszerhang',
   speechRate:'1.0',
   imagesMobile:true,
@@ -156,12 +185,12 @@ function createDefaultSettingsPrefs(){
 }
 function createInitialPrototypeState(){
   return {
-  route:'feed', sort:'latest', category:'fresh', theme:'system', mic:true, autoNext:true,
+  route:'feed', feedView:'personal', category:'fresh', theme:'system', mic:true, autoNext:true,
   playing:false, paused:false, detailedRead:false, carIndex:0, assistantMode:'voice', read:[], saved:[], history:[], assistantChat:[], assistantPromoChat:[],
-  showReadInFeed:true, promoFeedPriority:true, prototypeImmediateSubscriptionChange:true, prototypeReaderTrialAvailable:true, prototypeReaderTrialDaysLeft:READER_TRIAL_DEFAULT_DAYS, prototypeAutoFillData:true, readerPromoMode:false, assistantPromoMode:false,
+  promoFeedPriority:true, prototypeImmediateSubscriptionChange:true, prototypeReaderTrialAvailable:true, prototypeReaderTrialDaysLeft:READER_TRIAL_DEFAULT_DAYS, prototypeAutoFillData:true, readerPromoMode:false, assistantPromoMode:false,
   deviceSessionState:'active', deviceSessionOtherDevice:'iPhone 15 · 2 perce',
   sources:{HVG:true,Portfolio:true,Qubit:true,'Nemzeti Sport':true,Telex:true,'24.hu':true},
-  enabledTopics:topics.map(topic=>topic.id), notifications:true, location:false, mobileData:true,
+  enabledTopics:topics.map(topic=>topic.id), notifications:true, newsSummaryNotifications:true, location:false, mobileData:true,
   subscription:{...defaultSubscription},
   settingsPrefs:createDefaultSettingsPrefs(),
   auth:{loggedIn:false,name:'',email:'',phone:'',provider:'',linkedProviders:{Email:false,Google:false,Facebook:false,Apple:false},twoFactor:true,authGate:false},
@@ -218,10 +247,100 @@ const defaults = createInitialPrototypeState();
 
 const state = Object.assign({}, defaults, readStoredPrototypeState());
 state.read = new Set(state.read || []); state.saved = new Set(state.saved || []); state.history = state.history || [];
+state.settingsPrefs={...createDefaultSettingsPrefs(),...(state.settingsPrefs||{}),linkedAccounts:{...defaultSettingsPrefs.linkedAccounts,...(state.settingsPrefs?.linkedAccounts||{})}};
+['digestEnabled','digestTime','quietEnabled','quietPeriod'].forEach(key=>delete state.settingsPrefs[key]);
+
+function isNewsSummaryNotificationEnabled(){
+  return state.newsSummaryNotifications!==false;
+}
+function notificationSettingsSummary(){
+  const emergency=state.notifications!==false;
+  const summary=isNewsSummaryNotificationEnabled();
+  if(emergency&&summary)return 'Rendkívüli + hírösszefoglaló';
+  if(emergency)return 'Csak rendkívüli';
+  if(summary)return 'Csak hírösszefoglaló';
+  return 'Kikapcsolva';
+}
+function notificationMenuIcon(type){
+  if(type==='emergency')return `<svg class="notification-menu-icon notification-emergency-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path class="icon-line" d="M16 5.5 27.5 25.5h-23L16 5.5Z"/><path class="icon-coral" d="M16 12v6"/><circle class="icon-dot" cx="16" cy="22.2" r="1.35"/></svg>`;
+  return `<svg class="notification-menu-icon notification-summary-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="icon-line" x="7" y="8" width="17" height="17" rx="4"/><path class="icon-line" d="M11 13h8M11 17h9M11 21h6"/><path class="icon-fill-coral" d="M24.3 4.8 25.4 7l2.3 1.1-2.3 1-1.1 2.3-1-2.3-2.3-1 2.3-1.1 1-2.2Z"/></svg>`;
+}
+function settingsMenuIcon(type){
+  const icons={
+    subscription:`<svg class="settings-menu-icon settings-subscription-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="icon-line" x="6" y="8" width="20" height="16" rx="4"/><path class="icon-line" d="M10 14h7M10 18h5"/><path class="icon-coral" d="m19.5 17 2 2 4-5"/></svg>`,
+    sources:`<svg class="settings-menu-icon settings-sources-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><circle class="icon-dot" cx="10" cy="22" r="2"/><path class="icon-line" d="M9.5 15.5A6.5 6.5 0 0 1 16 22"/><path class="icon-line" d="M9.5 9.5A12.5 12.5 0 0 1 22 22"/><path class="icon-coral" d="M22 8h3v3"/></svg>`,
+    topics:`<svg class="settings-menu-icon settings-topics-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="icon-line" x="5.5" y="8" width="10.5" height="7.5" rx="3.2"/><rect class="icon-fill-coral" x="17.5" y="8" width="9" height="7.5" rx="3.2"/><rect class="icon-line" x="7" y="18" width="18" height="7.5" rx="3.2"/></svg>`,
+    notifications:`<svg class="settings-menu-icon settings-notifications-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path class="icon-line" d="M10 22h12l-1.4-2.4V15a4.6 4.6 0 0 0-9.2 0v4.6L10 22Z"/><path class="icon-line" d="M14 24.5a2.4 2.4 0 0 0 4 0"/><circle class="icon-dot" cx="22.8" cy="10" r="2.1"/></svg>`,
+    location:`<svg class="settings-menu-icon settings-location-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path class="icon-line" d="M16 27s7-6.1 7-13a7 7 0 0 0-14 0c0 6.9 7 13 7 13Z"/><circle class="icon-dot" cx="16" cy="14" r="2.2"/></svg>`,
+    account:`<svg class="settings-menu-icon settings-account-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path class="icon-line" d="M16 5.5 24 8v7.2c0 5-3.4 9.2-8 11.3-4.6-2.1-8-6.3-8-11.3V8l8-2.5Z"/><path class="icon-line" d="M12 18.5c1-1.4 2.3-2.1 4-2.1s3 .7 4 2.1"/><circle class="icon-dot" cx="16" cy="12.8" r="2"/></svg>`,
+    appearance:`<svg class="settings-menu-icon settings-appearance-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path class="icon-line" d="M17.8 6.5a9.5 9.5 0 1 0 7.7 13A7.6 7.6 0 0 1 17.8 6.5Z"/><path class="icon-coral" d="M9 8.5 10.5 7M6.5 15H4.7M10 22.5 8.5 24"/></svg>`,
+    voice:`<svg class="settings-menu-icon settings-voice-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path class="icon-line" d="M7 18v-4h4.2L16 9.5v13L11.2 18H7Z"/><path class="icon-line" d="M20 13.5c1.1 1.3 1.1 3.7 0 5"/><path class="icon-coral" d="M23.5 10.5c2.4 3 2.4 8 0 11"/></svg>`,
+    data:`<svg class="settings-menu-icon settings-data-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><ellipse class="icon-line" cx="16" cy="8.5" rx="8" ry="3.5"/><path class="icon-line" d="M8 8.5v11c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5v-11"/><path class="icon-line" d="M8 14c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5"/><circle class="icon-dot" cx="23.5" cy="23.5" r="2"/></svg>`,
+    prototype:`<svg class="settings-menu-icon settings-prototype-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path class="icon-line" d="M8 10h16M8 16h16M8 22h16"/><circle class="icon-dot" cx="13" cy="10" r="2"/><circle class="icon-line-fill" cx="20" cy="16" r="2"/><circle class="icon-line-fill" cx="11" cy="22" r="2"/></svg>`,
+    carplay:`<svg class="settings-menu-icon settings-carplay-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="icon-line" x="5.5" y="9" width="21" height="14" rx="4"/><path class="icon-line" d="M12 26h8"/><path class="icon-coral" d="M13 16h6M19 16l-2-2M19 16l-2 2"/></svg>`
+  };
+  return icons[type]||icons.prototype;
+}
+window.hirbeszedSettingsMenuIcon=settingsMenuIcon;
+
+function notificationSettingsInfoCard(){
+  return `<section class="settings-info-card notification-info-card"><h3>Működés</h3><div class="settings-info-rule"><strong>Rendkívüli hírek</strong><p>Ha be van kapcsolva, a rendkívüli hír és az időjárási riasztás mindig külön, azonnali értesítésként érkezik, függetlenül a személyes hírösszefoglaló szabályától.</p></div><div class="settings-info-rule"><strong>Személyes hírösszefoglaló</strong><p>Egyetlen aktív értesítést frissít. Új hangos értesítés akkor jön, ha eltelt legalább 2 óra, és azóta összegyűlt 10 új személyes hír. Ha 2 óra után még nincs meg a 10 hír, az értesítés a 10. új hírnél érkezik, és onnan indul újra a következő 2 órás ablak.</p></div></section>`;
+}
+function notificationSettingsContent(){
+  return `<div class="settings-group"><button class="settings-row" data-toggle-setting="notifications"><span class="row-icon">${notificationMenuIcon('emergency')}</span><span class="row-copy"><strong>Rendkívüli hírek</strong><small>${state.notifications?'Hírek és időjárási riasztások bekapcsolva':'Kikapcsolva'}</small></span><span class="toggle ${state.notifications?'on':''}"></span></button><button class="settings-row" data-toggle-setting="newsSummaryNotifications"><span class="row-icon">${notificationMenuIcon('summary')}</span><span class="row-copy"><strong>Személyes hírösszefoglaló</strong><small>${isNewsSummaryNotificationEnabled()?'Hangos értesítés: 10 hír · újra 2 óra +10 hír':'Kikapcsolva'}</small></span><span class="toggle ${isNewsSummaryNotificationEnabled()?'on':''}"></span></button></div>${notificationSettingsInfoCard()}`;
+}
+function personalNewsSummaryNotificationDecision(options={}){
+  const unseenCount=Math.max(0,Number(options.unseenCount)||0);
+  const activeCount=Math.max(0,Number(options.activeCount)||0);
+  const lastAudibleCount=Math.max(0,Number(options.lastAudibleCount)||0);
+  const lastAudibleAt=Math.max(0,Number(options.lastAudibleAt)||0);
+  const now=Number(options.now)||Date.now();
+  const enabled=isNewsSummaryNotificationEnabled();
+  const hasActiveNotification=activeCount>0;
+  const shouldCreate=enabled&&!hasActiveNotification&&unseenCount>=NEWS_SUMMARY_NOTIFICATION_THRESHOLD;
+  const shouldUpdateSilently=enabled&&hasActiveNotification&&unseenCount>activeCount;
+  const enoughNewSinceSound=unseenCount-lastAudibleCount>=NEWS_SUMMARY_NOTIFICATION_THRESHOLD;
+  const soundWindowOpen=!lastAudibleAt||now-lastAudibleAt>=NEWS_SUMMARY_NOTIFICATION_RENOTIFY_MS;
+  const waitingForNewsThreshold=enabled&&hasActiveNotification&&shouldUpdateSilently&&soundWindowOpen&&!enoughNewSinceSound;
+  const shouldPlaySound=shouldCreate||(enabled&&hasActiveNotification&&shouldUpdateSilently&&soundWindowOpen&&enoughNewSinceSound);
+  return {
+    enabled,
+    unseenCount,
+    activeCount,
+    newSinceLastAudible:Math.max(0,unseenCount-lastAudibleCount),
+    threshold:NEWS_SUMMARY_NOTIFICATION_THRESHOLD,
+    renotifyMs:NEWS_SUMMARY_NOTIFICATION_RENOTIFY_MS,
+    soundWindowOpen,
+    shouldCreate,
+    shouldUpdateSilently,
+    waitingForNewsThreshold,
+    shouldPlaySound
+  };
+}
+function emergencyNewsNotificationDecision(options={}){
+  const enabled=state.notifications!==false;
+  const isEmergency=Boolean(options.isEmergency||options.breaking||options.weatherAlert);
+  return {
+    enabled,
+    isEmergency,
+    shouldNotify:enabled&&isEmergency,
+    bypassesSummaryRateLimit:true
+  };
+}
+window.hirbeszedNotificationPolicy={
+  summaryThreshold:NEWS_SUMMARY_NOTIFICATION_THRESHOLD,
+  summaryRenotifyMs:NEWS_SUMMARY_NOTIFICATION_RENOTIFY_MS,
+  personalNewsSummaryDecision:personalNewsSummaryNotificationDecision,
+  emergencyNewsDecision:emergencyNewsNotificationDecision
+};
 function normalizePlanId(plan){
   if(plan==='basic')return 'reader';
   if(plan==='pro')return 'assistant';
   return PLAN_CATALOG[plan]?plan:'reader';
+}
+function normalizeAssistantMode(mode){
+  if(mode==='chat'||mode==='silent'||mode==='text')return 'chat';
+  return 'voice';
 }
 function currentWeekKey(date=new Date()){
   const year=date.getFullYear();
@@ -264,7 +383,9 @@ state.sources = {...defaults.sources,...(state.sources || {})};
 state.enabledTopics = Array.isArray(state.enabledTopics) ? state.enabledTopics : [...defaults.enabledTopics];
 state.assistantChat = Array.isArray(state.assistantChat) ? state.assistantChat.filter(item=>item&&['user','assistant'].includes(item.role)&&typeof item.text==='string'&&item.text.trim()).slice(-ASSISTANT_CHAT_MAX_MESSAGES) : [];
 state.assistantPromoChat = Array.isArray(state.assistantPromoChat) ? state.assistantPromoChat.filter(item=>item&&['user','assistant'].includes(item.role)&&typeof item.text==='string'&&item.text.trim()).slice(-ASSISTANT_CHAT_MAX_MESSAGES) : [];
-state.showReadInFeed = state.showReadInFeed !== false;
+state.feedView = normalizeFeedView(state.feedView || 'personal');
+delete state.sort;
+delete state.showReadInFeed;
 state.promoFeedPriority = state.promoFeedPriority !== false;
 state.prototypeImmediateSubscriptionChange = state.prototypeImmediateSubscriptionChange !== false;
 state.prototypeReaderTrialAvailable = state.prototypeReaderTrialAvailable !== false;
@@ -272,10 +393,11 @@ state.prototypeReaderTrialDaysLeft = clampReaderTrialDays(state.prototypeReaderT
 state.prototypeAutoFillData = state.prototypeAutoFillData !== false;
 state.readerPromoMode = !!state.readerPromoMode;
 state.assistantPromoMode = !!state.assistantPromoMode;
+state.assistantMode = normalizeAssistantMode(state.assistantMode);
 state.deviceSessionState = ['active','other_active','detached'].includes(state.deviceSessionState) ? state.deviceSessionState : 'active';
 state.deviceSessionOtherDevice = String(state.deviceSessionOtherDevice || 'iPhone 15 · 2 perce');
 delete state.sideNavPosition;
-const legacyTopics = {Mind:'fresh',Technológia:'tech_ai',Világhírek:'foreign','Helyi hírek':'local'};
+const legacyTopics = {Mind:'fresh',Friss:'fresh','Minden téma':'fresh',Technológia:'tech_ai',Világhírek:'foreign','Helyi hírek':'local'};
 state.category = legacyTopics[state.category] || topics.find(topic=>topic.name===state.category)?.id || state.category || 'fresh';
 function isTrialExpired(){return state.subscription.status==='expired'||state.subscription.status==='payment_failed';}
 function isReaderPlan(){return ['reader','assistant'].includes(state.subscription.plan);}
@@ -302,7 +424,7 @@ function assistantTrialPromoAvailable(){
 function readerPromoArticles(){return [PROMO_ARTICLES.reader,PROMO_ARTICLES.assistant];}
 function currentReaderArticleList(){
   if(state.readerPromoMode&&!hasReaderAccess())return readerPromoArticles();
-  return articleSequenceWithPromos(articles);
+  return articleSequenceWithPromos(articlesForFeedView(state.feedView));
 }
 function setFreeAccess(){
   state.subscription.status='active';
@@ -327,7 +449,9 @@ function applySubscriptionLaunchRoute(){
 applySubscriptionLaunchRoute();
 if((isTrialExpired()||state.subscription.status==='inactive'||!hasReaderAccess())&&state.route==='car'&&!state.readerPromoMode)state.route='feed';
 if(!hasAssistantAccess()&&state.route==='assistant'&&!state.assistantPromoMode)state.route='feed';
-let currentUtterance = null; let speechRunId = 0; let currentSpeechText = ''; let currentSpeechOffset = 0; let currentSpeechDetails = false; let assistantSpeaking = false; let currentRecognition = null; let recognitionContext = null; let toastTimer = null; let headerToastState = {target:null,restore:''}; let activeSheetRenderer = null; let carAutoAdvanceTimer = null; let carDeferredSheetTimer = null; let carMicWindowTimer = null; let carMicWindowActive = false; let assistantTrialPromptTimer = null;
+let currentUtterance = null; let speechRunId = 0; let currentSpeechText = ''; let currentSpeechOffset = 0; let currentSpeechDetails = false; let currentSpeechHasReaderIntro = false; let readerIntroSpokenThisSession = false; let assistantSpeaking = false; let currentRecognition = null; let recognitionContext = null; let toastTimer = null; let headerToastState = {target:null,restore:''}; let activeSheetRenderer = null; let carAutoAdvanceTimer = null; let carDeferredSheetTimer = null; let carMicWindowTimer = null; let carMicWindowActive = false; let assistantTrialPromptTimer = null;
+let readerPlaybackIds = []; let readerPlaybackCursor = -1;
+let freshNewsIds = []; let freshNewsSeenIds = new Set(); let freshNewsNoticeVisible = false; let freshNewsObserver = null;
 let assistantPromptPool = []; let activeAssistantPrompt = null; let assistantVoiceResult = null;
 const $ = selector => document.querySelector(selector);
 const view = $('#view'); const sheet = $('#sheet'); const sheetBody = $('#sheetBody'); const phoneShell = $('#phone');
@@ -384,6 +508,7 @@ function setupAssistantKeyboardHandling(){
 
 function saveState(){
   state.subscription=normalizeSubscription(state.subscription||{});
+  state.assistantMode=normalizeAssistantMode(state.assistantMode);
   const serial = {...state,read:[...state.read],saved:[...state.saved]};
   localStorage.setItem('hirbeszed-state',JSON.stringify(serial));
 }
@@ -392,6 +517,7 @@ function normalizeNewsArticle(item,index){
   const source=text(item.source)||'RSS';
   return {
     id:text(item.id)||`rss-${index}`,
+    feedIndex:index,
     source,
     category:text(item.category)||'Friss',
     time:text(item.time),
@@ -694,11 +820,7 @@ function transitionCarControl(button, pressed, callback){
 }
 function iconButton(symbol,label,action,extraClass=''){ return `<button class="icon-button ${extraClass}" type="button" data-action="${action}" aria-label="${label}">${symbol}</button>`; }
 function feedHeaderActions(){
-  const readLabel=state.showReadInFeed?'Olvasott hírek elrejtése':'Olvasott hírek mutatása';
-  const readIcon='<span class="header-read-icon" aria-hidden="true"></span>';
-  return iconButton('⌕','Keresés','search','feed-header-button')
-    +iconButton('♡','Kedveltek','library','feed-header-button feed-liked-button')
-    +iconButton(readIcon,readLabel,'toggle-read-feed',`feed-header-button read-feed-toggle ${state.showReadInFeed?'active':''}`);
+  return iconButton('⌕','Keresés','search','feed-header-button');
 }
 function carControlIcon(type,active=true){
   const offClass=active?'':' off';
@@ -734,14 +856,9 @@ function carControlViewModel(){
   const autoLabel='Hírléptető';
   const prevLabel='Előző';
   const detailLabel=state.detailedRead?'Rövidített hírek':'Részletes hírek';
-  const saveLabel='Kedvelés';
   const nextLabel='Következő';
-  const voiceCommands=[micLabel,playbackLabel,autoLabel,prevLabel,detailLabel,saveLabel,nextLabel];
   const button = (className,aria,icon,label) => ({className,aria,html:`${icon}<span class="car-control-label">${label}</span>`});
   return {
-    voicePanel:state.mic
-      ? `<div class="voice-command-panel"><strong>${carMicWindowActive?'Mikrofon figyel:':state.autoNext?'Hír végén 3 mp:':'Hír végén figyel:'}</strong><span>${state.autoNext?voiceCommands.join(' · '):`${voiceCommands.join(' · ')} · hír végén nyitva marad`}</span></div>`
-      : `<div class="voice-command-panel inactive"><strong>Hangutasítások kikapcsolva</strong><span>Hangutasításokhoz kapcsold be a mikrofont a Mikrofon gomb megnyomásával.</span></div>`,
     buttons:{
       mic:button(`car-control mic ${state.mic?'':'off is-pressed-state'}`,state.mic?'Mikrofon bekapcsolva':'Mikrofon kikapcsolva',carControlIcon('mic',state.mic),micLabel),
       play:button(`car-control read-toggle ${state.playing?'playing':''} ${state.paused?'paused is-pressed-state':''}`,state.paused?'Felolvasás folytatása':state.playing?'Felolvasás szüneteltetése':'Felolvasás indítása',carControlIcon(state.paused?'resume':state.playing?'pause':'play'),playbackLabel),
@@ -776,7 +893,6 @@ function updateCarDom(){
   setVoiceActivityState(document.querySelector('.car-wave-area .voice-activity'),carVoiceActivityState());
   const model=carControlViewModel();
   Object.entries(model.buttons).forEach(([kind,config])=>updateCarButton(kind,config));
-  const panel=document.querySelector('.voice-command-panel'); if(panel&&panel.outerHTML!==model.voicePanel)panel.outerHTML=model.voicePanel;
 }
 function setHeader(title,actions=''){
   const titleEl=$('#pageTitle');
@@ -787,8 +903,68 @@ function setHeader(title,actions=''){
   $('#headerActions').innerHTML=actions;
 }
 function articleById(id){ return articles.find(article=>article.id===id)||promoArticleById(id); }
+function clearReaderPlaybackMemory(){
+  readerPlaybackIds=[];
+  readerPlaybackCursor=-1;
+}
+function readerPlaybackArticle(id){
+  if(!id||isPromoArticle(id)||id===EMPTY_ARTICLE.id||id==='empty-reader')return null;
+  return articleById(id);
+}
+function rememberReaderPlaybackArticle(id){
+  if(state.route!=='car'||!readerPlaybackArticle(id))return;
+  const existingIndex=readerPlaybackIds.indexOf(id);
+  if(existingIndex>=0){
+    readerPlaybackCursor=existingIndex;
+    return;
+  }
+  if(readerPlaybackCursor>=0&&readerPlaybackCursor<readerPlaybackIds.length-1){
+    readerPlaybackIds=readerPlaybackIds.slice(0,readerPlaybackCursor+1);
+  }
+  readerPlaybackIds.push(id);
+  while(readerPlaybackIds.length>READER_PLAYBACK_MEMORY_LIMIT)readerPlaybackIds.shift();
+  readerPlaybackCursor=readerPlaybackIds.length-1;
+}
+function forgetReaderPlaybackArticle(id){
+  const oldCursorId=readerPlaybackIds[readerPlaybackCursor]||'';
+  readerPlaybackIds=readerPlaybackIds.filter(item=>item!==id);
+  const nextCursor=oldCursorId?readerPlaybackIds.indexOf(oldCursorId):-1;
+  readerPlaybackCursor=nextCursor>=0?nextCursor:Math.min(readerPlaybackCursor,readerPlaybackIds.length-1);
+}
+function readerPlaybackStep(direction){
+  if(!readerPlaybackIds.length)return '';
+  const start=readerPlaybackCursor<0?readerPlaybackIds.length-1:readerPlaybackCursor;
+  for(let cursor=start+direction;cursor>=0&&cursor<readerPlaybackIds.length;cursor+=direction){
+    const id=readerPlaybackIds[cursor];
+    if(readerPlaybackArticle(id)){
+      readerPlaybackCursor=cursor;
+      return id;
+    }
+  }
+  return '';
+}
+function readerArticleAlreadyHandled(article){
+  return !!article?.id&&(state.read.has(article.id)||readerPlaybackIds.includes(article.id));
+}
+function nextUnreadReaderArticleId(list,currentId=''){
+  if(!list.length)return '';
+  const currentIndex=list.findIndex(article=>article.id===currentId);
+  const isCandidate=article=>article?.id&&article.id!==currentId&&!isPromoArticle(article)&&article.id!==EMPTY_ARTICLE.id&&article.id!=='empty-reader'&&!readerArticleAlreadyHandled(article);
+  if(currentIndex>0){
+    const freshCandidate=list.slice(0,currentIndex).find(isCandidate);
+    if(freshCandidate)return freshCandidate.id;
+  }
+  const start=currentIndex>=0?currentIndex+1:0;
+  const nextCandidate=list.slice(start).find(isCandidate);
+  if(nextCandidate)return nextCandidate.id;
+  if(currentIndex>0){
+    const remainingCandidate=list.slice(0,currentIndex).find(isCandidate);
+    if(remainingCandidate)return remainingCandidate.id;
+  }
+  return '';
+}
 function recordRead(id){
-  if(isPromoArticle(id))return;
+  if(isPromoArticle(id)||id===EMPTY_ARTICLE.id||id==='empty-reader')return;
   state.read.add(id);
   state.history=[id,...state.history.filter(item=>item!==id)].slice(0,30);
   saveState();
@@ -802,9 +978,16 @@ function toggleSaved(id){
 }
 function favoriteLabel(id){return state.saved.has(id)?'Kedvelted':'Kedvelés';}
 function readLabel(id){return state.read.has(id)?'Olvasott':'Olvasatlan';}
-function favoriteIcon(id){return `<span class="news-action-icon heart-icon ${state.saved.has(id)?'is-liked':''}" aria-hidden="true">${state.saved.has(id)?'♥':'♡'}</span>`;}
-function readStateIcon(id){return `<span class="news-action-icon read-state-icon ${state.read.has(id)?'is-read':'is-unread'}" aria-hidden="true"></span>`;}
-function shareStateIcon(){return `<span class="news-action-icon share-state-icon" aria-hidden="true">↗</span>`;}
+function favoriteIcon(id){
+  return `<span class="news-action-icon heart-icon ${state.saved.has(id)?'is-liked':''}" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path class="heart-shape" d="M12 20.2s-7.2-4.4-8.8-8.4C2 8.8 3.8 5.7 7 5.7c1.9 0 3.4 1.1 5 3 1.6-1.9 3.1-3 5-3 3.2 0 5 3.1 3.8 6.1-1.6 4-8.8 8.4-8.8 8.4Z"></path></svg></span>`;
+}
+function readStateIcon(id){
+  const isRead=state.read.has(id);
+  return `<span class="news-action-icon read-state-icon ${isRead?'is-read':'is-unread'}" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path class="eye-outline" d="M2.1 12s3.5-6.3 9.9-6.3 9.9 6.3 9.9 6.3-3.5 6.3-9.9 6.3S2.1 12 2.1 12Z"></path>${isRead?'<circle class="eye-pupil read-pupil" cx="12" cy="12" r="2.8"></circle>':'<circle class="eye-pupil unread-pupil" cx="12" cy="12" r="2.6"></circle>'}</svg></span>`;
+}
+function shareStateIcon(){
+  return `<span class="news-action-icon share-state-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path class="share-plane" d="M4.2 12.2 19.4 5.5c.5-.2 1 .3.8.8l-6.7 15.2c-.2.5-.9.5-1.1-.1l-2.1-6-6-2.1c-.6-.2-.6-.9-.1-1.1Z"></path><path class="share-fold" d="m10.5 15.2 4.2-4.2"></path></svg></span>`;
+}
 function newsActionButtons(article,options={}){
   const id=escapeHtml(article.id);
   const classes=['news-actions'];
@@ -839,7 +1022,7 @@ async function shareArticle(id){
 }
 function toggleReadState(id){
   if(!articleById(id)||isPromoArticle(id))return;
-  if(state.read.has(id)){state.read.delete(id);saveState();toast('Olvasatlanra jelölve');}
+  if(state.read.has(id)){forgetReaderPlaybackArticle(id);state.read.delete(id);saveState();toast('Olvasatlanra jelölve');}
   else{recordRead(id);toast('Olvasottként jelölve');}
 }
 function refreshArticleViews(id){
@@ -850,16 +1033,114 @@ function refreshArticleViews(id){
     else if(activeSheetRenderer)activeSheetRenderer();
   }
 }
+function isFreshNewsArticle(id){
+  return freshNewsIds.includes(id);
+}
+function selectorSafeId(id){
+  return window.CSS?.escape?CSS.escape(String(id)):String(id).replace(/["\\]/g,'\\$&');
+}
+function freshNewsNoticeLabel(){
+  const count=freshNewsIds.length;
+  return `${count} új hír érkezett`;
+}
+function freshNewsNoticeMarkup(){
+  if(!freshNewsNoticeVisible||!freshNewsIds.length)return '';
+  return `<button type="button" class="fresh-news-notice" data-fresh-news-notice onclick="window.hirbeszedAcknowledgeFreshNews&&window.hirbeszedAcknowledgeFreshNews()" aria-label="${freshNewsNoticeLabel()}, megtekintem">
+    <span class="fresh-news-notice-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M20 12a8 8 0 1 1-2.34-5.66"></path><path d="M20 4v5h-5"></path></svg></span>
+    <span>${freshNewsNoticeLabel()}</span>
+    <strong>Megtekintem</strong>
+  </button>`;
+}
+function renderFreshNewsNotice(){
+  const old=phoneShell.querySelector(':scope > .fresh-news-notice');
+  if(old)old.remove();
+  const slot=view.querySelector('.fresh-news-notice-slot');
+  if(!slot)return;
+  slot.innerHTML=state.route==='feed'&&freshNewsNoticeVisible&&freshNewsIds.length?freshNewsNoticeMarkup():'';
+}
+function clearFreshNewsBatch(options={}){
+  freshNewsIds=[];
+  freshNewsSeenIds=new Set();
+  freshNewsNoticeVisible=false;
+  if(freshNewsObserver){freshNewsObserver.disconnect();freshNewsObserver=null;}
+  if(options.render!==false&&state.route==='feed')renderFeed();
+}
+function setupFreshNewsObserver(){
+  if(freshNewsObserver){freshNewsObserver.disconnect();freshNewsObserver=null;}
+  if(state.route!=='feed'||!freshNewsIds.length||freshNewsNoticeVisible)return;
+  const cards=freshNewsIds.map(id=>view.querySelector(`[data-article="${selectorSafeId(id)}"]`)).filter(Boolean);
+  if(!cards.length)return;
+  freshNewsObserver=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting&&entry.intersectionRatio>=0.45){
+        const id=entry.target?.dataset?.article;
+        if(id)freshNewsSeenIds.add(id);
+      }
+    });
+    if(freshNewsIds.length&&freshNewsIds.every(id=>freshNewsSeenIds.has(id))){
+      clearFreshNewsBatch();
+    }
+  },{root:view,threshold:[0.45,0.7]});
+  cards.forEach(card=>freshNewsObserver.observe(card));
+}
+function acknowledgeFreshNews(){
+  if(!freshNewsIds.length)return;
+  freshNewsNoticeVisible=false;
+  freshNewsSeenIds=new Set();
+  renderFeed();
+  view.scrollTo({top:0,behavior:'smooth'});
+}
+function registerFreshNewsBatch(newArticles){
+  const ids=newArticles.map(article=>article.id).filter(Boolean);
+  if(!ids.length)return;
+  freshNewsIds=[...ids,...freshNewsIds.filter(id=>!ids.includes(id)&&articleById(id))];
+  ids.forEach(id=>freshNewsSeenIds.delete(id));
+  freshNewsNoticeVisible=true;
+  if(state.route==='feed')renderFreshNewsNotice();
+}
+function createPrototypeFreshNews(count=3){
+  const amount=Math.max(1,Math.min(9,Number(count)||3));
+  const now=Date.now();
+  state.sources['Hírbeszéd']=true;
+  const selectedTopic=topics.find(topic=>topic.id===state.category&&topic.id!=='fresh')||topics.find(topic=>topic.id==='domestic')||topics[1];
+  if(selectedTopic?.id&&!state.enabledTopics.includes(selectedTopic.id))state.enabledTopics=[...state.enabledTopics,selectedTopic.id];
+  const newArticles=Array.from({length:amount},(_,index)=>normalizeNewsArticle({
+    id:`prototype-fresh-${now}-${index+1}`,
+    source:'Hírbeszéd',
+    category:selectedTopic?.name||'Belföld',
+    time:index===0?'Most':`${index+1} perce`,
+    publishedAt:new Date(now-(index*60000)).toISOString(),
+    title:index===0?'Friss hír érkezett a Hírbeszéd tesztfolyamába':`Új hír érkezett a frissítési csomagban ${index+1}.`,
+    excerpt:'Ez egy helyi prototípus-szimuláció az új hír érkezésének ellenőrzéséhez.',
+    body:'Ez a helyi prototípus-hír azt mutatja meg, hogyan viselkedik a Hírbeszéd, amikor új tartalom érkezik a feedbe. A végleges appban ugyanezt a logikát az RSS/backend frissítés tölti majd fel.',
+    image:index%2?'assets/prototype/economy-city.svg':'assets/prototype/budapest-tram.svg',
+    url:''
+  },-index-1));
+  articles=[...newArticles,...articles.filter(article=>article.id!==EMPTY_ARTICLE.id&&!newArticles.some(fresh=>fresh.id===article.id))];
+  registerFreshNewsBatch(newArticles);
+  return newArticles.map(article=>article.id);
+}
+function prototypeFreshNewsCountFromUrl(){
+  try{
+    const params=new URLSearchParams(location.search);
+    const value=Number(params.get('simulateFreshNews')||params.get('freshNews')||0);
+    return Number.isFinite(value)?Math.max(0,Math.min(9,value)):0;
+  }catch(_){
+    return 0;
+  }
+}
 
 function articleCard(article,compact=false){
   const read=state.read.has(article.id);
-  return `<article class="news-card news-box ${compact?'compact-card news-box-small':'news-box-large'} ${read?'read':''}" data-article="${escapeHtml(article.id)}">
+  const fresh=isFreshNewsArticle(article.id);
+  const freshBadge=fresh?'<span class="fresh-news-badge">Új</span>':'';
+  return `<article class="news-card news-box ${compact?'compact-card news-box-small':'news-box-large'} ${read?'read':''} ${fresh?'fresh-news-card':''}" data-article="${escapeHtml(article.id)}">
     <img class="article-image" src="${escapeHtml(article.image)}" alt="A hír illusztrációja">
-    <div class="card-body"><div class="meta-line"><span class="meta-copy"><span>${escapeHtml(article.source)}</span><span class="meta-time">· ${escapeHtml(article.time)}</span></span>${newsActionButtons(article,{compact,inline:true,extraClass:'meta-news-actions'})}</div>
+    <div class="card-body"><div class="meta-line"><span class="meta-copy"><span>${escapeHtml(article.source)}</span><span class="meta-time">· ${escapeHtml(article.time)}</span></span>${freshBadge}${newsActionButtons(article,{compact,inline:true,extraClass:'meta-news-actions'})}</div>
     <h2>${escapeHtml(article.title)}</h2>${compact?'':`<p>${escapeHtml(article.excerpt)}</p>`}</div></article>`;
 }
 function isFeedPromoEnabled(){
-  return state.category==='fresh'&&state.sort!=='unread';
+  return state.category==='fresh'&&['personal','timeline'].includes(normalizeFeedView(state.feedView));
 }
 function priorityFeedPromos(){
   if(!isFeedPromoEnabled()||!state.promoFeedPriority||hasAssistantSubscription())return [];
@@ -919,39 +1200,179 @@ function articleSequenceWithPromos(items){
 function feedItemsWithPromos(items){
   return articleSequenceWithPromos(items).map(article=>isPromoArticle(article)?promoCard(article,false):articleCard(article,false));
 }
+function articleTopicId(article,catalog=topics){
+  return catalog.find(topic=>topic.name===article.category)?.id||'';
+}
+function articleMatchesCurrentTopic(article,catalog=topics){
+  const selectedTopic=catalog.find(topic=>topic.id===state.category);
+  if(state.category==='fresh'){
+    const topicId=articleTopicId(article,catalog);
+    return !topicId||state.enabledTopics.includes(topicId);
+  }
+  return article.category===selectedTopic?.name;
+}
+function articleTimeValue(article){
+  const parsed=Date.parse(article.publishedAt||'');
+  return Number.isFinite(parsed)?parsed:0;
+}
+function timeSort(a,b){
+  return articleTimeValue(b)-articleTimeValue(a)||(a.feedIndex??0)-(b.feedIndex??0);
+}
+function personalFeedScore(article){
+  let score=0;
+  if(state.saved.has(article.id))score+=1000;
+  if(state.history.includes(article.id))score-=100;
+  return score;
+}
+function personalSort(a,b){
+  return personalFeedScore(b)-personalFeedScore(a)||timeSort(a,b);
+}
+function baseFeedArticles(catalog=topics){
+  return articles.filter(article=>!isPromoArticle(article)&&state.sources[article.source]!==false&&articleMatchesCurrentTopic(article,catalog));
+}
+function articlesForFeedView(viewId=state.feedView,catalog=topics){
+  const viewIdNormalized=normalizeFeedView(viewId);
+  let items=baseFeedArticles(catalog);
+  if(viewIdNormalized==='liked')items=items.filter(article=>state.saved.has(article.id));
+  return [...items].sort(viewIdNormalized==='personal'?personalSort:timeSort);
+}
 function filteredArticles(){
-  const selectedTopic=topics.find(topic=>topic.id===state.category);
-  let items=articles.filter(a=>state.sources[a.source]!==false && (state.category==='fresh'||a.category===selectedTopic?.name));
-  if(state.showReadInFeed===false) items=items.filter(a=>!state.read.has(a.id));
-  if(state.sort==='unread') items=items.filter(a=>!state.read.has(a.id));
-  if(state.sort==='personal') items=[...items].sort((a,b)=>(state.saved.has(b.id)?1:0)-(state.saved.has(a.id)?1:0));
-  return items;
+  return articlesForFeedView(state.feedView);
+}
+function feedEmptyMarkup(viewId=state.feedView){
+  const viewIdNormalized=normalizeFeedView(viewId);
+  if(viewIdNormalized==='liked')return `<div class="empty"><div class="empty-icon">♡</div><h2>Még nincs kedvelt hír</h2><p>A hírkártyák Kedvelés gombjával gyűjtheted ide a fontos híreket.</p></div>`;
+  return `<div class="empty"><div class="empty-icon">!</div><h2>Nincs hír ebben a válogatásban</h2><p>Válassz másik hírfolyamnézetet, témát vagy frissítsd az RSS-forrásokat.</p></div>`;
 }
 function renderFeed(){
   setHeader('Hírfolyam',feedHeaderActions());
   const visibleTopics=topics.filter(topic=>topic.id==='fresh'||state.enabledTopics.includes(topic.id)); const items=filteredArticles();
-  view.innerHTML=`<div class="segmented"><button data-sort="latest" class="${state.sort==='latest'?'active':''}">Legfrissebb</button><button data-sort="personal" class="${state.sort==='personal'?'active':''}">Nekem</button><button data-sort="unread" class="${state.sort==='unread'?'active':''}">Olvasatlan</button></div>
+  view.innerHTML=`${feedViewSwitchMarkup()}
     <div class="chips topic-strip" aria-label="Hírtémák">${visibleTopics.map(topic=>`<button class="chip ${state.category===topic.id?'active':''}" data-category="${topic.id}">${topic.name}</button>`).join('')}</div>
-    <div class="feed-list">${items.length?feedItemsWithPromos(items).join(''):`<div class="empty"><div class="empty-icon">✓</div><h2>Minden hírt átnéztél</h2><p>Válassz másik témát vagy frissítsd az RSS-forrásokat.</p></div>`}</div>`;
+    <div class="fresh-news-notice-slot" aria-live="polite"></div>
+    <div class="feed-list">${items.length?feedItemsWithPromos(items).join(''):feedEmptyMarkup()}</div>`;
+  renderFreshNewsNotice();
+  setupFreshNewsObserver();
   if(window.HB_SYNC_RESPONSIVE_PREVIEW_MODE)window.HB_SYNC_RESPONSIVE_PREVIEW_MODE();
 }
 
+function currentReaderEmptyArticle(){
+  return {
+    ...EMPTY_ARTICLE,
+    id:'empty-reader',
+    source:'Hírbeszéd',
+    category:feedViewLabel(),
+    title:'Nincs hír ebben a válogatásban',
+    excerpt:'Válts másik hírfolyamnézetre, másik témára, vagy frissítsd az RSS-forrásokat.',
+    body:'Ebben a hírfolyamnézetben most nincs felolvasható hír. Válts másik hírfolyamnézetre, másik témára, vagy frissítsd az RSS-forrásokat.'
+  };
+}
 function currentCarArticle(){
   const list=currentReaderArticleList();
-  return list.length?list[state.carIndex%list.length]:EMPTY_ARTICLE;
+  return list.length?list[state.carIndex%list.length]:currentReaderEmptyArticle();
 }
-function currentSpeechBody(details=state.detailedRead){
+function setReaderIndexByArticleId(articleId,list=currentReaderArticleList()){
+  const index=list.findIndex(article=>article.id===articleId);
+  state.carIndex=index>=0?index:0;
+}
+function clearCurrentSpeechState(){
+  speechRunId++;
+  if('speechSynthesis' in window)try{speechSynthesis.cancel();}catch(_){}
+  currentUtterance=null;
+  currentSpeechText='';
+  currentSpeechOffset=0;
+  currentSpeechHasReaderIntro=false;
+}
+function advanceReaderArticle(direction,options={}){
+  if(options.auto&&state.route!=='car')return;
+  const before=currentReaderArticleList();
+  if(!before.length){
+    state.carIndex=0;
+    state.playing=false;
+    state.paused=false;
+    saveState();
+    updateCarDom();
+    toast('Nincs hír ebben a válogatásban');
+    return;
+  }
+  const current=currentCarArticle();
+  if(options.markRead!==false){
+    rememberReaderPlaybackArticle(current.id);
+    recordRead(current.id);
+  }else{
+    rememberReaderPlaybackArticle(current.id);
+  }
+  const after=currentReaderArticleList();
+  let targetId='';
+  if(direction<0)targetId=readerPlaybackStep(-1);
+  else targetId=readerPlaybackStep(1)||nextUnreadReaderArticleId(after,current.id);
+  if(!after.length){
+    state.carIndex=0;
+    state.playing=false;
+    state.paused=false;
+    saveState();
+    updateCarDom();
+    toast('Nincs hír ebben a válogatásban');
+    return;
+  }
+  if(!targetId){
+    state.playing=false;
+    state.paused=false;
+    saveState();
+    updateCarDom();
+    toast(direction<0?'Nincs előző lejátszott hír':'Nincs új felolvasható hír ebben a válogatásban');
+    return;
+  }
+  setReaderIndexByArticleId(targetId,after);
+  state.paused=false;
+  saveState();
+  if(options.continuePlayback){
+    state.playing=true;
+    speakCurrent();
+  }else{
+    updateCarDom();
+  }
+}
+function setFeedView(viewId,options={}){
+  const nextView=normalizeFeedView(viewId);
+  const changed=state.feedView!==nextView;
+  const wasPlaying=state.route==='car'&&state.playing&&!state.paused;
+  state.feedView=nextView;
+  if(changed){
+    clearReaderPlaybackMemory();
+    state.carIndex=0;
+  }
+  if(changed&&state.route==='car'){
+    clearReaderTimers();
+    clearCurrentSpeechState();
+    state.playing=wasPlaying;
+    state.paused=false;
+  }
+  saveState();
+  if(state.route==='feed')renderFeed();
+  if(state.route==='car'){
+    renderCar();
+    if(changed&&wasPlaying)speakCurrent();
+  }
+  if(options.announce)toast(`${feedViewLabel(nextView)} hírfolyam`);
+}
+function readerVoiceCommandIntroText(){
+  return 'Ha a mikrofon aktív, a Felolvasót hangutasításokkal is vezérelheted. Mondd ki annak a vezérlőgombnak a nevét, amit használni szeretnél, például szünet, következő hír vagy részletes hírek. A hírt a kedvelés paranccsal elmentheted magadnak későbbre.';
+}
+function currentSpeechBody(details=state.detailedRead,includeIntro=false){
   const article=currentCarArticle();
-  return `${article.source}. ${article.title}. ${details?article.body:article.excerpt}`;
+  const body=`${article.source}. ${article.title}. ${details?article.body:article.excerpt}`;
+  return includeIntro?`${readerVoiceCommandIntroText()} ${body}`:body;
 }
 function resumeCurrentSpeech(){
   const details=currentSpeechText?currentSpeechDetails:state.detailedRead;
+  const includeIntro=currentSpeechText&&currentSpeechHasReaderIntro;
   if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined'){
-    speakCurrent(details,currentSpeechOffset);
+    speakCurrent(details,currentSpeechOffset,{includeIntro});
     return;
   }
   if(typeof navigator!=='undefined'&&/Android/i.test(navigator.userAgent||'')){
-    speakCurrent(details,currentSpeechOffset);
+    speakCurrent(details,currentSpeechOffset,{includeIntro});
     return;
   }
   try{speechSynthesis.resume();}catch(_){}
@@ -959,7 +1380,7 @@ function resumeCurrentSpeech(){
     if(state.route!=='car'||!state.playing||state.paused)return;
     let silent=false;
     try{silent=!speechSynthesis.speaking||speechSynthesis.paused;}catch(_){silent=true;}
-    if(silent)speakCurrent(details,currentSpeechOffset);
+    if(silent)speakCurrent(details,currentSpeechOffset,{includeIntro});
   },420);
 }
 window.resumeCurrentSpeech=resumeCurrentSpeech;
@@ -971,9 +1392,18 @@ function saveCurrentCarArticle(){
   }
   toggleSaved(article.id);
 }
+function feedViewFromVoiceCommand(command){
+  const value=normalizeIntentText(command);
+  if(['szemelyes','nekem','szemelyes hirfolyam'].some(phrase=>value.includes(phrase)))return 'personal';
+  if(['idorend','idorendi','friss hirek','friss hirfolyam'].some(phrase=>value.includes(phrase)))return 'timeline';
+  if(['kedvelt hirek','kedvelt hir','kedvencek','kedvenc hirek'].some(phrase=>value.includes(phrase)))return 'liked';
+  return '';
+}
 function handleVoiceCommand(text){
   if(state.route!=='car')return false;
   const command=(text||'').toLowerCase();
+  const requestedFeedView=feedViewFromVoiceCommand(command);
+  if(requestedFeedView){setFeedView(requestedFeedView,{announce:true});return true;}
   if(isAssistantTrialPromptOpen()){
     if(command.includes('igen')||command.includes('kiprób')||command.includes('kiprob')){acceptAssistantTrialOffer();return true;}
     if(command.includes('nem')||command.includes('később')||command.includes('kesobb')){dismissAssistantTrialOffer(true);return true;}
@@ -1118,7 +1548,7 @@ function finishCarMicWindow(advance=false){
   clearCarMicWindow();
   if(state.route==='car')updateCarDom();
   if(shouldAdvance){
-    carAutoAdvanceTimer=setTimeout(()=>{carAutoAdvanceTimer=null;if(state.route==='car'&&state.autoNext)nextArticle(true);},140);
+    carAutoAdvanceTimer=setTimeout(()=>{carAutoAdvanceTimer=null;if(state.route==='car'&&state.autoNext){state.playing=true;state.paused=false;speakCurrent();}},140);
   }
 }
 function scheduleAutoNextAfterReader(){
@@ -1129,7 +1559,7 @@ function scheduleAutoNextAfterReader(){
   }
   if(!state.autoNext){updateCarDom();return;}
   updateCarDom();
-  carAutoAdvanceTimer=setTimeout(()=>{carAutoAdvanceTimer=null;if(state.route==='car'&&state.autoNext)nextArticle(true);},700);
+  carAutoAdvanceTimer=setTimeout(()=>{carAutoAdvanceTimer=null;if(state.route==='car'&&state.autoNext){state.playing=true;state.paused=false;speakCurrent();}},700);
 }
 function startCarMicWindow(){
   if(state.route!=='car'||!state.mic)return false;
@@ -1170,7 +1600,7 @@ function stopSpeech(update=true){
   clearReaderTimers();
   speechRunId++;
   if('speechSynthesis' in window)try{speechSynthesis.cancel();}catch(_){}
-  currentUtterance=null; currentSpeechText=''; currentSpeechOffset=0; assistantSpeaking=false; state.playing=false; state.paused=false; if(update&&state.route==='car') updateCarDom(); if(update&&state.route==='assistant') updateAssistantDom();
+  currentUtterance=null; currentSpeechText=''; currentSpeechOffset=0; currentSpeechHasReaderIntro=false; assistantSpeaking=false; state.playing=false; state.paused=false; if(update&&state.route==='car') updateCarDom(); if(update&&state.route==='assistant') updateAssistantDom();
 }
 function clearReaderTimers(){
   if(carAutoAdvanceTimer){clearTimeout(carAutoAdvanceTimer);carAutoAdvanceTimer=null;}
@@ -1186,6 +1616,8 @@ function stopReaderSession(resetOptions=false){
   stopSpeech(false);
   state.playing=false;
   state.paused=false;
+  readerIntroSpokenThisSession=false;
+  currentSpeechHasReaderIntro=false;
   if(resetOptions)state.detailedRead=false;
 }
 function stopAssistantSession(){
@@ -1196,17 +1628,33 @@ function enforceSilentRoute(){
   stopVoiceListening();
   stopSpeech(false);
   clearReaderTimers();
+  readerIntroSpokenThisSession=false;
   state.detailedRead=false;
 }
-function speakCurrent(details=state.detailedRead,startOffset=0){
+function speakCurrent(details=state.detailedRead,startOffset=0,options={}){
   clearCarMicWindow();
+  const liveList=currentReaderArticleList();
+  if(!liveList.length){
+    state.playing=false;
+    state.paused=false;
+    saveState();
+    updateCarDom();
+    toast('Nincs hír ebben a válogatásban');
+    return;
+  }
   const article=currentCarArticle();
-  const fullText=currentSpeechBody(details);
+  rememberReaderPlaybackArticle(article.id);
+  const includeIntro=typeof options.includeIntro==='boolean'
+    ? options.includeIntro
+    : startOffset===0&&!readerIntroSpokenThisSession;
+  const fullText=currentSpeechBody(details,includeIntro);
   const maxOffset=Math.max(0,fullText.length-1);
   const offset=Math.max(0,Math.min(Number(startOffset)||0,maxOffset));
   currentSpeechText=fullText;
   currentSpeechDetails=details;
+  currentSpeechHasReaderIntro=includeIntro;
   currentSpeechOffset=offset;
+  if(includeIntro)readerIntroSpokenThisSession=true;
   if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined'){
     state.playing=true; state.paused=false;
     saveState();
@@ -1221,7 +1669,7 @@ function speakCurrent(details=state.detailedRead,startOffset=0){
   currentUtterance=new SpeechSynthesisUtterance(remaining);
   currentUtterance.lang='hu-HU'; currentUtterance.rate=1; state.playing=true; state.paused=false; updateCarDom();
   currentUtterance.onboundary=event=>{ if(runId!==speechRunId)return; if(typeof event.charIndex==='number')currentSpeechOffset=Math.min(fullText.length,runOffset+event.charIndex); };
-  currentUtterance.onend=()=>{ if(runId!==speechRunId)return; currentSpeechText=''; currentSpeechOffset=0; recordRead(article.id); noteReaderArticleFinished(); state.playing=false; state.paused=false; if(maybeOfferAssistantTrial()){updateCarDom();return;} scheduleAutoNextAfterReader(); };
+  currentUtterance.onend=()=>{ if(runId!==speechRunId)return; currentSpeechText=''; currentSpeechOffset=0; currentSpeechHasReaderIntro=false; rememberReaderPlaybackArticle(article.id); recordRead(article.id); const nextList=currentReaderArticleList(); const nextArticleId=nextUnreadReaderArticleId(nextList,article.id); if(nextList.length&&nextArticleId)setReaderIndexByArticleId(nextArticleId,nextList); noteReaderArticleFinished(); state.playing=false; state.paused=false; if(maybeOfferAssistantTrial()){updateCarDom();return;} scheduleAutoNextAfterReader(); };
   currentUtterance.onerror=()=>{ if(runId!==speechRunId)return; currentUtterance=null;state.playing=true;state.paused=false;updateCarDom();toast('A böngésző hangmotorja nem indult el, vizuális próba fut');};
   try{speechSynthesis.speak(currentUtterance);}catch(_){if(runId!==speechRunId)return; currentUtterance=null;state.playing=true;state.paused=false;updateCarDom();toast('A böngésző hangmotorja nem indult el, vizuális próba fut');}
 }
@@ -1250,32 +1698,14 @@ function handleCarPlayButton(event){
 window.handleCarPlayButton=handleCarPlayButton;
 function nextArticle(auto=false){
   if(auto&&state.route!=='car')return;
-  const list=currentReaderArticleList();
-  if(!list.length)return;
-  recordRead(currentCarArticle().id);
-  state.carIndex=(state.carIndex+1)%list.length;
-  saveState();
-  if(auto||state.playing){state.playing=true;state.paused=false;speakCurrent();}else updateCarDom();
+  advanceReaderArticle(1,{auto,markRead:!auto,continuePlayback:auto||state.playing});
 }
 function goToAdjacentArticle(direction,continuePlayback=true){
   if(state.route!=='car')return;
   clearReaderTimers();
-  speechRunId++;
-  if('speechSynthesis' in window)try{speechSynthesis.cancel();}catch(_){}
-  currentUtterance=null; currentSpeechText=''; currentSpeechOffset=0;
-  recordRead(currentCarArticle().id);
-  const list=currentReaderArticleList();
-  if(!list.length)return;
-  state.carIndex=(state.carIndex+list.length+direction)%list.length;
-  state.paused=false;
-  saveState();
-  if(continuePlayback){
-    state.playing=true;
-    speakCurrent();
-    return;
-  }
-  state.playing=false;
-  updateCarDom();
+  clearCurrentSpeechState();
+  state.playing=!!continuePlayback;
+  advanceReaderArticle(direction,{continuePlayback});
 }
 function togglePause(){
   if(state.paused){
@@ -1291,11 +1721,8 @@ function togglePause(){
 function toggleDetailedRead(){
   const switchingToDetailed=!state.detailedRead;
   if(!switchingToDetailed){
-    speechRunId++;
-    if('speechSynthesis' in window)try{speechSynthesis.cancel();}catch(_){}
-    currentUtterance=null; currentSpeechText=''; currentSpeechOffset=0;
-    recordRead(currentCarArticle().id);
-    state.carIndex=(state.carIndex+1)%articles.length;
+    clearCurrentSpeechState();
+    advanceReaderArticle(1,{continuePlayback:false});
   }
   state.detailedRead=switchingToDetailed;
   state.paused=false;
@@ -1340,15 +1767,10 @@ function renderCar(){
   const autoLabel='Hírléptető';
   const prevLabel='Előző';
   const detailLabel=state.detailedRead?'Rövidített hírek':'Részletes hírek';
-  const saveLabel='Kedvelés';
   const nextLabel='Következő';
-  const voiceCommands=[micLabel,playbackLabel,autoLabel,prevLabel,detailLabel,saveLabel,nextLabel];
-  const voicePanel=state.mic
-    ? `<div class="voice-command-panel"><strong>${carMicWindowActive?'Mikrofon figyel:':state.autoNext?'Hír végén 3 mp:':'Hír végén figyel:'}</strong><span>${state.autoNext?voiceCommands.join(' · '):`${voiceCommands.join(' · ')} · hír végén nyitva marad`}</span></div>`
-    : `<div class="voice-command-panel inactive"><strong>Hangutasítások kikapcsolva</strong><span>Hangutasításokhoz kapcsold be a mikrofont a Mikrofon gomb megnyomásával.</span></div>`;
-  view.innerHTML=`<section class="car-view"><div class="car-news-stack"><div class="car-image-wrap"><img class="article-image" src="${escapeHtml(article.image)}" alt="${escapeHtml(article.title)}"><span class="car-badge">${escapeHtml(article.category)}</span></div>
+  view.innerHTML=`<section class="car-view">${feedViewSwitchMarkup('reader-feed-view-switch')}<div class="car-news-stack"><div class="car-image-wrap"><img class="article-image" src="${escapeHtml(article.image)}" alt="${escapeHtml(article.title)}"><span class="car-badge">${escapeHtml(article.category)}</span></div>
     <div class="car-status"><h1>${escapeHtml(article.title)}</h1><div class="meta-line car-meta-line"><span class="car-meta-text">${escapeHtml(article.source)} · ${escapeHtml(article.time)}</span>${newsActionButtons(article,{compact:true,inline:true,extraClass:'meta-news-actions car-meta-actions'})}</div></div></div>
-    <div class="car-bottom-stack"><div class="car-wave-area">${voiceActivityMarkup(carVoiceActivityState())}</div>${voicePanel}
+    <div class="car-bottom-stack"><div class="car-wave-area">${voiceActivityMarkup(carVoiceActivityState())}</div>
       <div class="car-controls"><button class="car-control step-control" data-car="prev" aria-label="Előző hír">${carControlIcon('prev')}<span class="car-control-label">${prevLabel}</span></button><button type="button" class="car-control read-toggle ${state.playing?'playing':''} ${state.paused?'paused is-pressed-state':''}" data-car="play" aria-label="${state.paused?'Felolvasás folytatása':state.playing?'Felolvasás szüneteltetése':'Felolvasás indítása'}">${carControlIcon(state.paused?'resume':state.playing?'pause':'play')}<span class="car-control-label">${playbackLabel}</span></button><button class="car-control step-control" data-car="next" aria-label="Következő hír">${carControlIcon('next')}<span class="car-control-label">${nextLabel}</span></button></div>
       <div class="car-step-controls"><button class="car-control mic ${state.mic?'':'off is-pressed-state'}" data-car="mic" aria-label="${state.mic?'Mikrofon bekapcsolva':'Mikrofon kikapcsolva'}">${carControlIcon('mic',state.mic)}<span class="car-control-label">${micLabel}</span></button><button class="car-control step-control details-control ${state.detailedRead?'active is-pressed-state':''}" data-car="details" aria-label="${state.detailedRead?'Rövidített hírek bekapcsolása':'Részletes hírek bekapcsolása'}">${carControlIcon('details',state.detailedRead)}<span class="car-control-label">${detailLabel}</span></button><button class="car-control auto-next ${state.autoNext?'':'off is-pressed-state'}" data-car="auto" aria-label="${state.autoNext?'Hírléptető bekapcsolva':'Hírléptető kikapcsolva'}">${carControlIcon('auto',state.autoNext)}<span class="car-control-label">${autoLabel}</span></button></div>
       </div></section>`;
@@ -1623,7 +2045,7 @@ function assistantPromoChatCtaButton(){
 }
 function assistantPromoMarkup(){
   ensureAssistantPromoConversation();
-  return `<section class="assistant-view assistant-mode-silent assistant-promo-mode">${assistantModeButtons(state.assistantMode)}<div class="assistant-silent-header"><div class="live">Előfizetési információ</div></div><div class="assistant-chat-panel"><div id="promoChatLog" class="chat-log">${state.assistantPromoChat.map(assistantPromoChatEntryMarkup).join('')}</div></div><form id="promoComposer" class="composer"><input id="promoChatInput" autocomplete="off" placeholder="Kérdezz az előfizetésről…"><button type="submit">➤</button></form></section>`;
+  return `<section class="assistant-view assistant-mode-chat assistant-promo-mode">${assistantModeButtons('chat')}<div class="assistant-chat-header"><div class="live">Előfizetési információ</div></div><div class="assistant-chat-panel"><div id="promoChatLog" class="chat-log">${state.assistantPromoChat.map(assistantPromoChatEntryMarkup).join('')}</div></div><form id="promoComposer" class="composer"><input id="promoChatInput" autocomplete="off" placeholder="Kérdezz az előfizetésről…"><button type="submit">➤</button></form></section>`;
 }
 function handleAssistantPromoQuestion(question){
   const clean=String(question||'').trim();
@@ -1653,7 +2075,7 @@ function handleAssistantQuestion(question){
     renderAssistant();
     focusAssistantComposer();
     toast('Új csevegés indult');
-    if(state.assistantMode!=='silent')speakAssistantText(assistantOpeningSpeechText());
+    if(state.assistantMode==='voice')speakAssistantText(assistantOpeningSpeechText());
     return;
   }
   const answer=assistantVoiceAnswerFor(clean);
@@ -1676,7 +2098,7 @@ function handleAssistantQuestion(question){
   renderAssistant();
   focusAssistantComposer();
   if(state.assistantMode==='voice')toast('Asszisztens válasz felolvasása indul');
-  if(state.assistantMode!=='silent')speakAssistantText(answer.speech);
+  if(state.assistantMode==='voice')speakAssistantText(answer.speech);
 }
 function assistantWaveState(mode=state.assistantMode){
   if(assistantSpeaking)return 'speaking';
@@ -1685,8 +2107,7 @@ function assistantWaveState(mode=state.assistantMode){
 }
 function assistantLiveLabel(mode=state.assistantMode){
   if(mode==='voice')return assistantSpeaking?'Felolvasok':'Figyelek';
-  if(mode==='text')return assistantSpeaking?'Felolvasok':'Gépelés';
-  return 'Néma';
+  return 'Cset';
 }
 function assistantTitle(mode=state.assistantMode){
   if(mode==='voice'){
@@ -1700,7 +2121,6 @@ function assistantSubtitle(mode=state.assistantMode){
     const latest=latestAssistantVoiceContext();
     return assistantVoiceResult?.description||latest?.description||currentAssistantPrompt().description;
   }
-  if(mode==='text')return 'Írd be, mire vagy kíváncsi, a választ felolvassa.';
   return 'Írd be, mire vagy kíváncsi, a választ szövegben kapod.';
 }
 function assistantOpeningSpeechText(){
@@ -1712,21 +2132,15 @@ function assistantEntrySpeechText(){
   if(latest)return `${latest.title}. ${latest.description}`;
   return assistantOpeningSpeechText();
 }
-function nextAssistantMode(mode=state.assistantMode){
-  return mode==='voice'?'text':mode==='text'?'silent':'voice';
-}
 function assistantModeIcon(mode,extraClass=''){
   const cls=`mode-icon mode-icon-${mode}${extraClass?` ${extraClass}`:''}`;
   if(mode==='voice'){
     return `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path class="mode-line" d="M7 18v-4"></path><path class="mode-line" d="M12 22V10"></path><path class="mode-accent" d="M16 25V7"></path><path class="mode-line" d="M20 22V10"></path><path class="mode-line" d="M25 18v-4"></path></svg></span>`;
   }
-  if(mode==='text'){
-    return `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><rect class="mode-line" x="5.5" y="8.5" width="21" height="15" rx="4"></rect><path class="mode-accent" d="M11 19.5h10"></path><circle class="mode-dot" cx="10.5" cy="14" r="1.4"></circle><circle class="mode-dot" cx="16" cy="14" r="1.4"></circle><circle class="mode-dot" cx="21.5" cy="14" r="1.4"></circle></svg></span>`;
-  }
-  return `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path class="mode-line" d="M6 18v-4h5l6-5v14l-6-5H6Z"></path><path class="mode-accent" d="M22.5 12.5l4 7"></path><path class="mode-accent" d="M26.5 12.5l-4 7"></path></svg></span>`;
+  return `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path class="mode-line" d="M8.5 9.5h15A3.5 3.5 0 0 1 27 13v6.4a3.5 3.5 0 0 1-3.5 3.5h-7.3L10 26.5v-3.6H8.5A3.5 3.5 0 0 1 5 19.4V13a3.5 3.5 0 0 1 3.5-3.5Z"></path><path class="mode-accent" d="M11.5 15h9"></path><path class="mode-accent" d="M11.5 19h5.8"></path></svg></span>`;
 }
 function assistantModeButtons(mode=state.assistantMode){
-  const modes=[['voice','Beszéd'],['text','Gépelés'],['silent','Néma']];
+  const modes=[['voice','Beszéd'],['chat','Cset']];
   return `<div class="mode-switch" aria-label="Asszisztens mód">${modes.map(([id,label])=>`<button class="${mode===id?'active':''}" data-mode="${id}" aria-label="${label} mód">${assistantModeIcon(id)}<span class="mode-label">${label}</span></button>`).join('')}</div>`;
 }
 function assistantChatEntryMarkup(message){
@@ -1794,7 +2208,7 @@ function configureAssistantUtterance(utterance){
   }catch(_){}
 }
 function speakAssistantText(text){
-  if(state.route!=='assistant'||state.assistantMode==='silent')return;
+  if(state.route!=='assistant'||normalizeAssistantMode(state.assistantMode)!=='voice')return;
   const visualDuration=Math.min(6500,Math.max(3600,String(text||'').length*55));
   if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined'){
     const runId=++speechRunId;
@@ -1832,22 +2246,16 @@ function renderAssistant(){
     view.innerHTML=subscriptionPromptMarkup('assistant','assistant-locked');
     return;
   }
-  const nextMode=nextAssistantMode();
-  const nextModeLabel=nextMode==='voice'?'Beszéd':nextMode==='text'?'Gépelés':'Néma';
-  setHeader('Asszisztens',hasAssistantTrial()&&!hasAssistantSubscription()?subscriptionHeaderCta('assistant'):iconButton(assistantModeIcon(nextMode,'header-mode-icon'),`${nextModeLabel} mód megnyitása`,'assistant-toggle'));
-  const mode=state.assistantMode;
+  setHeader('Asszisztens',subscriptionHeaderCta('assistant'));
+  const mode=normalizeAssistantMode(state.assistantMode);
+  state.assistantMode=mode;
   ensureAssistantConversation();
   const wave=voiceActivityMarkup(assistantWaveState(mode),'assistant-voice-activity');
   if(mode==='voice'){
     view.innerHTML=`<section class="assistant-view assistant-mode-voice">${assistantModeButtons(mode)}<div class="assistant-hero"><div class="live">${assistantLiveLabel(mode)}</div><button class="assistant-wave-button" type="button" data-action="voice-demo" aria-label="Asszisztens hangállapot">${wave}</button>${assistantVoiceSummaryMarkup()}</div></section>`;
     return;
   }
-  if(mode==='text'){
-    view.innerHTML=`<section class="assistant-view assistant-mode-text">${assistantModeButtons(mode)}<div class="assistant-hero assistant-fixed-hero"><div class="live">${assistantLiveLabel(mode)}</div><button class="assistant-wave-button" type="button" data-action="voice-demo" aria-label="Asszisztens hangállapot">${wave}</button></div>${assistantFullChatMarkup()}</section>`;
-    scrollAssistantChatToEnd();
-    return;
-  }
-  view.innerHTML=`<section class="assistant-view assistant-mode-silent">${assistantModeButtons(mode)}<div class="assistant-silent-header"><div class="live">${assistantLiveLabel(mode)}</div></div>${assistantFullChatMarkup()}</section>`;
+  view.innerHTML=`<section class="assistant-view assistant-mode-chat">${assistantModeButtons(mode)}${assistantFullChatMarkup()}</section>`;
   scrollAssistantChatToEnd();
 }
 
@@ -1864,8 +2272,10 @@ function activateRouteAudio(route=state.route){
     if(!hasAssistantAccess())return;
     ensureAssistantConversation();
     if(state.assistantMode==='voice')speakAssistantText(assistantEntrySpeechText());
-    else stopVoiceListening();
-    if(state.assistantMode==='silent')stopSpeech(false);
+    else{
+      stopVoiceListening();
+      stopSpeech(false);
+    }
     return;
   }
   enforceSilentRoute();
@@ -1873,6 +2283,7 @@ function activateRouteAudio(route=state.route){
 function changeRoute(nextRoute){
   if(!nextRoute||state.route===nextRoute)return;
   const previousRoute=state.route;
+  clearReaderPlaybackMemory();
   if(previousRoute==='car')stopReaderSession(true);
   if(previousRoute==='assistant')stopAssistantSession();
   if(nextRoute==='feed'||nextRoute==='settings')enforceSilentRoute();
@@ -1890,7 +2301,7 @@ function changeRoute(nextRoute){
   saveState();
 }
 function setAssistantMode(mode){
-  if(!['voice','text','silent'].includes(mode))return;
+  if(!['voice','chat'].includes(mode))return;
   if(state.assistantMode===mode){
     renderAssistant();
     activateRouteAudio('assistant');
@@ -1912,18 +2323,50 @@ function subscriptionLabel(){
   if(isTrialExpired()) return 'Ingyenes hírfolyam · AI Felolvasó próba lejárt';
   return 'Ingyenes hírfolyam · AI Felolvasó próba elérhető';
 }
-function settingsItems(){
+function legacySettingsItems(){
   const activeSources=Object.values(state.sources).filter(Boolean).length;
   const activeTopics=state.enabledTopics.length;
   return [
-    ['◉','RSS-források',`${activeSources} bekapcsolva`,'sources'],['#','Témák és érdeklődés',`${activeTopics} kiválasztva`,'topics'],['🔔','Értesítések',state.notifications?'Bekapcsolva':'Kikapcsolva','notifications'],['◐','Megjelenés',state.theme==='system'?'Rendszer szerint':state.theme==='dark'?'Sötét':'Világos','appearance'],['◉','Hang és felolvasó','Magyar hang · 1,0×','voice'],['⇅','Mobiladat és tárhely',state.mobileData?'Mobilnet engedélyezve':'Csak Wi-Fi','data'],['⌖','Helyi hírek',state.location?'Budapest környéke':'Kikapcsolva','location'],['♙','Fiók és biztonság','Prototípus-fiók','account'],['↺','Prototípus','Fejlesztési beállítások','prototype']
+    ['◉','RSS-források',`${activeSources} bekapcsolva`,'sources'],['#','Témák és érdeklődés',`${activeTopics} kiválasztva`,'topics'],['🔔','Értesítések',notificationSettingsSummary(),'notifications'],['◐','Megjelenés',state.theme==='system'?'Rendszer szerint':state.theme==='dark'?'Sötét':'Világos','appearance'],['◉','Hang és felolvasó','Magyar hang · 1,0×','voice'],['⇅','Mobiladat és tárhely',state.mobileData?'Mobilnet engedélyezve':'Csak Wi-Fi','data'],['⌖','Helyi hírek',state.location?'Budapest környéke':'Kikapcsolva','location'],['♙','Fiók és biztonság','Prototípus-fiók','account'],['↺','Prototípus','Fejlesztési beállítások','prototype']
   ];
 }
-function renderSettings(){
+function legacyRenderSettings(){
   const items=settingsItems();
   setHeader('Beállítások'); view.innerHTML=`<div class="settings-group subscription-entry">${settingRow(['✦','Csomagok és előfizetés',subscriptionLabel(),'subscription'])}</div><div class="settings-group">${items.slice(0,4).map(settingRow).join('')}</div><div class="settings-group">${items.slice(4,8).map(settingRow).join('')}</div><div class="settings-group">${items.slice(8).map(settingRow).join('')}</div>`;
 }
-function settingRow(item){return `<button class="settings-row" data-setting="${item[3]}"><span class="row-icon">${item[0]}</span><span class="row-copy"><strong>${item[1]}</strong><small>${item[2]}</small></span><span class="row-end">›</span></button>`;}
+function legacySettingRow(item){return `<button class="settings-row" data-setting="${item[3]}"><span class="row-icon">${item[0]}</span><span class="row-copy"><strong>${item[1]}</strong><small>${item[2]}</small></span><span class="row-end">›</span></button>`;}
+
+function settingsItems(){
+  const activeSources=Object.values(state.sources).filter(Boolean).length;
+  const activeTopics=state.enabledTopics.length;
+  return {
+    news:[
+      [settingsMenuIcon('sources'),'RSS-források',`${activeSources} bekapcsolva`,'sources'],
+      [settingsMenuIcon('topics'),'Témák és érdeklődés',`${activeTopics} kiválasztva`,'topics'],
+      [settingsMenuIcon('location'),'Helyi hírek',state.location?'Budapest környéke':'Kikapcsolva','location'],
+      [settingsMenuIcon('notifications'),'Értesítések',notificationSettingsSummary(),'notifications']
+    ],
+    app:[
+      [settingsMenuIcon('account'),'Fiók és biztonság','Prototípus-fiók','account'],
+      [settingsMenuIcon('appearance'),'Megjelenés',state.theme==='system'?'Rendszer szerint':state.theme==='dark'?'Sötét':'Világos','appearance'],
+      [settingsMenuIcon('voice'),'Hang és felolvasó','Magyar hang · 1,0×','voice'],
+      [settingsMenuIcon('data'),'Mobiladat és tárhely',state.mobileData?'Mobilnet engedélyezve':'Csak Wi-Fi','data']
+    ],
+    prototype:[
+      [settingsMenuIcon('prototype'),'Prototípus','Fejlesztési beállítások','prototype'],
+      [settingsMenuIcon('carplay'),'CarPlay / Android Auto nézet','Ideiglenes autós kijelző előnézet','auto-preview']
+    ]
+  };
+}
+function renderSettings(){
+  const items=settingsItems();
+  setHeader('Beállítások');
+  view.innerHTML=`<div class="settings-group subscription-entry">${settingRow([settingsMenuIcon('subscription'),'Csomagok és előfizetés',subscriptionLabel(),'subscription'])}</div><h3 class="section-label settings-section-label">Hírbeállítások</h3><div class="settings-group">${items.news.map(settingRow).join('')}</div><h3 class="section-label settings-section-label">Alkalmazás</h3><div class="settings-group">${items.app.map(settingRow).join('')}</div><h3 class="section-label settings-section-label">Prototípus</h3><div class="settings-group">${items.prototype.map(settingRow).join('')}</div>`;
+}
+function settingRow(item){
+  const actionAttr=item[3]==='auto-preview'?'data-auto-display-preview':`data-setting="${item[3]}"`;
+  return `<button class="settings-row" ${actionAttr}><span class="row-icon">${item[0]}</span><span class="row-copy"><strong>${item[1]}</strong><small>${item[2]}</small></span><span class="row-end">›</span></button>`;
+}
 
 function render(){
   stopSpeech(false);
@@ -1933,6 +2376,7 @@ function render(){
   view.classList.toggle('feed-route-view',state.route==='feed');
   view.classList.toggle('car-route-view',state.route==='car');
   view.classList.toggle('assistant-route-view',state.route==='assistant');
+  if(state.route!=='feed')phoneShell.querySelector('.fresh-news-notice')?.remove();
   ({feed:renderFeed,car:renderCar,assistant:renderAssistant,settings:renderSettings}[state.route]||renderCar)();
   ensureAppVisibleRoute();
   if(window.HB_SYNC_RESPONSIVE_PREVIEW_MODE)window.HB_SYNC_RESPONSIVE_PREVIEW_MODE();
@@ -1978,8 +2422,7 @@ function librarySheet(tab='saved'){
 function planName(plan){return PLAN_CATALOG[normalizePlanId(plan)]?.name||PLAN_CATALOG.reader.name;}
 function planPrice(plan){return PLAN_CATALOG[normalizePlanId(plan)]?.price||PLAN_CATALOG.reader.price;}
 function usageSheet(){
-  const sub=state.subscription; const remaining=Math.max(0,sub.assistantTrialRemaining||0);
-  openSheet('AI Asszisztens próba','Heti 5 kérdés',`<section class="subscription-screen"><div class="minutes-ring" style="--usage:${Math.round(((5-remaining)/5)*360)}deg"><div><strong>${remaining}</strong><span>kérdés maradt</span></div></div><h2 class="center-title">Próbáld ki a csevegéses hírmustrát</h2><p class="center-copy">Az AI Felolvasó előfizetők hetente egyszer 5 kérdés erejéig kipróbálhatják az AI Asszisztenst.</p><button class="primary-button coral-button" data-sub-action="assistant-weekly-trial">Próba indítása</button><button class="secondary-button" data-sub-action="subscription-home">Vissza az előfizetéshez</button></section>`);
+  openSheet('AI Asszisztens próba','Heti 5 kérdés',`<section class="subscription-screen"><div class="expired-hero"><span class="expired-icon">AI</span><span class="subscription-kicker">HETI ASSZISZTENS PRÓBA</span><h1>Próbáld ki a csevegéses hírmustrát</h1><p>Az AI Felolvasó előfizetők hetente egyszer 5 kérdés erejéig kipróbálhatják az AI Asszisztenst.</p></div><button class="primary-button coral-button" data-sub-action="assistant-weekly-trial">Próba indítása</button><button class="secondary-button" data-sub-action="subscription-home">Vissza az előfizetéshez</button></section>`);
 }
 function activatePlan(planId,options={}){
   const previousRoute=options.returnRoute||subscriptionStayRoute(state.route);
@@ -2247,7 +2690,7 @@ function subscriptionSheet(screen='overview',targetPlan='',entry='menu'){
   const selectedPlan=resolveSubscriptionSelection(screen,targetPlan);
   state.subscription.pendingPlan=selectedPlan;
   const assistantTrialHtml=state.subscription.status==='active'&&state.subscription.plan==='reader'
-    ? `<button class="usage-panel subscription-trial-panel" data-sub-action="assistant-weekly-trial" type="button"><span><strong>AI Asszisztens heti próba</strong><small>${state.subscription.assistantTrialWeek===currentWeekKey()?'Erre a hétre már felajánlva':'5 kérdéses próba elérhető'}</small></span><span>${state.subscription.assistantTrialRemaining||5} kérdés</span><i><b style="width:${state.subscription.assistantTrialWeek===currentWeekKey()?100:0}%"></b></i></button>`
+    ? `<button class="usage-panel subscription-trial-panel" data-sub-action="assistant-weekly-trial" type="button"><span><strong>AI Asszisztens heti próba</strong><small>${state.subscription.assistantTrialWeek===currentWeekKey()?'Erre a hétre már felajánlva':'5 kérdéses próba elérhető'}</small></span><span>Indítás</span><i><b style="width:${state.subscription.assistantTrialWeek===currentWeekKey()?100:0}%"></b></i></button>`
     : '';
   return openSheet('Csomagok és előfizetés','Aktív csomag és váltási opciók',`<section class="subscription-screen subscription-center" data-selected-plan="${escapeHtml(selectedPlan)}" data-entry="${escapeHtml(entry)}">
     ${assistantTrialHtml}
@@ -2386,7 +2829,7 @@ function topicSettingsSheet(){
     const active=topic.id==='fresh'||state.enabledTopics.includes(topic.id);
     return `<button class="settings-row topic-row ${topic.id==='fresh'?'fixed-topic':''}" data-topic-toggle="${topic.id}"><span class="row-icon">${topic.name[0]}</span><span class="row-copy"><strong>${topic.name}</strong><small>${topic.description}</small></span><span class="toggle ${active?'on':''}"></span></button>`;
   }).join('');
-  openSheet('Témák és érdeklődés','A hírfolyam és a keresés témái',`<p class="settings-intro">A felső témasor oldalra görgethető. Kapcsold ki azokat a témákat, amelyeket nem szeretnél látni.</p><div class="chips topic-strip topic-settings-strip">${topicButtons}</div><div class="settings-group topic-settings-list">${topicRows}</div><div class="settings-group">${settingRow(['✦','Személyre szabott sorrend','Bekapcsolva','personal'])}${settingRow(['↺','Érdeklődési profil törlése','A kedvelések megmaradnak','reset-profile'])}</div>`);
+  openSheet('Témák és érdeklődés','A hírfolyam és a keresés témái',`<p class="settings-intro">A felső témasor oldalra görgethető. Kapcsold ki azokat a témákat, amelyeket nem szeretnél látni.</p><div class="chips topic-strip topic-settings-strip">${topicButtons}</div><div class="settings-group topic-settings-list">${topicRows}</div>`);
 }
 function settingsSheet(type){
   if(type==='subscription') return subscriptionSheet();
@@ -2394,7 +2837,7 @@ function settingsSheet(type){
   if(type==='sources') return openSheet('RSS-források','Közvetlenül a készüléken',`<button class="primary-button" data-add-source>＋ Új RSS-forrás</button><div class="settings-group" style="margin-top:13px">${Object.entries(state.sources).map(([name,on])=>`<button class="settings-row" data-source="${name}"><span class="row-icon">${name[0]}</span><span class="row-copy"><strong>${name}</strong><small>${on?'Bekapcsolva':'Kikapcsolva'}</small></span><span class="toggle ${on?'on':''}"></span></button>`).join('')}</div>`);
   if(type==='topics') return topicSettingsSheet();
   if(type==='promotions') return settingsSheet('prototype');
-  if(type==='notifications') return openSheet('Értesítések','Helyi prototípus-beállítás',`<div class="settings-group"><button class="settings-row" data-toggle-setting="notifications"><span class="row-icon">!</span><span class="row-copy"><strong>Rendkívüli hírek</strong><small>${state.notifications?'Bekapcsolva':'Kikapcsolva'}</small></span><span class="toggle ${state.notifications?'on':''}"></span></button>${settingRow(['☀','Napi összefoglaló','Minden nap 07:30','digest'])}${settingRow(['☾','Csendes időszak','22:00–07:00','quiet'])}</div>`);
+  if(type==='notifications') return openSheet('Értesítések','Riasztások és hírösszefoglaló',notificationSettingsContent());
   if(type==='voice') return openSheet('Hang és felolvasó','Felolvasás és viselkedés',`<div class="settings-group">${settingRow(['A','Felolvasóhang','Magyar rendszerhang','voice-name'])}${settingRow(['↔','Beszédsebesség','1,0×','rate'])}<button class="settings-row" data-toggle-setting="autoNext"><span class="row-icon">⇥</span><span class="row-copy"><strong>Automatikus következő</strong><small>${state.autoNext?'Bekapcsolva':'Kikapcsolva'}</small></span><span class="toggle ${state.autoNext?'on':''}"></span></button></div>`);
   if(type==='data') return openSheet('Mobiladat és tárhely','Hálózati beállítások',`<div class="settings-group"><button class="settings-row" data-toggle-setting="mobileData"><span class="row-icon">⇅</span><span class="row-copy"><strong>RSS-frissítés mobilneten</strong><small>${state.mobileData?'Engedélyezve':'Csak Wi-Fi'}</small></span><span class="toggle ${state.mobileData?'on':''}"></span></button>${settingRow(['▧','Képek mobilneten','Engedélyezve','images'])}${settingRow(['⌫','Gyorsítótár törlése','A kedvelések megmaradnak','cache'])}</div>`);
   if(type==='location') return openSheet('Helyi hírek','Hozzávetőleges hely',`<div class="empty" style="padding-top:28px"><div class="empty-icon">⌖</div><h2>Helyi hírek a közeledből</h2><p>A prototípus nem kér valódi helyadatot.</p></div><button class="primary-button" data-toggle-setting="location">${state.location?'Helyi hírek kikapcsolása':'Budapest kiválasztása'}</button>`);
@@ -2437,6 +2880,7 @@ document.addEventListener('click',event=>{
     return;
   }
   const route=event.target.closest('[data-route]'); if(route){changeRoute(route.dataset.route);return;}
+  const freshNewsNotice=event.target.closest('[data-fresh-news-notice]'); if(freshNewsNotice){event.preventDefault();event.stopPropagation();acknowledgeFreshNews();return;}
   const save=event.target.closest('[data-save]'); if(save){event.preventDefault();event.stopPropagation();const id=save.dataset.save;toggleSaved(id);refreshArticleViews(id);return;}
   const share=event.target.closest('[data-share]'); if(share){event.preventDefault();event.stopPropagation();shareArticle(share.dataset.share);return;}
   const readToggle=event.target.closest('[data-read-toggle]'); if(readToggle){event.preventDefault();event.stopPropagation();const id=readToggle.dataset.readToggle;toggleReadState(id);refreshArticleViews(id);return;}
@@ -2449,9 +2893,9 @@ document.addEventListener('click',event=>{
     if(action==='assistant-trial'){state.subscription.assistantTrialPromoClickedWeek=currentWeekKey();startAssistantWeeklyTrial();return;}
   }
   const card=event.target.closest('[data-article]'); if(card&&!event.target.closest('.news-actions')){openArticle(card.dataset.article);return;}
-  const sort=event.target.closest('[data-sort]'); if(sort){state.sort=sort.dataset.sort;renderFeed();saveState();return;}
-  const category=event.target.closest('[data-category]'); if(category){state.category=category.dataset.category;renderFeed();saveState();return;}
-  const action=event.target.closest('[data-action]'); if(action){const a=action.dataset.action;if(a==='close-sheet'){closeSheet();return;}if(a==='search')searchSheet();if(a==='library')librarySheet('saved');if(a==='toggle-read-feed'){state.showReadInFeed=!state.showReadInFeed;saveState();renderFeed();toast(state.showReadInFeed?'Olvasott hírek láthatók':'Olvasott hírek elrejtve');}if(a==='plans')openSubscriptionCenter(action.dataset.subTarget,'menu');if(a==='assistant-toggle')setAssistantMode(nextAssistantMode());if(a==='voice-demo')toast(state.assistantMode==='voice'?'Beszéd mód: mondd el a kérdésed':state.assistantMode==='text'?'Gépelés mód: a válasz felolvasva érkezik':'Néma mód: csak szöveges válasz');return;}
+  const feedView=event.target.closest('[data-feed-view]'); if(feedView){setFeedView(feedView.dataset.feedView);return;}
+  const category=event.target.closest('[data-category]'); if(category){clearReaderPlaybackMemory();clearFreshNewsBatch({render:false});state.category=category.dataset.category;renderFeed();saveState();return;}
+  const action=event.target.closest('[data-action]'); if(action){const a=action.dataset.action;if(a==='close-sheet'){closeSheet();return;}if(a==='search')searchSheet();if(a==='library')librarySheet('saved');if(a==='plans')openSubscriptionCenter(action.dataset.subTarget,'menu');if(a==='voice-demo')toast(state.assistantMode==='voice'?'Beszéd mód: mondd el a kérdésed':'Cset mód: csak szöveges válasz');return;}
   const car=event.target.closest('[data-car]'); if(car){
     const carAction=car.dataset.car;
     if(carAction==='mic'){
@@ -2475,9 +2919,9 @@ document.addEventListener('click',event=>{
   const question=event.target.closest('[data-question]'); if(question){handleAssistantQuestion(question.dataset.question);return;}
   const setting=event.target.closest('[data-setting]'); if(setting){settingsSheet(setting.dataset.setting);return;}
   const assistantTrial=event.target.closest('[data-assistant-trial]'); if(assistantTrial){assistantTrial.dataset.assistantTrial==='accept'?acceptAssistantTrialOffer():dismissAssistantTrialOffer(true);return;}
-  const source=event.target.closest('[data-source]'); if(source){state.sources[source.dataset.source]=!state.sources[source.dataset.source];saveState();settingsSheet('sources');return;}
-  const recommendedSource=event.target.closest('[data-recommended-source]'); if(recommendedSource){const name=recommendedSource.dataset.recommendedSource;state.sources[name]=true;saveState();settingsSheet('sources');toast(`${name} hozzáadva`);return;}
-  const topicToggle=event.target.closest('[data-topic-toggle]'); if(topicToggle){const id=topicToggle.dataset.topicToggle;if(id==='fresh'){toast('A Friss összesítő mindig elérhető');return;}state.enabledTopics=state.enabledTopics.includes(id)?state.enabledTopics.filter(topicId=>topicId!==id):[...state.enabledTopics,id];if(state.category===id&&!state.enabledTopics.includes(id))state.category='fresh';saveState();topicSettingsSheet();return;}
+  const source=event.target.closest('[data-source]'); if(source){clearReaderPlaybackMemory();clearFreshNewsBatch({render:false});state.sources[source.dataset.source]=!state.sources[source.dataset.source];saveState();settingsSheet('sources');return;}
+  const recommendedSource=event.target.closest('[data-recommended-source]'); if(recommendedSource){clearReaderPlaybackMemory();clearFreshNewsBatch({render:false});const name=recommendedSource.dataset.recommendedSource;state.sources[name]=true;saveState();settingsSheet('sources');toast(`${name} hozzáadva`);return;}
+  const topicToggle=event.target.closest('[data-topic-toggle]'); if(topicToggle){const id=topicToggle.dataset.topicToggle;if(id==='fresh'){toast('A Minden téma összesítő mindig elérhető');return;}clearReaderPlaybackMemory();clearFreshNewsBatch({render:false});state.enabledTopics=state.enabledTopics.includes(id)?state.enabledTopics.filter(topicId=>topicId!==id):[...state.enabledTopics,id];if(state.category===id&&!state.enabledTopics.includes(id))state.category='fresh';saveState();topicSettingsSheet();return;}
   const lib=event.target.closest('[data-library]'); if(lib){librarySheet(lib.dataset.library);return;}
   const theme=event.target.closest('button[data-theme]'); if(theme){state.theme=theme.dataset.theme;applyTheme();saveState();settingsSheet('appearance');return;}
   const original=event.target.closest('[data-original]'); if(original){const article=articleById(original.dataset.original); if(article?.url)window.open(article.url,'_blank','noopener'); else toast('Ehhez a hírhez nincs eredeti link'); return;}
@@ -2534,11 +2978,20 @@ async function startApp(){
   setupAssistantKeyboardHandling();
   await loadNewsArticles();
   await loadAssistantPromptProvider();
+  const prototypeFreshNewsCount=prototypeFreshNewsCountFromUrl();
+  if(prototypeFreshNewsCount){
+    state.route='feed';
+    state.feedView='personal';
+    state.category='fresh';
+  }
   if(state.route==='assistant'&&!state.assistantChat.length)prepareAssistantVoiceOpening();
   render();
   activateRouteAudio(state.route);
+  if(prototypeFreshNewsCount)createPrototypeFreshNews(prototypeFreshNewsCount);
 }
 startApp();
 window.hirbeszedEnsureAppVisibleRoute=ensureAppVisibleRoute;
+window.hirbeszedSimulateFreshNews=createPrototypeFreshNews;
+window.hirbeszedAcknowledgeFreshNews=acknowledgeFreshNews;
 setInterval(ensureAppVisibleRoute,900);
 if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(()=>{});

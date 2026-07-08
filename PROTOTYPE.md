@@ -20,12 +20,40 @@ http://127.0.0.1:8000/?cachebust=local-dev
 
 Ha a böngésző régi változatot mutat, használj új `cachebust` értéket, vagy töröld a prototípus adatait az app Beállítások felületén.
 
+## Helyi verziómentés
+
+Elfogadott vagy kockázatosabb módosítás előtti állapotról teljes helyi pillanatkép készíthető:
+
+```powershell
+.\helyi_mentes.cmd -Name "rovid-nev"
+```
+
+A mentések alapértelmezett helye:
+
+```text
+C:\Users\mulik\Documents\Fejlesztés\Hírbeszéd_verziok
+```
+
+Az aktuális projekt összehasonlítható a legutóbbi mentéssel:
+
+```powershell
+.\helyi_osszehasonlitas.cmd -Latest
+```
+
+Vagy egy konkrét mentéssel:
+
+```powershell
+.\helyi_osszehasonlitas.cmd -Snapshot "mentes-mappa-neve"
+```
+
+Ez a helyi mentési rendszer nem helyettesíti a GitHub publikálást. Arra való, hogy egy korábbi helyi állapot külön mappából újra megnyitható, összehasonlítható és szükség esetén kontrolláltan visszaállítható legyen.
+
 ## Fő képernyők
 
 - **Hírfolyam**: RSS-forrásokra és témákra szűrt hírlista.
 - **Felolvasó**: automatikusan induló, hangvezérelhető hírfelolvasó nézet.
 - **Asszisztens**: prototípus-szintű hírkérdező és összefoglaló felület.
-- **Beállítások**: RSS-források, témák, megjelenés, hang, fiók és előfizetés.
+- **Beállítások**: elsőként Csomagok és előfizetés, utána Hírbeállítások, Alkalmazás és Prototípus csoportok.
 
 ## Fájlszerkezet
 
@@ -43,6 +71,10 @@ Ha a böngésző régi változatot mutat, használj új `cachebust` értéket, v
 - `sw.js`: PWA cache és service worker.
 - `ELOFIZETESI_SZABALYZAT.txt`: előfizetési, próbaidős és promóciós szabályzat.
 - `ELOFIZETESI_GOMB_MATRIX.md`: Felolvasó és Asszisztens jobb felső CTA gombjainak előfizetési állapot szerinti döntési táblája.
+- `helyi_mentes.cmd`: kanonikus Windows indító a teljes helyi verziómentéshez.
+- `helyi_mentes.ps1`: a tényleges helyi snapshot készítő script.
+- `helyi_osszehasonlitas.cmd`: kanonikus Windows indító az aktuális projekt és egy helyi mentés összehasonlításához.
+- `helyi_osszehasonlitas.ps1`: hash-alapú helyi összehasonlító script.
 - `publikalas.cmd`: kanonikus Windows indító a GitHub publikáláshoz.
 - `publikalas.ps1`: a tényleges GitHub publikáló script.
 - `GITHUB_PUBLIKALASI_SZABALYOK.txt`: GitHub Pages publikáció és hibakezelés rögzített szabályai.
@@ -77,22 +109,40 @@ Rövid összegzés:
 - A normál regisztráció e-mail-alapú; telefonszám mező nincs. A kódmegerősítés 6 számjegyet kér, és a megerősítő gomb csak a teljes kód beírása után jelenik meg.
 - Az e-mail-kód oldalon a prototípus modális rendszerüzenettel kezeli a hibás, lejárt, túl sokszor próbált, újraküldési és megszakadt folyamat hibákat. A tesztkód `123456`, a lejárt kód szimulációja `000000`; ezek kizárólag prototípus-tesztadatok.
 - Induló oldal: Ingyenes csomag / lejárt próba / sikertelen fizetés esetén Hírfolyam, AI Felolvasó előfizetés vagy aktív 14 napos AI Felolvasó próba esetén Felolvasó, AI Asszisztens előfizetésnél Asszisztens.
+- A Hírfolyam jobb felső fejlécében csak a `Keresés` ikon marad. A kedvelt hírek és az olvasott/olvasatlan kezelés nem fejlécgombként jelenik meg; ezek a hírkártyák meta sorában, illetve a kapcsolódó listanézetekben érhetők el. A keresés ikon világos témában is az app accent színét használja.
+- A hírkártya-akciók egységes SVG ikonokat használnak: Kedvelés = szív, Megosztás = lekerekített papírrepülő/küldés ikon külön coral mozgáscsík nélkül, Olvasatlan/Olvasott = nyitott szem állapotikon. Az olvasott állapotban a teljes szemikon coral, nem csak a belső kör.
+- A Hírfolyam és a Felolvasó közös hírfolyamnézet-váltója: `Személyes / Időrend / Kedvelt`. Az alapértelmezett nézet a `Személyes`.
+- A `Személyes` preferencia szerinti, időrendi hírfolyam; az `Időrend` nem személyre szabott, időrendi hírfolyam; a `Kedvelt` csak a szívecskével jelölt híreket mutatja időrendben. Az olvasott hírek nem tűnnek el a Személyes és Időrend nézetből, csak halványabb/olvasott állapotot kapnak.
+- Új hír érkezésekor a Hírfolyam nem ugrik automatikusan. Felülről beúszó, lebegő értesítés jelenik meg `N új hír érkezett · Megtekintem` szöveggel és frissítés ikonnal. Megtekintés után az új hírkártyák finom `Új` jelölést kapnak, amely akkor tűnik el, amikor a felhasználó végiggörgette az összes újnak jelölt hírt.
+- Prototípus-tesztsegéd: helyi ellenőrzéshez a `simulateFreshNews=3` URL-paraméter kontrollált friss hír batch-et hoz létre. Ez nem végtermék-funkció, csak a friss hír értesítés és jelölés gyors ellenőrzésére szolgál.
+- Értesítési irány: a menüben a `Napi összefoglaló` és a `Csendes időszak` kikerült. A megmaradó értesítési típusok a `Rendkívüli hírek` és a `Személyes hírösszefoglaló`.
+- A `Rendkívüli hírek` külön, azonnali értesítési ág. Ha be van kapcsolva, a valódi rendkívüli hír és az időjárási riasztás független a személyes hírösszefoglaló 2 órás szabályától.
+- A `Személyes hírösszefoglaló` nem fix időpontban működik: elsőként 10 új személyes hírnél jelenhet meg, aktív értesítés esetén ugyanaz az értesítés frissül. Új hangos értesítéshez legalább 2 órának kell eltelnie az utolsó hangos értesítés óta, és közben legalább +10 új személyes hírnek kell összegyűlnie. Ha 2 óra után még nincs meg a +10 hír, az app tovább vár, és akkor jelez hangosan, amikor a 10. új hír is megérkezik; ettől az új hangos értesítéstől indul újra a következő 2 órás ablak.
+- Az Értesítések panel két SVG menüikont használ: a `Rendkívüli hírek` figyelmeztető háromszög ikont, a `Személyes hírösszefoglaló` hírkártya/lista ikont kap coral szikrával. A panel alatt `Működés` kártya magyarázza külön a két értesítési ág szabályait.
+- A Hírfolyam témachip-sorának első, mindig elérhető összesítő eleme `Minden téma`. Ez az aktuális hírfolyamnézeten belüli témaszűrés nélküli összesítő, a konkrét témachipek pedig ugyanazon nézet listáját szűrik tovább.
+- A Felolvasó ugyanazt a közös hírfolyamnézetet használja, mint a Hírfolyam. Ha bármelyik képernyőn változik a nézet, a másik képernyő is ezt örökli. A Felolvasó `Előző`, `Következő` és automatikus hírléptető műveletei az aktuális hírfolyamnézet listáján belül dolgoznak.
+- A Felolvasó 30 elemű, hír-ID alapú lejátszási memóriát használ. Az `Előző` mindig a ténylegesen előzőleg lejátszott hírre lép, a `Következő` visszalépés után először a memória bejárt útvonalán halad előre, a memória végén pedig az aktuális feed következő még nem olvasott/felolvasott hírére ugrik. Frissítéskor az aktuális hír nem szakad meg, de a következő léptetés már a legfrissebb még nem felolvasott hírrel folytatja.
 - A hírfolyamban három belső promóhír létezhet: AI Felolvasó, AI Asszisztens, illetve AI Asszisztens 5 kérdéses heti próba.
 - A Beállítások / Prototípus / Fejlesztési beállítások panelen a hírfolyam promó előresorolása és az Ingyenes csomagon megjelenő AI Felolvasó próbaidő állapota ki-be kapcsolható. Ugyanitt 1-14 közötti számmal szimulálható a hátralévő próbanapok száma.
 - Ugyanitt található az `Automatikus adatfeltöltés` prototípus-tesztkapcsoló. Ez alapértelmezetten bekapcsolt helyi tesztsegéd, szabályos tesztadatokkal tölti az üres továbbhaladási mezőket, és a `Prototípusadatok törlése` után is megtartja a menüben beállított értékét.
 - Az automatikus adatfeltöltés nem végleges frontend- vagy backend-funkció, nem jelenhet meg a normál képernyőkön, és csak a prototípus gyors tesztelését szolgálja.
-- A Felolvasó és Asszisztens oldalak jobb felső marketing CTA gombjai az `ELOFIZETESI_GOMB_MATRIX.md` táblából következnek.
+- A Felolvasó és Asszisztens oldalak jobb felső marketing CTA gombjai az `ELOFIZETESI_GOMB_MATRIX.md` táblából következnek. Az Asszisztens jobb felső fejlécében nem jelenhet meg módváltó ikon: ha nincs aktuális CTA, a jobb felső rész üres. Az Asszisztens módváltása a képernyő tetején lévő belső `Beszéd / Cset` vezérlővel történik.
+- A `Cset` mód a korábbi `Néma` mód működését viszi tovább: gépelt kérdés, írott válasz, hangos felolvasás nélkül. A korábbi `Gépelés` mód megszűnt. A Cset ikonja finom, SVG alapú üzenetbuborék coral belső vonalakkal.
+- A `Beszéd / Cset` módváltó a hírfolyamnézet-váltó szegmentált dizájnnyelvét és teljes magasságát használja, két oszloppal és megtartott módikonokkal.
+- Cset módban nincs külön coral színű `Cset` címsor a módválasztó alatt; a csetpanel közvetlenül a `Beszéd / Cset` gombok alatt indul.
+- Az AI Asszisztens heti 5 kérdéses próba CTA-ként vagy promóként jelenhet meg, de nem mutat külön maradék kérdésszámot a CTA felületén.
 - Az előfizetéshez, próbaidőhöz, csomagváltáshoz, fizetési hibához és vásárlás-visszaállításhoz egyetlen központi `Csomagok és előfizetés` oldal tartozik.
+- A Beállítások főmenü első sora a `Csomagok és előfizetés`. Ez alatt a `Hírbeállítások` csoportban az RSS-források, témák, helyi hírek és értesítések vannak; az `Alkalmazás` csoportban a fiók, megjelenés, hang/felolvasó és mobiladat/tárhely; a `Prototípus` csoportban a fejlesztési prototípuspanel és a CarPlay / Android Auto előnézet. A főmenü minden sora egységes, szemantikus inline SVG ikont használ finom coral akcentussal.
 - CTA-ból érkezve a javasolt csomag automatikusan kijelölődik; menüből érkezve az aktuális aktív csomag jelölődik ki, kivéve ha van beállított következő csomag, mert akkor az marad kijelölve.
 - A csomagkártyára kattintás csak kijelölés. A prototípusban a jóváhagyó gomb vált állapotot, a végleges appban ez indítja majd az App Store / Google Play folyamatát.
 - Egy Hírbeszéd-fiók egyszerre csak egy aktív eszközön használhatja az appot. A prototípusban ez a Beállítások / Prototípus / Egyidejű eszközhasználat szimuláció menüpontból tesztelhető.
-- Asszisztens Gépelés, Néma és promo cset módban a virtuális billentyűzet nem méretezheti át az egész appot, és az alsó menü nem ugorhat a billentyűzet fölé; csak a cset és a beviteli box alkalmazkodik a billentyűzet magasságához.
-- Az Asszisztens Gépelés, Néma és promo cset buborékjai alulról építkeznek, vagyis rövid csetnél a beviteli mező fölött állnak, hosszú csetnél az új üzenet lent marad.
+- Asszisztens Cset és promo cset módban a virtuális billentyűzet nem méretezheti át az egész appot, és az alsó menü nem ugorhat a billentyűzet fölé; csak a cset és a beviteli box alkalmazkodik a billentyűzet magasságához.
+- Az Asszisztens Cset és promo cset buborékjai alulról építkeznek, vagyis rövid csetnél a beviteli mező fölött állnak, hosszú csetnél az új üzenet lent marad.
 - A Felolvasás gomb pause/folytatás logikával működik, nem indítja elölről a hírt.
 - A Hírléptető kikapcsolva a hír végén megállít, visszakapcsolva a következő hírrel indul.
 - A Részletes hírek bekapcsolva az aktuális hírt részletes változatban elölről kezdi.
 - A Rövidített hírekre visszaváltás a következő rövid hírrel indul.
-- A Mikrofon csak a hangutasítások hallgatását kapcsolja, kikapcsolva a parancslista helyén segítő szöveg látszik.
+- A Felolvasó képernyőn nincs külön Hangutasítások kártya vagy parancslista. A Mikrofon csak a hangutasítások hallgatását kapcsolja, az indításkor elhangzó rövid útmutató pedig elmondja, hogy aktív mikrofonnál a vezérlőgombok címei és a Kedvelés használhatók hangparancsként.
 - A Felolvasó oldalon nincs felugró toast üzenet, hogy ne zavarja az autós/vezetési élményt.
 - Minden fejlesztés után dokumentációs audit kell: frissíteni vagy ellenőrizni kell a projektállapotot, a prototípus működési leírást, a termékspecifikációt, a backend-auditot és az érintett szakterületi dokumentumokat.
 
@@ -105,8 +155,10 @@ A prototípus app-szintű felületi sablonja a `styles.css` elején lévő `--hb
 - Kártyák: az általános kártyasugár `18px`, a nagy hero felületek sugara `24px`.
 - Gombok: az elsődleges és másodlagos fő gombok alapmagassága `50px`, lekerekítésük `16px`.
 - A sablon az onboarding, Felolvasó, Hírfolyam, Asszisztens, Beállítások, sheet/panel és előfizetési felületekre is rá van húzva.
+- A Hírfolyam fejlécének jobb oldalán csak a keresés ikon látszik; színe `var(--accent)`, hogy világos és sötét témában is illeszkedjen az app színrendszeréhez.
 - A Hírfolyam hírkártyáin a Kedvelés, Megosztás és Olvasott/Olvasatlan gyorsműveletek a forrás + idő meta sorában kompakt ikon-only vezérlők. Ezek nem növelhetik meg a meta sor magasságát; a prototípusban a meta sorban 14 px magasak minden mobil, Foldable és tablet nézetben. A láthatatlan érinthető/kattintható szélességük minden nézetben 32 px, miközben az ikon kicsi és középre igazított marad. Kattintási biztonság miatt az ikonok között nagykártyás/rácsos nézetben 6 px, kiskártyás és mobil fekvő nézetben 5 px vízszintes rés van.
 - A Hírfolyam normál hírkártyái egységes kártyarácsot alkotnak. Nincs automatikus `first-child` / első hír kiemelés: az első normál hírkártya képmérete, szövegblokkja és címvágása egyezzen a többi normál hírkártyáéval. Külön promókártyák ettől eltérhetnek.
+- A Beállítások főmenü sorai `.settings-menu-icon` inline SVG ikonokat használnak, ugyanabban a vékony, lekerekített, coral akcentusú vizuális nyelvben, mint az értesítési menüikonok.
 
 ## GitHub Pages
 

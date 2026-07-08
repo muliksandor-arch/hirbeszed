@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-label="Hírbeszéd hírkártya akcióikonok SVG előnézete">
+  <defs>
+    <style>
+      .bg{fill:#f7f4f1}
+      .panel{fill:#fffdfb;stroke:#ded6cf;stroke-width:1.5}
+      .title{font:800 42px Arial,sans-serif;fill:#20252b}
+      .subtitle{font:600 22px Arial,sans-serif;fill:#6b747d}
+      .row-title{font:800 24px Arial,sans-serif;fill:#20252b}
+      .label{font:700 19px Arial,sans-serif;fill:#343b43;text-anchor:middle}
+      .note{font:600 16px Arial,sans-serif;fill:#7d858d;text-anchor:middle}
+      .icon-box{fill:#f8f5f1;stroke:#ded6cf;stroke-width:1.2}
+      .neutral{stroke:#59636d}
+      .coral-fill{fill:#f26f63}
+      .muted-fill{fill:transparent}
+      .heart-fill{fill:#f26f63;stroke:#f26f63}
+      .line{fill:transparent;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+      .line-share{fill:transparent;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+      .pupil-outline{fill:transparent;stroke:#59636d;stroke-width:1.6;opacity:.74;vector-effect:non-scaling-stroke}
+      .pupil-read{fill:#f26f63;stroke:#f26f63;stroke-width:1;vector-effect:non-scaling-stroke}
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="760"/>
+  <text class="title" x="80" y="78">Hírkártya akcióikonok SVG-ben</text>
+  <text class="subtitle" x="80" y="116">Kedvelés · Megosztás · Olvasási állapot</text>
+
+  <rect class="panel" x="70" y="165" width="1060" height="230" rx="8"/>
+  <text class="row-title" x="110" y="210">Alapállapot</text>
+  <g transform="translate(170 238)">
+    <rect class="icon-box" x="0" y="0" width="220" height="110" rx="8"/>
+    <g transform="translate(78 18) scale(2.7)">
+      <path class="line neutral" d="M12 20.2s-7.2-4.4-8.8-8.4C2 8.8 3.8 5.7 7 5.7c1.9 0 3.4 1.1 5 3 1.6-1.9 3.1-3 5-3 3.2 0 5 3.1 3.8 6.1-1.6 4-8.8 8.4-8.8 8.4Z"/>
+    </g>
+    <text class="label" x="110" y="150">Kedvelés</text>
+  </g>
+  <g transform="translate(490 238)">
+    <rect class="icon-box" x="0" y="0" width="220" height="110" rx="8"/>
+    <g transform="translate(78 18) scale(2.7)">
+      <path class="line-share neutral" d="M4.2 12.2 19.4 5.5c.5-.2 1 .3.8.8l-6.7 15.2c-.2.5-.9.5-1.1-.1l-2.1-6-6-2.1c-.6-.2-.6-.9-.1-1.1Z"/>
+      <path class="line-share neutral" d="m10.5 15.2 4.2-4.2"/>
+    </g>
+    <text class="label" x="110" y="150">Megosztás</text>
+  </g>
+  <g transform="translate(810 238)">
+    <rect class="icon-box" x="0" y="0" width="220" height="110" rx="8"/>
+    <g transform="translate(78 18) scale(2.7)">
+      <path class="line neutral" d="M2.1 12s3.5-6.3 9.9-6.3 9.9 6.3 9.9 6.3-3.5 6.3-9.9 6.3S2.1 12 2.1 12Z"/>
+      <circle class="pupil-outline" cx="12" cy="12" r="2.6"/>
+    </g>
+    <text class="label" x="110" y="150">Olvasatlan</text>
+  </g>
+
+  <rect class="panel" x="70" y="450" width="1060" height="230" rx="8"/>
+  <text class="row-title" x="110" y="495">Aktív állapot</text>
+  <g transform="translate(170 523)">
+    <rect class="icon-box" x="0" y="0" width="220" height="110" rx="8"/>
+    <g transform="translate(78 18) scale(2.7)">
+      <path class="line heart-fill" d="M12 20.2s-7.2-4.4-8.8-8.4C2 8.8 3.8 5.7 7 5.7c1.9 0 3.4 1.1 5 3 1.6-1.9 3.1-3 5-3 3.2 0 5 3.1 3.8 6.1-1.6 4-8.8 8.4-8.8 8.4Z"/>
+    </g>
+    <text class="label" x="110" y="150">Kedvelve</text>
+  </g>
+  <g transform="translate(490 523)">
+    <rect class="icon-box" x="0" y="0" width="220" height="110" rx="8"/>
+    <g transform="translate(78 18) scale(2.7)">
+      <path class="line-share neutral" d="M4.2 12.2 19.4 5.5c.5-.2 1 .3.8.8l-6.7 15.2c-.2.5-.9.5-1.1-.1l-2.1-6-6-2.1c-.6-.2-.6-.9-.1-1.1Z"/>
+      <path class="line-share neutral" d="m10.5 15.2 4.2-4.2"/>
+    </g>
+    <text class="label" x="110" y="150">Megosztás</text>
+    <text class="note" x="110" y="174">pillanatnyi művelet</text>
+  </g>
+  <g transform="translate(810 523)">
+    <rect class="icon-box" x="0" y="0" width="220" height="110" rx="8"/>
+    <g transform="translate(78 18) scale(2.7)">
+      <path class="line" style="stroke:#f26f63" d="M2.1 12s3.5-6.3 9.9-6.3 9.9 6.3 9.9 6.3-3.5 6.3-9.9 6.3S2.1 12 2.1 12Z"/>
+      <circle class="pupil-read" cx="12" cy="12" r="2.8"/>
+    </g>
+    <text class="label" x="110" y="150">Olvasott</text>
+  </g>
+</svg>

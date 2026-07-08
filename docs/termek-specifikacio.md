@@ -21,6 +21,7 @@ Az alkalmazás nem saját hírtartalmat gyárt. A felhasználó által engedély
 - A hírfolyamban nincs hangvezérlés és automatikus felolvasás.
 - Az olvasott, meghallgatott és átugrott hír egységesen **olvasott** állapotú.
 - A **Kedvelés** az olvasottságtól független állapot.
+- A Hírfolyam jobb felső fejlécében csak a keresés gyorsgombja jelenik meg; a kedvelés és olvasottság kezelése nem fejlécszintű vezérlő.
 - A hírfolyam kártyáin a Kedvelés, Megosztás és Olvasott/Olvasatlan gyorsműveletek kompakt, ikon-only vezérlőként jelennek meg a forrás + idő meta sorában, nem növelhetik meg annak magasságát, és egymástól elválasztva kell megjelenniük a biztonságosabb tappolás miatt. A prototípusban a láthatatlan érinthető szélesség 32 px gombonként.
 - A hírfolyam normál hírkártyái egységes rácselemek. Az első listaelem nem kap automatikus vezetőhír/kiemelt kártya megjelenést; ilyen eltérés csak külön termékdöntéssel vezethető be.
 - A hírfolyam alapértelmezett rendezése fordított időrend: a legfrissebb hír van felül.
@@ -31,7 +32,7 @@ Az alkalmazás nem saját hírtartalmat gyárt. A felhasználó által engedély
 - Egy Hírbeszéd-fiók egyszerre csak egy aktív eszközön használhatja az appot. Ez az ingyenes csomagra, a fizetős csomagokra, a próbaidőkre és minden AI-funkcióra is vonatkozik.
 - A telefonos Felolvasó pontosan három nagy vezérlőt tartalmaz. A CarPlay és Android Auto a saját, kötelező médiavezérlőit is megjelenítheti.
 - Az előfizetési csomagok, promóhírek, próbaidők és jogosultsági szabályok részletes terméklogikáját az `ELOFIZETESI_SZABALYZAT.txt` rögzíti.
-- A Felolvasó és Asszisztens oldalak jobb felső előfizetési CTA gombjainak állapotfüggő feliratát az `ELOFIZETESI_GOMB_MATRIX.md` döntési tábla rögzíti.
+- A Felolvasó és Asszisztens oldalak jobb felső előfizetési CTA gombjainak állapotfüggő feliratát az `ELOFIZETESI_GOMB_MATRIX.md` döntési tábla rögzíti. Az Asszisztens jobb felső fejlécében módváltó ikon nem jelenhet meg; ha nincs CTA, a jobb felső akcióterület üres.
 - Az előfizetéskezelés központi felülete a `Csomagok és előfizetés` oldal. Ide vezet az első indítás, a menü, a CTA, a promóció, a próba lejárta, a fizetési hiba és a vásárlás-visszaállítás.
 - Csomagkártyára kattintva csak kijelölés történik. A prototípusban a jóváhagyó gomb állítja át az állapotot, a végleges appban ez az App Store / Google Play fizetési vagy csomagváltási folyamatát indítja.
 - Amíg az első indítási onboarding nincs teljesen befejezve és az app belső felülete nem nyílt meg, új betöltéskor vagy helyreállításkor az onboarding mindig az üdvözlő/regisztrációs képernyőről indul. Félkész belépési, előfizetési vagy RSS-választási oldal nem lehet tartós visszatérési pont.
@@ -75,34 +76,41 @@ A felhasználó:
 - Részletes hírek
 - Eredeti cikk megnyitása
 
+A Hírfolyam és a Felolvasó közös hírfolyamnézet-váltója: `Személyes / Időrend / Kedvelt`. Az alapértelmezett nézet a `Személyes`. A Hírfolyam témachip-sorában az összesítő, témaszűrés nélküli chip neve `Minden téma`, amely mindig az aktuális hírfolyamnézet teljes témakörét jelenti.
+
+A Hírfolyam képernyő jobb felső gyorsgombsorában csak a keresés marad. A keresés ikon kontrasztos, a márka accent színrendszeréhez illeszkedő színt kap, hogy világos témában is olvasható legyen.
+
+A hírkártyák akcióikonjai egységes SVG vizuális nyelvet használnak. A Kedvelés szív ikon, aktív állapotban tömör coral kitöltéssel. A Megosztás lekerekített papírrepülő/küldés ikon külön coral mozgásjel nélkül, nem külső link vagy böngészőnyitás jel. Az Olvasatlan/Olvasott állapot nyitott szem ikonon jelenik meg: olvasatlanul semleges kontúr és üres pupilla, olvasottként a teljes szemikon coral pipa nélkül. A szem ikon optikailag a többi akcióikonnal egymagasságú.
+
+Új hír érkezésekor a Hírfolyam nem rendezheti át automatikusan a felhasználó aktuális görgetési pozícióját. A feed tetején felülről beúszó, lebegő értesítés jelzi, hány új hír érkezett (`N új hír érkezett · Megtekintem`) frissítés ikonnal. Megtekintés után az új hírkártyák finom `Új` jelölést kapnak; ez a jelölés akkor tűnik el, amikor a felhasználó végiggörgette az összes újnak jelölt hírt.
+
 ### 4.3. Felolvasó
 
 - Aktuális hír és lejátszási állapot
-- Hangutasítási mini súgó
+- Indításkor elhangzó rövid hangutasítási útmutató
 - Hangalapú beszélgetés az aktuális hírről
 - Hiba- és kapcsolatállapotok
 
 ### 4.4. Asszisztens
 
 - Élő hangbeszélgetés
-- Gépeléses cset
-- Néma mód
+- Cset mód
 - Forrásokkal ellátott válaszok
 - Asszisztensi előzmények
 
 ### 4.5. Beállítások
 
-- RSS-források
-- Témák és érdeklődés
-- Értesítések
-- Megjelenés
-- Hang és felolvasó
-- Mobiladat, offline tartalom és tárhely
-- Helyi hírek
-- Nyelv
-- Fiók és biztonság
-- Adatvédelem és adatok törlése
-- Súgó
+A Beállítások fő belépési sorrendje:
+
+1. `Csomagok és előfizetés`
+2. `Hírbeállítások`
+3. `Alkalmazás`
+
+A `Hírbeállítások` csoport tartalmazza az RSS-forrásokat, a témákat és érdeklődési beállításokat, a helyi híreket és az értesítéseket.
+
+Az `Alkalmazás` csoport tartalmazza a fiók- és biztonsági beállításokat, a megjelenést, a hang és felolvasó beállításait, valamint a mobiladat-, offline tartalom- és tárhelybeállításokat.
+
+A prototípusban külön, alsó `Prototípus` csoport is megjelenhet fejlesztési segédfunkciókkal, például a Prototípus panellel és a CarPlay / Android Auto előnézettel. Ez a csoport nem normál végfelhasználói termékmenü, hanem fejlesztési és ellenőrzési felület.
 
 A Fiók és biztonság beállítási panel egyoldalas fiókbiztonsági felület. `Fiók adatai` összefoglalót, kapcsolt belépési mód kártyákat, kétlépcsős védelem sort, kijelentkezési műveletet és külön fióktörlési veszélyzónát tartalmaz. A Google/Facebook/Apple kártyák brandelt SVG ikont használnak, az e-mailes belépés saját appikonja megmarad. A régi külön Profiladatok és Kapcsolt fiókok almenü nem része az aktuális iránynak.
 
@@ -163,7 +171,7 @@ Az első beállítás legfeljebb öt rövid lépésből áll, és később minde
 
 1. Legalább három érdeklődési téma kiválasztása.
 2. Ajánlott magyar RSS-források bekapcsolása.
-3. Értesítési alapmód kiválasztása: kikapcsolva, rendkívüli hírek, napi összefoglaló.
+3. Értesítési alapmód kiválasztása: kikapcsolva, rendkívüli hírek, személyes hírösszefoglaló.
 4. Helyi hírek opcionális bekapcsolása vagy város kézi kiválasztása.
 5. Magyar felolvasóhang és sebesség próbája.
 
@@ -194,11 +202,11 @@ A rövid hír az RSS `title` és `description` mezőiből készül. A részletes
 
 ### 7.2. Rendezés és szűrés
 
-Rendezési módok:
+Hírfolyamnézetek:
 
-- Legfrissebb;
-- Nekem ajánlott;
-- Csak olvasatlan.
+- Személyes: preferencia szerinti, időrendi hírfolyam, olvasott hírekkel együtt;
+- Időrend: nem személyre szabott, időrendi hírfolyam, olvasott hírekkel együtt;
+- Kedvelt: szívecskével jelölt hírek időrendben.
 
 Szűrés:
 
@@ -279,7 +287,6 @@ Az előzmények időrendben mutatják az olvasott, meghallgatott és átugrott h
 - hír címe;
 - forrás és kategória;
 - állapot: Betöltés, Felolvasás, Figyelek, Gondolkodom, Beszélgetés, Szünet vagy Leállítva;
-- rövid hangutasítási súgó;
 - három nagy gomb.
 
 ### 10.2. A három gomb
@@ -292,19 +299,22 @@ A gombok legalább 48×48 pontos érintési területet kapnak, magas kontrasztta
 
 ### 10.3. Lejátszási folyamat
 
-1. A rendszer kiválasztja a legfrissebb olvasatlan hírt a szűrt hírfolyamból.
+1. A rendszer az aktuális közös hírfolyamnézetből választ hírt. `Személyes` és `Időrend` nézetben az olvasott hírek is láthatók, de a Felolvasó automatikus következő választása a még nem olvasott/felolvasott híreket részesíti előnyben; `Kedvelt` nézetben a szívecskével jelölt hírek kerülnek sorra.
 2. Megjeleníti a képét és címét.
-3. Felolvassa a forrást, a címet és a rövid RSS-tartalmat.
-4. A végleges alkalmazásban beszéd érzékelésekor azonnal megszakítja a felolvasást.
-5. Meghallgatja, értelmezi és végrehajtja a kérést.
-6. Válasz után folytatja a hírt vagy a kért műveletet hajtja végre.
-7. A hír végén olvasottnak jelöli.
-8. Bekapcsolt automatikus következő esetén rövid szünet után továbblép.
-9. Kikapcsolt automatikus következő esetén várakozik.
+3. Funkcióindításkor röviden elmondja, hogy aktív mikrofonnál a Felolvasó hangutasításokkal is vezérelhető, a parancsok a vezérlőgombok címei, és a hírt a Kedvelés paranccsal el lehet menteni későbbre.
+4. Felolvassa a forrást, a címet és a rövid RSS-tartalmat.
+5. A végleges alkalmazásban beszéd érzékelésekor azonnal megszakítja a felolvasást.
+6. Meghallgatja, értelmezi és végrehajtja a kérést.
+7. Válasz után folytatja a hírt vagy a kért műveletet hajtja végre.
+8. A hír végén olvasottnak jelöli.
+9. Bekapcsolt automatikus következő esetén rövid szünet után továbblép.
+10. Kikapcsolt automatikus következő esetén várakozik.
 
 Az átugrott hír azonnal olvasottá válik.
 
-A kattintható böngészős prototípusban a Felolvasó nem figyel folyamatosan mikrofonon, mert ez a Web Speech API-val tesztelési hibát okozhat. A mikrofon akkor válik ténylegesen aktívvá, ha a Mikrofon gomb be van kapcsolva és a hírfelolvasás a végére ért. Bekapcsolt Hírléptető mellett ilyenkor 3 másodperces hangutasítási ablak nyílik, majd a program továbblép. Kikapcsolt Hírléptető mellett a mikrofon hír végén nyitva marad, amíg új felolvasás nem indul, a Mikrofon ki nem kapcsol, vagy a felhasználó Előző/Következő navigációt nem indít.
+A Felolvasó 30 elemű, hír-ID alapú lejátszási memóriát használ. Az `Előző` gomb vagy hangutasítás mindig a ténylegesen előzőleg lejátszott hírre lép. A `Következő` visszalépés után először a memória bejárt útvonalán halad előre; ha a memória végén jár, az aktuális feed következő még nem olvasott/felolvasott hírére ugrik. Frissítéskor az aktuális hír nem szakad meg, de a következő léptetés a feed tetején lévő legfrissebb, még nem felolvasott hírekkel folytatja. A lejátszási memória képernyőváltáskor, hírfolyamnézet-váltáskor, témaváltáskor vagy forrás-/témakörnyezet módosításakor törlődik.
+
+A kattintható böngészős prototípusban a Felolvasó nem figyel folyamatosan mikrofonon, mert ez a Web Speech API-val tesztelési hibát okozhat. A mikrofon akkor válik ténylegesen aktívvá, ha a Mikrofon gomb be van kapcsolva és a hírfelolvasás a végére ért. Bekapcsolt Hírléptető mellett ilyenkor 3 másodperces hangutasítási ablak nyílik, majd a program továbblép. Kikapcsolt Hírléptető mellett a mikrofon hír végén nyitva marad, amíg új felolvasás nem indul, a Mikrofon ki nem kapcsol, vagy a felhasználó Előző/Következő navigációt nem indít. A telefonos Felolvasó képernyőn nincs külön Hangutasítások kártya vagy mini súgó; a használati útmutató hangban hangzik el.
 
 ### 10.4. Állapotgép
 
@@ -333,6 +343,8 @@ Ez végleges termékcél. A jelenlegi prototípusban a bármikori megszakítás 
 ## 11. Hangutasítások
 
 Az alkalmazás szándékokat értelmez, nem kizárólag pontos kulcsszavakat.
+
+A telefonos Felolvasó képernyőn nincs külön látható hangutasítás-lista. A felhasználó a funkcióindításkor elhangzó útmutatóból tudja meg, hogy aktív mikrofonnál a vezérlőgombok címeit mondhatja ki, és a Kedvelés paranccsal az aktuális hírt későbbre mentheti.
 
 | Szándék | Példák |
 |---|---|
@@ -387,21 +399,22 @@ A platform által kötelezően megjelenített standard médiagombokat az alkalma
 
 ### 14.1. Módok
 
-- **Beszéd mód:** alapértelmezett, élő beszélgetés.
-- **Gépelés:** hagyományos szöveges cset.
-- **Néma mód:** gépelt kérdés és csak írott válasz.
+- **Beszéd mód:** alapértelmezett, élő hangalapú beszélgetés.
+- **Cset mód:** gépelt kérdés és csak írott válasz.
 
-A telefonos asszisztens felső módválasztója egységes ikon+felirat vezérlő: Beszéd hullámikon, Gépelés billentyűzetikon, Néma halkított hang ikon. A jobb felső gyorsváltó ugyanennek az ikoncsaládnak a következő módra mutató jelét használja.
+A telefonos asszisztens felső módválasztója egységes ikon+felirat vezérlő: Beszéd hullámikon, Cset üzenetbuborék ikon. A Cset ikon SVG alapú, finom coral belső vonalakkal illeszkedik a Hírbeszéd vizuális rendszeréhez. A módváltás ezen a képernyőn belüli vezérlőn történik; jobb felső fejlécikon nem duplikálhatja.
 
-A három mód ugyanazt az aktuális asszisztens-csevegést használja:
+A `Beszéd / Cset` módváltó a hírfolyamnézet-váltó szegmentált dizájnnyelvét és teljes magasságát használja, de megtartja az Asszisztens módikonokat.
 
-- Beszéd módban a mikrofonfigyelés és a hangos válasz aktív. A teljes méretű cset és a kompakt buborékos csetablak nem látszik. A hullám alatt egy egyszerű, nem dobozos aktuális összefoglaló jelenik meg: induláskor a kezdőkérdés és leírása, válasz után pedig az aktuális hír vagy válasz címe és rövid leírása. Ha a felhasználó Gépelés vagy Néma módból vált Beszédre, és már van valódi csetelőzmény, akkor a Beszéd nézet nem kezdőkérdésre áll vissza, hanem az utolsó asszisztensválasz hírével vagy összefoglalójával folytatja.
-- Gépelés módban a mikrofon nem figyel, a felhasználó gépel, az app pedig felolvassa a választ. A felső hangállapot és hullám fixen marad, alatta görgethető a teljes cset.
-- Néma módban a mikrofon nem figyel és nincs hangos válasz. Hullám animáció nem jelenik meg, csak a Néma állapot és alatta a teljes görgethető cset.
-- Gépelés és Néma módban üzenetküldés után a kurzor automatikusan visszakerül a szövegbeviteli mezőbe.
-- A Gépelés és Néma mód csetablakának tetején belső, nem kattintható sötét/fade kifutás jelenik meg, hogy a felfelé gördülő buborékok ne kemény vágással tűnjenek el.
-- A Gépelés, Néma és promo cset üzenetlistája alulról építkezik: rövid beszélgetésnél a buborékok a beviteli mező fölött állnak, hosszú beszélgetésnél a régebbi üzenetek felfelé gördülnek, az új üzenet pedig lent marad.
-- Mobilon a virtuális billentyűzet megjelenése nem méretezheti át a teljes appot, és nem tolhatja fel az alsó navigációt a billentyűzet fölé. Gépelés, Néma és promo cset esetén csak a cset és a teljes beviteli box fusson fel a billentyűzet teteje fölé, természetes alsó-felső távolsággal.
+A két mód ugyanazt az aktuális asszisztens-csevegést használja:
+
+- Beszéd módban a mikrofonfigyelés és a hangos válasz aktív. A teljes méretű cset és a kompakt buborékos csetablak nem látszik. A hullám alatt egy egyszerű, nem dobozos aktuális összefoglaló jelenik meg: induláskor a kezdőkérdés és leírása, válasz után pedig az aktuális hír vagy válasz címe és rövid leírása. Ha a felhasználó Cset módból vált Beszédre, és már van valódi csetelőzmény, akkor a Beszéd nézet nem kezdőkérdésre áll vissza, hanem az utolsó asszisztensválasz hírével vagy összefoglalójával folytatja.
+- Cset módban a mikrofon nem figyel és nincs hangos válasz. Hullám animáció nem jelenik meg, csak a Cset állapot és alatta a teljes görgethető cset. Ez a korábbi Néma mód működését viszi tovább, új névvel és ikonnal.
+- Cset módban nincs külön coral színű `Cset` címsor a módválasztó alatt; a csetpanel közvetlenül a `Beszéd / Cset` gombok alatt indul.
+- Cset módban üzenetküldés után a kurzor automatikusan visszakerül a szövegbeviteli mezőbe.
+- A Cset mód csetablakának tetején belső, nem kattintható sötét/fade kifutás jelenik meg, hogy a felfelé gördülő buborékok ne kemény vágással tűnjenek el.
+- A Cset és promo cset üzenetlistája alulról építkezik: rövid beszélgetésnél a buborékok a beviteli mező fölött állnak, hosszú beszélgetésnél a régebbi üzenetek felfelé gördülnek, az új üzenet pedig lent marad.
+- Mobilon a virtuális billentyűzet megjelenése nem méretezheti át a teljes appot, és nem tolhatja fel az alsó navigációt a billentyűzet fölé. Cset és promo cset esetén csak a cset és a teljes beviteli box fusson fel a billentyűzet teteje fölé, természetes alsó-felső távolsággal.
 - Régi beszélgetéseket az app nem archivál. Csak az aktuális csevegés legfeljebb 40 üzenete marad meg; ami ez elé kerül, automatikusan kiesik.
 - Új aktuális csevegés akkor indul, ha a felhasználó ezt kéri, például: "más érdekel", "váltsunk témát", "kezdjünk újat".
 
@@ -486,7 +499,7 @@ Elsődleges besorolásként az RSS saját kategóriája használható. Ismeretle
 
 ## 17. Helyi személyre szabás
 
-A „Nekem ajánlott” sorrend helyben számolható az alábbi tényezőkből:
+A `Személyes` hírfolyamnézet sorrendje helyben számolható az alábbi tényezőkből:
 
 - frissesség;
 - téma iránti érdeklődés;
@@ -502,23 +515,24 @@ Alapelvek:
 - a frissesség mindig erős súly marad;
 - egyetlen forrás nem uralhatja a teljes ajánlott listát;
 - a felhasználó megtekintheti és törölheti érdeklődési profilját;
-- a Legfrissebb mód teljesen független a személyre szabástól.
+- az `Időrend` nézet teljesen független a személyre szabástól.
 
 ## 18. Értesítések
 
 ### 18.1. Választható értesítések
 
-- rendkívüli hírek;
-- napi összefoglaló;
-- téma;
-- RSS-forrás;
-- helyi hírek;
-- kedvelt témához kapcsolódó új hírek.
+- rendkívüli hírek, beleértve a valódi időjárási riasztásokat;
+- személyes hírösszefoglaló.
 
 ### 18.2. Szabályozás
 
-- csendes időszak;
-- napi maximális darabszám;
+- A rendkívüli értesítés külön, azonnali értesítési ág. Nem kap napi darabszámkorlátot és nem érinti a személyes hírösszefoglaló 2 órás szabálya, mert csak valódi rendkívüli hírre vagy időjárási riasztásra használható.
+- A személyes hírösszefoglaló nem fix napi időpontban érkezik. Akkor hozhat létre értesítést, ha legalább 10 új hír gyűlt össze a személyes hírfolyamban.
+- Amíg van aktív személyes hírösszefoglaló értesítés, az app nem hoz létre újabb külön értesítést, hanem ugyanazt frissíti az aktuális darabszámmal.
+- Az aktív hírösszefoglaló csendben frissülhet, de új hangos értesítés csak akkor lehet, ha az utolsó hangos értesítés óta eltelt legalább 2 óra, és azóta legalább 10 újabb személyes hír gyűlt össze.
+- Ha a 2 óra már eltelt, de még nincs meg a +10 új személyes hír, az app nem küld hangos értesítést a 2 órás pontnál. Tovább gyűjti az új személyes híreket, és akkor küld hangos értesítést, amikor a 10. új hír is megérkezik. Ettől az új hangos értesítéstől indul újra a következő 2 órás ablak és a következő +10 híres számlálás.
+- Ha a felhasználó megnyitja az appot vagy az értesítést, az aktív hírösszefoglaló számlálója nullázódik.
+- A menüben nincs külön napi összefoglaló időpont és nincs külön csendes időszak beállítás.
 - mobilnetes frissítés engedélyezése;
 - „Miért kaptam ezt?” magyarázat;
 - azonos vagy hasonló értesítések összevonása.

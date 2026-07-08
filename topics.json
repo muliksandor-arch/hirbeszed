@@ -1,5 +1,5 @@
 [
-  {"id":"fresh","name":"Friss","description":"Legfrissebb és vezető hírek"},
+  {"id":"fresh","name":"Minden téma","description":"Összes téma hírei egy helyen"},
   {"id":"domestic","name":"Belföld","description":"Magyar közélet, politika és társadalom"},
   {"id":"foreign","name":"Külföld","description":"Nemzetközi hírek, EU, világpolitika"},
   {"id":"economy","name":"Gazdaság","description":"Infláció, árak, forint, cégek és ipar"},

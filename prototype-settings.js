@@ -3,12 +3,13 @@
     {id:'fresh',name:'Friss',description:'Legfrissebb és vezető hírek'},{id:'domestic',name:'Belföld',description:'Magyar közélet, politika és társadalom'},{id:'foreign',name:'Külföld',description:'Nemzetközi hírek, EU, világpolitika'},{id:'economy',name:'Gazdaság',description:'Infláció, árak, forint, cégek és ipar'},{id:'money',name:'Pénz',description:'Adózás, bank, hitel, nyugdíj és bérek'},{id:'business',name:'Vállalkozás',description:'KKV, pályázatok, támogatások és üzleti trendek'},{id:'tech_ai',name:'Tech & AI',description:'Mesterséges intelligencia, technológia és kiberbiztonság'},{id:'weather',name:'Időjárás',description:'Előrejelzés, riasztások és időjárási események'},{id:'traffic',name:'Közlekedés',description:'Útinform, balesetek, tömegközlekedés és üzemanyagár'},{id:'real_estate',name:'Ingatlan',description:'Lakásárak, albérlet, lakáshitel és építőipar'},{id:'career',name:'Munka',description:'Álláspiac, karrier, HR és munkajog'},{id:'health',name:'Egészség',description:'Egészségügy, gyógyszer, életmód és járványok'},{id:'education',name:'Oktatás',description:'Iskola, egyetem, felvételi és érettségi'},{id:'sport',name:'Sport',description:'Foci, Forma–1, kézilabda, olimpia és magyar sport'},{id:'culture',name:'Kultúra',description:'Film, zene, könyv, színház és programok'},{id:'tabloid',name:'Bulvár',description:'Celebek, TV, szórakozás és könnyed hírek'},{id:'auto',name:'Autó',description:'Autópiac, elektromos autók, KRESZ és bírságok'},{id:'green',name:'Zöld',description:'Környezet, klíma, energia és fenntarthatóság'},{id:'law',name:'Jog',description:'Törvények, rendeletek, fogyasztóvédelem és adatvédelem'},{id:'local',name:'Helyi',description:'Budapest, vármegyék, városi és helyi hírek'}
   ];
   const defaults={
-    personalized:true,digestEnabled:true,digestTime:'07:30',quietEnabled:true,quietPeriod:'22:00–07:00',
+    personalized:true,
     voiceName:'Magyar rendszerhang',speechRate:'1.0',
     imagesMobile:true,profileName:'Anna',profileEmail:'anna@pelda.hu',
     linkedAccounts:{Apple:true,Google:true,Facebook:true},twoFactor:true,twoFactorMethod:'E-mail'
   };
   state.settingsPrefs={...defaults,...(state.settingsPrefs||{}),linkedAccounts:{...defaults.linkedAccounts,...(state.settingsPrefs?.linkedAccounts||{})}};
+  ['digestEnabled','digestTime','quietEnabled','quietPeriod'].forEach(key=>delete state.settingsPrefs[key]);
   if(state.settingsPrefs.twoFactorMethod!=='E-mail')state.settingsPrefs.twoFactorMethod='E-mail';
 
   let currentPanel=null;
@@ -56,7 +57,7 @@
     openSheet('Témák és érdeklődés','A hírfolyam és a keresés témái',`${sectionIntro('A felső témasor oldalra görgethető. Kapcsold ki azokat a témákat, amelyeket nem szeretnél látni.')}<div class="chips topic-strip topic-settings-strip">${chips}</div><div class="settings-group topic-settings-list">${rows}</div><div class="settings-group">${settingRow(['✦','Személyre szabott sorrend',state.settingsPrefs.personalized?'Bekapcsolva':'Kikapcsolva','personal'])}${settingRow(['↺','Érdeklődési profil törlése','A kedvelések megmaradnak','reset-profile'])}</div>`);
   }
   function renderNotifications(){
-    openSheet('Értesítések','Riasztások és összefoglalók',`<div class="settings-group"><button class="settings-row" data-toggle-setting="notifications"><span class="row-icon">!</span><span class="row-copy"><strong>Rendkívüli hírek</strong><small>${state.notifications?'Bekapcsolva':'Kikapcsolva'}</small></span><span class="toggle ${state.notifications?'on':''}"></span></button>${settingRow(['☀','Napi összefoglaló',state.settingsPrefs.digestEnabled?`Minden nap ${state.settingsPrefs.digestTime}`:'Kikapcsolva','digest'])}${settingRow(['☾','Csendes időszak',state.settingsPrefs.quietEnabled?state.settingsPrefs.quietPeriod:'Kikapcsolva','quiet'])}</div>`);
+    openSheet('Értesítések','Riasztások és hírösszefoglaló',typeof notificationSettingsContent==='function'?notificationSettingsContent():sectionIntro('Az értesítési beállítások betöltése folyamatban van.'));
   }
   function renderAppearance(){
     openSheet('Megjelenés','Téma',`<div class="theme-grid"><button class="theme-card ${state.theme==='light'?'active':''}" data-theme="light">Világos</button><button class="theme-card dark-preview ${state.theme==='dark'?'active':''}" data-theme="dark">Sötét</button><button class="theme-card system-preview ${state.theme==='system'?'active':''}" data-theme="system">Rendszer</button></div>`);
@@ -94,8 +95,6 @@
   function renderChild(type){
     if(type==='personal')return openSheet('Személyre szabott sorrend','Érdeklődés alapján',`${sectionIntro('A készüléken tárolt olvasási, hallgatási, kedvelési és megnyitási előzmények alapján rendezi előrébb a várhatóan érdekes híreket.')}<div class="settings-group">${toggleRow('✦','Személyre szabás',state.settingsPrefs.personalized?'Bekapcsolva':'Kikapcsolva','personalized')}</div>`);
     if(type==='reset-profile')return openSheet('Érdeklődési profil törlése','A kedvelt hírek megmaradnak',`<div class="confirm-panel"><span class="confirm-icon">↺</span><h2>Újrakezdjük a személyre szabást?</h2><p>Az olvasási és hallgatási előzményekből kialakított érdeklődési sorrend törlődik. A kedvelt híreid és RSS-forrásaid megmaradnak.</p></div><button class="primary-button danger-button" data-settings-action="confirm-reset-profile">Érdeklődési profil törlése</button>`);
-    if(type==='digest')return openSheet('Napi összefoglaló','Értesítési időpont',`<div class="settings-group">${toggleRow('☀','Napi összefoglaló',state.settingsPrefs.digestEnabled?'Bekapcsolva':'Kikapcsolva','digestEnabled')}</div><h3 class="section-label">Küldés időpontja</h3>${optionButtons('digestTime',[{value:'07:00',label:'07:00'},{value:'07:30',label:'07:30'},{value:'08:00',label:'08:00'}])}`);
-    if(type==='quiet')return openSheet('Csendes időszak','Értesítések szüneteltetése',`<div class="settings-group">${toggleRow('☾','Csendes időszak',state.settingsPrefs.quietEnabled?'Bekapcsolva':'Kikapcsolva','quietEnabled')}</div><h3 class="section-label">Időtartam</h3>${optionButtons('quietPeriod',[{value:'21:00–07:00',label:'21:00–07:00'},{value:'22:00–07:00',label:'22:00–07:00'},{value:'23:00–06:00',label:'23:00–06:00'}])}`);
     if(type==='voice-name')return openSheet('Felolvasóhang','Magyar hang kiválasztása',optionButtons('voiceName',[{value:'Magyar rendszerhang',label:'Magyar rendszerhang',copy:'A készülék alapértelmezett hangja'},{value:'Eszter',label:'Eszter',copy:'Női mintahang'},{value:'Tamás',label:'Tamás',copy:'Férfi mintahang'}]));
     if(type==='rate')return openSheet('Beszédsebesség','Felolvasás tempója',optionButtons('speechRate',[{value:'0.8',label:'0,8×',copy:'Lassabb'},{value:'1.0',label:'1,0×',copy:'Normál'},{value:'1.2',label:'1,2×',copy:'Gyorsabb'},{value:'1.5',label:'1,5×',copy:'Nagyon gyors'}]));
     if(type==='images')return openSheet('Képek mobilneten','Adatforgalom szabályozása',`<div class="settings-group">${toggleRow('▧','Hírképek letöltése',state.settingsPrefs.imagesMobile?'Mobilneten is':'Csak Wi-Fi-n','imagesMobile')}</div>${sectionIntro('Kikapcsolva mobilhálózaton csak a címek és a szöveges hírelőzetesek töltődnek le.')}`);
@@ -115,7 +114,7 @@
       event.preventDefault();event.stopImmediatePropagation();goBack();return;
     }
     const child=event.target.closest('#sheetBody [data-setting]');
-    if(child&&['personal','reset-profile','digest','quiet','voice-name','rate','images','cache','profile','accounts','2fa','device-session','reset-app'].includes(child.dataset.setting)){
+    if(child&&['personal','reset-profile','voice-name','rate','images','cache','profile','accounts','2fa','device-session','reset-app'].includes(child.dataset.setting)){
       event.preventDefault();event.stopImmediatePropagation();
       const type=child.dataset.setting;
       showPanel(type,()=>renderChild(type));

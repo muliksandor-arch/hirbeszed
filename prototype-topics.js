@@ -1,6 +1,6 @@
 (function(){
   const topicCatalog = [
-    {id:'fresh',name:'Friss',description:'Legfrissebb és vezető hírek'},
+    {id:'fresh',name:'Minden téma',description:'Összes téma hírei egy helyen'},
     {id:'domestic',name:'Belföld',description:'Magyar közélet, politika és társadalom'},
     {id:'foreign',name:'Külföld',description:'Nemzetközi hírek, EU, világpolitika'},
     {id:'economy',name:'Gazdaság',description:'Infláció, árak, forint, cégek és ipar'},
@@ -23,19 +23,14 @@
   ];
 
   const topicIds=topicCatalog.map(topic=>topic.id);
-  const legacyTopics={Mind:'fresh',Technológia:'tech_ai',Világhírek:'foreign','Helyi hírek':'local'};
+  const legacyTopics={Mind:'fresh',Friss:'fresh','Minden téma':'fresh',Technológia:'tech_ai',Világhírek:'foreign','Helyi hírek':'local'};
   if(!Array.isArray(state.enabledTopics))state.enabledTopics=[...topicIds];
   state.category=legacyTopics[state.category]||topicCatalog.find(topic=>topic.name===state.category)?.id||state.category||'fresh';
   const categoryUpdates={a1:'Közlekedés',a3:'Tech & AI',a5:'Külföld'};
   articles.forEach(article=>{if(categoryUpdates[article.id])article.category=categoryUpdates[article.id];});
 
   filteredArticles=function(){
-    const selectedTopic=topicCatalog.find(topic=>topic.id===state.category);
-    let items=articles.filter(article=>state.sources[article.source]!==false&&(state.category==='fresh'||article.category===selectedTopic?.name));
-    if(state.showReadInFeed===false)items=items.filter(article=>!state.read.has(article.id));
-    if(state.sort==='unread')items=items.filter(article=>!state.read.has(article.id));
-    if(state.sort==='personal')items=[...items].sort((a,b)=>(state.saved.has(b.id)?1:0)-(state.saved.has(a.id)?1:0));
-    return items;
+    return typeof articlesForFeedView==='function'?articlesForFeedView(state.feedView,topicCatalog):articles;
   };
 
   renderFeed=function(){
@@ -43,17 +38,46 @@
     const visibleTopics=topicCatalog.filter(topic=>topic.id==='fresh'||state.enabledTopics.includes(topic.id));
     const items=filteredArticles();
     const cards=typeof feedItemsWithPromos==='function'?feedItemsWithPromos(items):items.map(article=>articleCard(article,false));
-    view.innerHTML=`<div class="segmented"><button data-sort="latest" class="${state.sort==='latest'?'active':''}">Legfrissebb</button><button data-sort="personal" class="${state.sort==='personal'?'active':''}">Nekem</button><button data-sort="unread" class="${state.sort==='unread'?'active':''}">Olvasatlan</button></div>
+    const switcher=typeof feedViewSwitchMarkup==='function'?feedViewSwitchMarkup():'';
+    const empty=typeof feedEmptyMarkup==='function'?feedEmptyMarkup():`<div class="empty"><div class="empty-icon">✓</div><h2>Minden hírt átnéztél</h2><p>Válassz másik nézetet, másik témát vagy frissítsd az RSS-forrásokat.</p></div>`;
+    view.innerHTML=`${switcher}
       <div class="chips topic-strip" aria-label="Hírtémák">${visibleTopics.map(topic=>`<button class="chip ${state.category===topic.id?'active':''}" data-category="${topic.id}">${topic.name}</button>`).join('')}</div>
-      <div class="feed-list">${items.length?cards.join(''):`<div class="empty"><div class="empty-icon">✓</div><h2>Minden hírt átnéztél</h2><p>Válassz másik témát vagy frissítsd az RSS-forrásokat.</p></div>`}</div>`;
+      <div class="fresh-news-notice-slot" aria-live="polite"></div>
+      <div class="feed-list">${items.length?cards.join(''):empty}</div>`;
+    if(typeof renderFreshNewsNotice==='function')renderFreshNewsNotice();
+    if(typeof setupFreshNewsObserver==='function')setupFreshNewsObserver();
     if(window.HB_SYNC_RESPONSIVE_PREVIEW_MODE)window.HB_SYNC_RESPONSIVE_PREVIEW_MODE();
   };
 
   settingsItems=function(){
     const activeSources=Object.values(state.sources).filter(Boolean).length;
     return [
-      ['◉','RSS-források',`${activeSources} bekapcsolva`,'sources'],['#','Témák és érdeklődés',`${state.enabledTopics.length} kiválasztva`,'topics'],['🔔','Értesítések',state.notifications?'Bekapcsolva':'Kikapcsolva','notifications'],['◐','Megjelenés',state.theme==='system'?'Rendszer szerint':state.theme==='dark'?'Sötét':'Világos','appearance'],['◉','Hang és felolvasó','Magyar hang · 1,0×','voice'],['⇅','Mobiladat és tárhely',state.mobileData?'Mobilnet engedélyezve':'Csak Wi-Fi','data'],['⌖','Helyi hírek',state.location?'Budapest környéke':'Kikapcsolva','location'],['♙','Fiók és biztonság','Prototípus-fiók','account'],['↺','Prototípus','Fejlesztési beállítások','prototype']
+      ['◉','RSS-források',`${activeSources} bekapcsolva`,'sources'],['#','Témák és érdeklődés',`${state.enabledTopics.length} kiválasztva`,'topics'],['🔔','Értesítések',typeof notificationSettingsSummary==='function'?notificationSettingsSummary():(state.notifications?'Bekapcsolva':'Kikapcsolva'),'notifications'],['◐','Megjelenés',state.theme==='system'?'Rendszer szerint':state.theme==='dark'?'Sötét':'Világos','appearance'],['◉','Hang és felolvasó','Magyar hang · 1,0×','voice'],['⇅','Mobiladat és tárhely',state.mobileData?'Mobilnet engedélyezve':'Csak Wi-Fi','data'],['⌖','Helyi hírek',state.location?'Budapest környéke':'Kikapcsolva','location'],['♙','Fiók és biztonság','Prototípus-fiók','account'],['↺','Prototípus','Fejlesztési beállítások','prototype']
     ];
+  };
+
+  settingsItems=function(){
+    const icon=typeof settingsMenuIcon==='function'?settingsMenuIcon:function(){return '•';};
+    const activeSources=Object.values(state.sources).filter(Boolean).length;
+    const activeTopics=state.enabledTopics.length;
+    return {
+      news:[
+        [icon('sources'),'RSS-források',`${activeSources} bekapcsolva`,'sources'],
+        [icon('topics'),'Témák és érdeklődés',`${activeTopics} kiválasztva`,'topics'],
+        [icon('location'),'Helyi hírek',state.location?'Budapest környéke':'Kikapcsolva','location'],
+        [icon('notifications'),'Értesítések',typeof notificationSettingsSummary==='function'?notificationSettingsSummary():(state.notifications?'Bekapcsolva':'Kikapcsolva'),'notifications']
+      ],
+      app:[
+        [icon('account'),'Fiók és biztonság','Prototípus-fiók','account'],
+        [icon('appearance'),'Megjelenés',state.theme==='system'?'Rendszer szerint':state.theme==='dark'?'Sötét':'Világos','appearance'],
+        [icon('voice'),'Hang és felolvasó','Magyar hang · 1,0×','voice'],
+        [icon('data'),'Mobiladat és tárhely',state.mobileData?'Mobilnet engedélyezve':'Csak Wi-Fi','data']
+      ],
+      prototype:[
+        [icon('prototype'),'Prototípus','Fejlesztési beállítások','prototype'],
+        [icon('carplay'),'CarPlay / Android Auto nézet','Ideiglenes autós kijelző előnézet','auto-preview']
+      ]
+    };
   };
 
   function topicSettingsSheet(){
@@ -62,7 +86,7 @@
       const active=topic.id==='fresh'||state.enabledTopics.includes(topic.id);
       return `<button class="settings-row topic-row ${topic.id==='fresh'?'fixed-topic':''}" data-topic-toggle="${topic.id}"><span class="row-icon">${topic.name[0]}</span><span class="row-copy"><strong>${topic.name}</strong><small>${topic.description}</small></span><span class="toggle ${active?'on':''}"></span></button>`;
     }).join('');
-    openSheet('Témák és érdeklődés','A hírfolyam és a keresés témái',`<p class="settings-intro">A felső témasor oldalra görgethető. Kapcsold ki azokat a témákat, amelyeket nem szeretnél látni.</p><div class="chips topic-strip topic-settings-strip">${buttons}</div><div class="settings-group topic-settings-list">${rows}</div><div class="settings-group">${settingRow(['✦','Személyre szabott sorrend','Bekapcsolva','personal'])}${settingRow(['↺','Érdeklődési profil törlése','A kedvelések megmaradnak','reset-profile'])}</div>`);
+    openSheet('Témák és érdeklődés','A hírfolyam és a keresés témái',`<p class="settings-intro">A felső témasor oldalra görgethető. Kapcsold ki azokat a témákat, amelyeket nem szeretnél látni.</p><div class="chips topic-strip topic-settings-strip">${buttons}</div><div class="settings-group topic-settings-list">${rows}</div>`);
   }
 
   function addSourceSheet(){
@@ -84,7 +108,7 @@
     const recommendation=event.target.closest('[data-recommended-source]');
     if(recommendation){event.preventDefault();event.stopImmediatePropagation();const name=recommendation.dataset.recommendedSource;state.sources[name]=true;saveState();settingsSheet('sources');toast(`${name} hozzáadva`);return;}
     const toggle=event.target.closest('[data-topic-toggle]');
-    if(toggle){event.preventDefault();event.stopImmediatePropagation();const id=toggle.dataset.topicToggle;if(id==='fresh'){toast('A Friss összesítő mindig elérhető');return;}state.enabledTopics=state.enabledTopics.includes(id)?state.enabledTopics.filter(topicId=>topicId!==id):[...state.enabledTopics,id];if(state.category===id&&!state.enabledTopics.includes(id))state.category='fresh';saveState();topicSettingsSheet();}
+    if(toggle){event.preventDefault();event.stopImmediatePropagation();const id=toggle.dataset.topicToggle;if(id==='fresh'){toast('A Minden téma összesítő mindig elérhető');return;}state.enabledTopics=state.enabledTopics.includes(id)?state.enabledTopics.filter(topicId=>topicId!==id):[...state.enabledTopics,id];if(state.category===id&&!state.enabledTopics.includes(id))state.category='fresh';saveState();topicSettingsSheet();}
   },true);
 
   document.addEventListener('submit',event=>{

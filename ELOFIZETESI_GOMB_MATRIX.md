@@ -15,6 +15,7 @@ Ez a tábla azt rögzíti, hogy az előfizetési állapot alapján milyen jobb f
 ## Értelmezés
 
 - A gomb marketing szerepű, ezért mindig cselekvésre ösztönző, verbes CTA legyen.
+- A jobb felső akcióterületen ezeken kívül Asszisztens módváltó ikon nem jelenhet meg. Ha az állapot szerint nincs CTA, a jobb felső akcióterület üres.
 - Az egységes megszólítási minta: "Aktiváld a/az ... funkciót".
 - Ingyenes csomag állapotban a Felolvasó oldalon a Felolvasó funkció, az Asszisztens oldalon az Asszisztens funkció aktiválása jelenik meg.
 - AI Felolvasó előfizetés vagy próba alatt a következő upsell az AI Asszisztens, ezért a CTA az Asszisztens funkció aktiválására hív.

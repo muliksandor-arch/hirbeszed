@@ -1374,8 +1374,54 @@
     view.innerHTML=`<div class="settings-group subscription-entry">${settingRow(['C','Csomagok és előfizetés',subscriptionLabel(),'subscription'])}</div><div class="settings-group">${items.slice(0,4).map(settingRow).join('')}</div><div class="settings-group">${items.slice(4,8).map(settingRow).join('')}</div><div class="settings-group">${items.slice(8).map(settingRow).join('')}</div>`;
   }
 
+  function renderSettingsV4(){
+    const items=settingsItems();
+    if(items.app){
+      items.app=items.app.map(function(item){
+        return item[3]==='account'?[typeof settingsMenuIcon==='function'?settingsMenuIcon('account'):'F','Fiók és biztonság',statusLabel(),'account']:item;
+      });
+    }
+    setHeader('Beállítások');
+    view.innerHTML=`<div class="settings-group subscription-entry">${settingRow([typeof settingsMenuIcon==='function'?settingsMenuIcon('subscription'):'C','Csomagok és előfizetés',subscriptionLabel(),'subscription'])}</div><h3 class="section-label settings-section-label">Hírbeállítások</h3><div class="settings-group">${items.news.map(settingRow).join('')}</div><h3 class="section-label settings-section-label">Alkalmazás</h3><div class="settings-group">${items.app.map(settingRow).join('')}</div><h3 class="section-label settings-section-label">Prototípus</h3><div class="settings-group">${items.prototype.map(settingRow).join('')}</div>`;
+  }
+
+  function renderSettingsV5(){
+    const icon=typeof settingsMenuIcon==='function'?settingsMenuIcon:function(){return '•';};
+    let rawItems=null;
+    try{rawItems=settingsItems();}catch(error){rawItems=null;}
+    const activeSources=Object.values(state.sources).filter(Boolean).length;
+    const activeTopics=state.enabledTopics.length;
+    const itemByType={};
+    if(Array.isArray(rawItems)){
+      rawItems.forEach(function(item){itemByType[item[3]]=item;});
+    }
+    const items=rawItems&&!Array.isArray(rawItems)&&rawItems.news&&rawItems.app&&rawItems.prototype?rawItems:{
+      news:[
+        [icon('sources'),'RSS-források',itemByType.sources?itemByType.sources[2]:`${activeSources} bekapcsolva`,'sources'],
+        [icon('topics'),'Témák és érdeklődés',itemByType.topics?itemByType.topics[2]:`${activeTopics} kiválasztva`,'topics'],
+        [icon('location'),'Helyi hírek',itemByType.location?itemByType.location[2]:(state.location?'Budapest környéke':'Kikapcsolva'),'location'],
+        [icon('notifications'),'Értesítések',itemByType.notifications?itemByType.notifications[2]:(typeof notificationSettingsSummary==='function'?notificationSettingsSummary():(state.notifications?'Bekapcsolva':'Kikapcsolva')),'notifications']
+      ],
+      app:[
+        [icon('account'),'Fiók és biztonság',statusLabel(),'account'],
+        [icon('appearance'),'Megjelenés',itemByType.appearance?itemByType.appearance[2]:(state.theme==='system'?'Rendszer szerint':state.theme==='dark'?'Sötét':'Világos'),'appearance'],
+        [icon('voice'),'Hang és felolvasó',itemByType.voice?itemByType.voice[2]:'Magyar hang · 1,0×','voice'],
+        [icon('data'),'Mobiladat és tárhely',itemByType.data?itemByType.data[2]:(state.mobileData?'Mobilnet engedélyezve':'Csak Wi-Fi'),'data']
+      ],
+      prototype:[
+        [icon('prototype'),'Prototípus','Fejlesztési beállítások','prototype'],
+        [icon('carplay'),'CarPlay / Android Auto nézet','Ideiglenes autós kijelző előnézet','auto-preview']
+      ]
+    };
+    items.app=items.app.map(function(item){
+      return item[3]==='account'?[icon('account'),'Fiók és biztonság',statusLabel(),'account']:item;
+    });
+    setHeader('Beállítások');
+    view.innerHTML=`<div class="settings-group subscription-entry">${settingRow([icon('subscription'),'Csomagok és előfizetés',subscriptionLabel(),'subscription'])}</div><h3 class="section-label settings-section-label">Hírbeállítások</h3><div class="settings-group">${items.news.map(settingRow).join('')}</div><h3 class="section-label settings-section-label">Alkalmazás</h3><div class="settings-group">${items.app.map(settingRow).join('')}</div><h3 class="section-label settings-section-label">Prototípus</h3><div class="settings-group">${items.prototype.map(settingRow).join('')}</div>`;
+  }
+
   if(typeof renderSettings==='function'){
-    renderSettings=renderSettingsV3;
+    renderSettings=renderSettingsV5;
   }
 
   if(typeof settingsSheet==='function'){
